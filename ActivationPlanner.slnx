@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="ActivationPlanner.ProcessEngine.Tests/ActivationPlanner.ProcessEngine.Tests.csproj" />
+  <Project Path="ActivationPlanner.ProcessEngine/ActivationPlanner.ProcessEngine.csproj" />
+  <Project Path="ActivationPlanner.PropagationModel.Tests/ActivationPlanner.PropagationModel.Tests.csproj" />
+  <Project Path="ActivationPlanner.PropagationModel/ActivationPlanner.PropagationModel.csproj" />
+  <Project Path="ActivationPlanner.Services.Tests/ActivationPlanner.Services.Tests.csproj" />
+  <Project Path="ActivationPlanner.Services/ActivationPlanner.Services.csproj" />
+  <Project Path="ActivationPlanner.UI/ActivationPlanner.UI.csproj" />
+</Solution>

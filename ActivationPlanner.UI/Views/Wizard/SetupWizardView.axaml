@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="650"
+             x:Class="ActivationPlanner.UI.Views.Wizard.SetupWizardView"
+             x:DataType="vm:SetupWizardViewModel">
+    <DockPanel Margin="24">
+        <!-- Header: title, progress, instructions -->
+        <StackPanel DockPanel.Dock="Top" Spacing="6">
+            <TextBlock Text="Set up your gear inventory"
+                       FontSize="12" Opacity="0.6" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0"
+                           Text="{Binding CurrentStep.Title}"
+                           FontSize="26" FontWeight="SemiBold" />
+                <TextBlock Grid.Column="1" VerticalAlignment="Bottom"
+                           Text="{Binding ProgressText}" Opacity="0.7" />
+            </Grid>
+            <ProgressBar Minimum="0" Maximum="1" Value="{Binding ProgressFraction}" Height="4" />
+            <TextBlock Text="{Binding CurrentStep.Instructions}"
+                       TextWrapping="Wrap" Opacity="0.8" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <!-- Footer: navigation -->
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,16,0,0">
+            <Button Grid.Column="0" Content="Back"
+                    Command="{Binding BackCommand}" MinWidth="90" />
+            <Button Grid.Column="2" Content="Next"
+                    Command="{Binding NextCommand}"
+                    IsVisible="{Binding IsNotLastStep}"
+                    Classes="accent" MinWidth="90" />
+            <Button Grid.Column="3" Content="Finish"
+                    Command="{Binding FinishCommand}"
+                    IsVisible="{Binding IsLastStep}"
+                    Classes="accent" MinWidth="90" Margin="8,0,0,0" />
+        </Grid>
+
+        <!-- Current step body -->
+        <Border Margin="0,16,0,0" Padding="0">
+            <ContentControl Content="{Binding CurrentStep}" />
+        </Border>
+    </DockPanel>
+</UserControl>

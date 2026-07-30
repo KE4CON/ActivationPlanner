@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="450"
+             x:Class="ActivationPlanner.UI.Views.Wizard.SummaryStepView"
+             x:DataType="vm:SummaryStepViewModel">
+    <StackPanel Spacing="12" MaxWidth="420" HorizontalAlignment="Left">
+        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1" CornerRadius="6" Padding="4">
+            <ItemsControl ItemsSource="{Binding Lines}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SummaryLine">
+                        <Grid ColumnDefinitions="*,Auto" Margin="12,8">
+                            <TextBlock Grid.Column="0" Text="{Binding Category}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Count}" FontWeight="SemiBold" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <Border IsVisible="{Binding IsEmpty}"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                CornerRadius="6" Padding="12">
+            <TextBlock TextWrapping="Wrap" Opacity="0.85"
+                       Text="You haven't added any gear. You can still finish and add items later from the inventory screen." />
+        </Border>
+    </StackPanel>
+</UserControl>

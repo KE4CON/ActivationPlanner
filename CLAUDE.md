@@ -4,7 +4,7 @@
 Name: Activation Planner
 Author: Jim, KE4CON
 Language: C# (.NET 10)
-UI Framework: Avalonia 11 (cross-platform — Windows, macOS, Linux)
+UI Framework: Avalonia 12 (cross-platform — Windows, macOS, Linux)
 Purpose: Pre-operation (and re-invokable) individual planning tool for ham radio operating sessions — POTA, SOTA, Field Day, EMCOMM, or general operating. Recommends bands, matches antennas from owned inventory, and builds packing checklists, grounded in real VOACAP propagation predictions rather than guesswork.
 
 ## Related Programs — Do Not Merge
@@ -50,6 +50,13 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - `ActivationPlanner.PropagationModel` (+ `.Tests`)
 - `ActivationPlanner.Services` (+ `.Tests`)
 - `ActivationPlanner.UI`
+
+## Approved NuGet Packages (list before adding — see "What NOT to Do")
+- **Avalonia** 12.x (UI) — `Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`; `Avalonia.Diagnostics` (Debug only)
+- **CommunityToolkit.Mvvm** 8.x (UI MVVM — `ObservableObject`/`[ObservableProperty]`/`[RelayCommand]`)
+- **xUnit** + `xunit.runner.visualstudio` + `Microsoft.NET.Test.Sdk` (test projects only)
+- Persistence uses framework `System.Text.Json` — no package needed.
+> Chose Avalonia **12** (not the doc's original 11): greenfield start, longer support runway; IcomRigControl to be aligned to 12 when it moves here.
 
 ## Feature Priorities (build in this order)
 Phase 1: Gear inventory — guided/required first-use setup wizard (step-by-step, Back/Next, progress indicator, skippable categories, Finish summary). Antenna entry uses a sub-list-and-detail pattern (add one antenna at a time to a running list, not a flat form). Data persists and is fully editable afterward via a separate non-wizard screen.

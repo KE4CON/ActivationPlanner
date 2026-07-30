@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
+             xmlns:gear="clr-namespace:ActivationPlanner.PropagationModel.Gear;assembly=ActivationPlanner.PropagationModel"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="480"
+             x:Class="ActivationPlanner.UI.Views.Wizard.AntennaStepView"
+             x:DataType="vm:AntennaStepViewModel">
+    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
+
+        <!-- Detail mini-form -->
+        <Border Grid.Column="0" Width="320" Padding="16"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1" CornerRadius="6">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Antenna details" FontWeight="SemiBold" />
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Name" FontSize="12" Opacity="0.7" />
+                    <TextBox Text="{Binding Name}" PlaceholderText="e.g. 40m EFHW" />
+                </StackPanel>
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Category" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Feed point" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding FeedPoints}"
+                              SelectedItem="{Binding SelectedFeedPoint}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Length (ft)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding LengthFeet}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Height (ft)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding HeightFeet}" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Radials — verticals/whips only -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding ShowRadials}">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Radial count" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding RadialCount}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Radial len (ft)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding RadialLengthFeet}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Button Grid.Column="0" Content="{Binding SaveButtonText}"
+                            Command="{Binding SaveCommand}"
+                            Classes="accent" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="1" Content="Clear"
+                            Command="{Binding ClearFormCommand}" Margin="8,0,0,0" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Running list -->
+        <Border Grid.Column="1"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1" CornerRadius="6">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding Antennas}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="gear:AntennaProfile">
+                            <Border Padding="12,8" Margin="0"
+                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+                                    <StackPanel Grid.Column="0" Spacing="2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                        <TextBlock Opacity="0.7" FontSize="12"
+                                                   Text="{Binding Category, StringFormat='{}{0}'}" />
+                                        <TextBlock Opacity="0.7" FontSize="12">
+                                            <Run Text="{Binding LengthFeet, Mode=OneWay}" /><Run Text=" ft long, " /><Run Text="{Binding HeightFeet, Mode=OneWay}" /><Run Text=" ft high" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Edit"
+                                            Command="{Binding $parent[UserControl].((vm:AntennaStepViewModel)DataContext).EditCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Grid.Column="2" Content="Remove"
+                                            Command="{Binding $parent[UserControl].((vm:AntennaStepViewModel)DataContext).RemoveCommand}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>
