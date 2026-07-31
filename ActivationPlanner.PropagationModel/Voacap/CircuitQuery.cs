@@ -1,5 +1,6 @@
 using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.PropagationModel.Geo;
+using ActivationPlanner.PropagationModel.Missions;
 
 namespace ActivationPlanner.PropagationModel.Voacap;
 
@@ -62,6 +63,13 @@ public sealed record CircuitQuery
 
     /// <summary>Use the long great-circle path instead of the short path.</summary>
     public bool UseLongPath { get; init; }
+
+    /// <summary>
+    /// How the prediction is framed — DX point-to-point or regional/NVIS. Set from the mission
+    /// type (operator-overridable). Framing changes what is asked of VOACAP (the receive point
+    /// and the bands of interest), never the physics-based answer for any band.
+    /// </summary>
+    public PropagationFraming Framing { get; init; } = PropagationFraming.DxPointToPoint;
 
     /// <summary>Great-circle distance between the two sites, km.</summary>
     public double DistanceKm => Transmitter.GreatCircleKmTo(Receiver);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.PropagationModel.Geo;
+using ActivationPlanner.PropagationModel.Missions;
 using ActivationPlanner.PropagationModel.Voacap;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Planning;
@@ -25,10 +26,12 @@ public sealed partial class PlanningViewModel : ViewModelBase
     private readonly PlanningService _planning;
     private readonly GearInventoryService _inventory;
 
-    public PlanningViewModel(PlanningService planning, GearInventoryService inventory, bool isSampleData)
+    public PlanningViewModel(
+        PlanningService planning, GearInventoryService inventory, SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(planning);
         ArgumentNullException.ThrowIfNull(inventory);
+        ArgumentNullException.ThrowIfNull(session);
         _planning = planning;
         _inventory = inventory;
         IsSampleData = isSampleData;
@@ -36,12 +39,22 @@ public sealed partial class PlanningViewModel : ViewModelBase
         var now = DateTime.UtcNow;
         _month = now.Month;
         _year = now.Year;
+
+        // Default the framing from the mission selected elsewhere in the session (overridable here).
+        MissionProfile mission = MissionProfiles.For(session.SelectedMission);
+        _framing = mission.Framing;
+        MissionContext = $"Mission: {mission.DisplayName}";
     }
 
     /// <summary>True when predictions come from the offline sample stand-in, not a real VOACAP run.</summary>
     public bool IsSampleData { get; }
 
     public IReadOnlyList<NoiseEnvironment> NoiseOptions { get; } = Enum.GetValues<NoiseEnvironment>();
+
+    public IReadOnlyList<PropagationFraming> FramingOptions { get; } = Enum.GetValues<PropagationFraming>();
+
+    /// <summary>Which mission this plan defaulted its framing from (context for the operator).</summary>
+    public string MissionContext { get; }
 
     // ---- inputs ----
 
@@ -55,6 +68,13 @@ public sealed partial class PlanningViewModel : ViewModelBase
     [ObservableProperty] private double _transmitPowerWatts = 100;
     [ObservableProperty] private NoiseEnvironment _noise = NoiseEnvironment.Residential;
     [ObservableProperty] private bool _useLongPath;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRegionalNvis))]
+    private PropagationFraming _framing;
+
+    /// <summary>True when the regional/NVIS framing is selected — surfaces near-in-target guidance.</summary>
+    public bool IsRegionalNvis => Framing == PropagationFraming.RegionalNvis;
 
     // ---- results / state ----
 
@@ -128,7 +148,9 @@ public sealed partial class PlanningViewModel : ViewModelBase
         Month = Math.Clamp(Month, 1, 12),
         Year = Year,
         SunspotNumber = SunspotNumber,
-        Bands = HamBands.All,
+        // Framing changes the question asked: regional/NVIS predicts the low bands, DX the full set.
+        Framing = Framing,
+        Bands = PropagationFramingBands.For(Framing),
         Noise = Noise,
         TransmitPowerWatts = TransmitPowerWatts,
         UseLongPath = UseLongPath,

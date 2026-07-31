@@ -16,7 +16,13 @@ public sealed class HourCellViewModel
         Tooltip = reliability is { } r
             ? $"{hourUtc:00}:00 UTC — {r * 100:0}% reliable" + (mufMhz is { } m ? $", MUF {m:0.0} MHz" : "")
             : $"{hourUtc:00}:00 UTC — no prediction";
+
+        // Sparse ruler: label every 6th hour so the strip is readable without hovering.
+        AxisLabel = hourUtc % 6 == 0 ? hourUtc.ToString("00") : string.Empty;
     }
+
+    /// <summary>Hour label shown under the strip at 6-hour intervals; empty otherwise.</summary>
+    public string AxisLabel { get; }
 
     /// <summary>UTC hour, 0-24.</summary>
     public int HourUtc { get; }

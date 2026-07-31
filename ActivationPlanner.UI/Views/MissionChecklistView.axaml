@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
+             xmlns:checklists="clr-namespace:ActivationPlanner.UI.ViewModels.Checklists"
+             xmlns:missions="clr-namespace:ActivationPlanner.PropagationModel.Missions;assembly=ActivationPlanner.PropagationModel"
+             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+             x:Class="ActivationPlanner.UI.Views.MissionChecklistView"
+             x:DataType="vm:MissionChecklistViewModel">
+    <Grid ColumnDefinitions="320,*" Margin="20">
+        <!-- ============ Mission + framing + progress ============ -->
+        <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1" CornerRadius="6">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Mission &amp; checklist" FontSize="20" FontWeight="SemiBold" />
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Mission type" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding MissionOptions}" SelectedItem="{Binding SelectedMission}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="missions:MissionProfile">
+                                <TextBlock Text="{Binding DisplayName}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Text="{Binding SelectedMission.Description}" TextWrapping="Wrap"
+                               FontSize="12" Opacity="0.7" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <!-- Propagation framing -->
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="6" Padding="10" Margin="0,4,0,0">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Propagation framing" FontSize="12" Opacity="0.7" />
+                        <TextBlock Text="{Binding FramingLabel}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding FramingNote}" TextWrapping="Wrap" FontSize="12" Opacity="0.7" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Packing progress -->
+                <TextBlock Text="Packing progress" FontWeight="SemiBold" Margin="0,6,0,0" />
+                <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" Height="10" />
+                <TextBlock Text="{Binding ProgressText}" FontSize="12" Opacity="0.7" />
+
+                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#C99A2B"
+                           Text="{Binding EssentialRemaining, StringFormat='{}{0} essential item(s) still to pack'}"
+                           IsVisible="{Binding !AllEssentialsPacked}" />
+                <TextBlock Text="✓ All essentials packed" Foreground="#3AA050" FontWeight="SemiBold"
+                           FontSize="12" IsVisible="{Binding AllEssentialsPacked}" />
+
+                <Button Content="Reset check-off" Command="{Binding ResetCommand}"
+                        HorizontalAlignment="Stretch" Margin="0,6,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- ============ Checklist ============ -->
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Spacing="12">
+                <TextBlock Text="{Binding TemplateName}" FontSize="16" FontWeight="SemiBold" />
+                <TextBlock Opacity="0.7" TextWrapping="Wrap"
+                           Text="Pack this — your owned gear and personal-item reminders for this mission." />
+
+                <!-- Pack-this groups -->
+                <ItemsControl ItemsSource="{Binding PackGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="checklists:ChecklistCategoryGroupViewModel">
+                            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,4">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="checklists:ChecklistItemViewModel">
+                                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,2">
+                                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}"
+                                                              Content="{Binding Name}" />
+                                                    <Border Grid.Column="1" CornerRadius="8" Padding="6,1" Margin="6,0"
+                                                            VerticalAlignment="Center" Background="#333AA050"
+                                                            IsVisible="{Binding Essential}">
+                                                        <TextBlock Text="essential" FontSize="11" Foreground="#3AA050" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="2" Text="{Binding StatusLabel}"
+                                                               FontSize="11" Opacity="0.6" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Consider-acquiring (clearly separated secondary tier) -->
+                <StackPanel Spacing="6" IsVisible="{Binding HasAcquireItems}">
+                    <TextBlock Text="Consider acquiring" FontSize="16" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <TextBlock Opacity="0.7" TextWrapping="Wrap"
+                               Text="This mission typically calls for these, but they're not in your inventory. Not part of your pack list." />
+                    <Border BorderBrush="#C99A2B" BorderThickness="1" CornerRadius="6" Padding="12" Background="#22C99A2B">
+                        <ItemsControl ItemsSource="{Binding AcquireItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="checklists:AcquireItemViewModel">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,3">
+                                        <TextBlock Grid.Column="0" Text="{Binding Category}" FontSize="11"
+                                                   Opacity="0.6" Width="180" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="essential" FontSize="11" Foreground="#C99A2B"
+                                                   VerticalAlignment="Center" IsVisible="{Binding Essential}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

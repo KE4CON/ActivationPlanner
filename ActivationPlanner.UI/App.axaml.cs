@@ -1,5 +1,7 @@
 using ActivationPlanner.PropagationModel.Voacap;
+using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.UI.Sample;
 using ActivationPlanner.UI.ViewModels;
@@ -32,8 +34,16 @@ public partial class App : Application
             IPropagationPredictor predictor = samplePredictor;
             var planningService = new PlanningService(predictor);
 
+            // Mission-type selection and the template/instance checklist engine (Phase 5).
+            var missionService = new MissionTypeService();
+            var checklistService = new ChecklistService();
+
+            // Shared session selections carried between screens (e.g. mission -> planning framing).
+            var sessionState = new SessionState();
+
             var mainViewModel = new MainWindowViewModel(
-                inventoryService, planningService, isSampleData: samplePredictor.IsSample);
+                inventoryService, planningService, missionService, checklistService,
+                sessionState, isSampleData: samplePredictor.IsSample);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 

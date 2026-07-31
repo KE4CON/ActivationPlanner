@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
              xmlns:planning="clr-namespace:ActivationPlanner.UI.ViewModels.Planning"
+             xmlns:conv="clr-namespace:ActivationPlanner.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
              x:Class="ActivationPlanner.UI.Views.PlanningView"
              x:DataType="vm:PlanningViewModel">
+    <UserControl.Resources>
+        <conv:FramingDisplayConverter x:Key="FramingDisplay" />
+    </UserControl.Resources>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Inputs ============ -->
         <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
@@ -16,6 +20,23 @@
                 <TextBlock Text="Plan a session" FontSize="20" FontWeight="SemiBold" />
                 <TextBlock Opacity="0.7" TextWrapping="Wrap"
                            Text="Enter the path and current solar conditions, then generate a plan." />
+
+                <!-- Mission framing (defaulted from the selected mission, overridable) -->
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding MissionContext}" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="Framing" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding FramingOptions}" SelectedItem="{Binding Framing}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <TextBlock Text="{Binding Converter={StaticResource FramingDisplay}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock IsVisible="{Binding IsRegionalNvis}" TextWrapping="Wrap"
+                               FontSize="12" Foreground="#C99A2B"
+                               Text="Regional / NVIS: set a near-in target; predicting the low NVIS bands (80–30m)." />
+                </StackPanel>
 
                 <TextBlock Text="Your location" FontWeight="SemiBold" Margin="0,6,0,0" />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
@@ -135,9 +156,13 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="planning:HourCellViewModel">
-                                                    <Border Width="20" Height="20" CornerRadius="2"
-                                                            Background="{Binding CellBrush}"
-                                                            ToolTip.Tip="{Binding Tooltip}" />
+                                                    <StackPanel Spacing="2">
+                                                        <Border Width="20" Height="20" CornerRadius="2"
+                                                                Background="{Binding CellBrush}"
+                                                                ToolTip.Tip="{Binding Tooltip}" />
+                                                        <TextBlock Text="{Binding AxisLabel}" FontSize="9"
+                                                                   Opacity="0.6" Width="20" TextAlignment="Center" />
+                                                    </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
