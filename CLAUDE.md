@@ -4,7 +4,7 @@
 Name: Activation Planner
 Author: Jim, KE4CON
 Language: C# (.NET 10)
-UI Framework: Avalonia 11 (cross-platform — Windows, macOS, Linux)
+UI Framework: Avalonia 12 (cross-platform — Windows, macOS, Linux)
 Purpose: Pre-operation (and re-invokable) individual planning tool for ham radio operating sessions — POTA, SOTA, Field Day, EMCOMM, or general operating. Recommends bands, matches antennas from owned inventory, and builds packing checklists, grounded in real VOACAP propagation predictions rather than guesswork.
 
 ## Related Programs — Do Not Merge
@@ -51,6 +51,15 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - `ActivationPlanner.Services` (+ `.Tests`)
 - `ActivationPlanner.UI`
 
+## Approved NuGet Packages (list before adding — see "What NOT to Do")
+- **Avalonia** 12.x (UI) — `Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`; `Avalonia.Diagnostics` (Debug only)
+- **CommunityToolkit.Mvvm** 8.x (UI MVVM — `ObservableObject`/`[ObservableProperty]`/`[RelayCommand]`)
+- **xUnit** + `xunit.runner.visualstudio` + `Microsoft.NET.Test.Sdk` (test projects only)
+- **QuestPDF** 2026.x (Services — PDF plan export). Community license (free for small orgs/individuals), set once at startup via `QuestPDF.Settings.License = LicenseType.Community`.
+- Persistence uses framework `System.Text.Json`; network I/O (POTA, geo-IP) uses framework `System.Net.Http.HttpClient` — no packages needed.
+- **Planned (add when the feature is built):** `System.IO.Ports` (external NMEA GPS — Item #18, cross-platform incl. Linux/Raspberry Pi).
+- **Future (not now):** `Ab4d.SharpEngine.AvaloniaUI` for the 3D far-field view — Avalonia-11-only today; revisit when an Avalonia-12 build exists.
+
 ## Feature Priorities (build in this order)
 Phase 1: Gear inventory — guided/required first-use setup wizard (step-by-step, Back/Next, progress indicator, skippable categories, Finish summary). Antenna entry uses a sub-list-and-detail pattern (add one antenna at a time to a running list, not a flat form). Data persists and is fully editable afterward via a separate non-wizard screen.
 Phase 2: VOACAP shell-out (ProcessEngine + PropagationModel) — input deck writer, `Process.Start` invocation, output parser
@@ -84,22 +93,31 @@ Phase 8: NEC2++ shell-out (Option B custom antenna modeling)
 - Do not put UI code in ProcessEngine or PropagationModel
 - Do not use `Thread.Sleep` — use `Task.Delay` with `CancellationToken`
 - Do not swallow exceptions silently
-- Do not copy, modify, or redistribute VOACAP's own source code — only shell out to a copy the end user installs themselves (keeps VOACAP's NTIA terms from applying to this project, and keeps this project's own AGPLv3/GPLv3 choice clean)
+- Shell out to VOACAP and NEC2++ via `Process.Start` — never link or embed them in-process (this is what keeps GPLv2 NEC2++ from reaching the planner's own AGPLv3/GPLv3 code). Do not modify either tool's source. Redistribution/bundling **is** allowed (Item #19) — follow the obligations in "Third-Party Tool Licensing & Redistribution" below **to the letter**.
 - Do not ship self-spotting before POTA has been contacted directly for confirmation (their sanctioning of third-party automated use is still unconfirmed, even though the endpoint itself is technically open)
 
+## Third-Party Tool Licensing & Redistribution (Item #19 — follow to the letter)
+The installer bundles VOACAP and NEC2++. Obligations below were verified against the actual license files; full detail and quoted texts live in `docs/THIRD_PARTY_LICENSES.md`. **Not legal advice — a license review before public/commercial distribution is recommended.**
+- **VOACAP** (voacapl core): US-Government work, not subject to U.S. copyright ("NTIA/ITS has no objection to the use of this software for any purpose"); J.A. Watson's port modifications are CC0. Redistribution and commercial use are permitted. **Obligation: include the NTIA/ITS disclaimer text.** Do **not** bundle voacapl's two GPLv3 utility files (`dst2csv.f90`, `dst2ascii.f90`) — unused data-conversion tools; excluding them avoids GPLv3 entirely.
+- **NEC2++** (necpp): **GPLv2.** Redistribution is permitted as a **separate, shelled-out program** (aggregation — does not affect the planner's own license because it is never linked in-process). **Obligations:** (1) include the **GPLv2 license text**; (2) provide the **corresponding source or a written offer** (necpp is public on GitHub — ship a source copy or a clear offer + link); (3) attribution.
+- **These notices must appear in ALL of:** the project **README**, **every piece of project documentation we produce**, and **a license-notices screen shown during installation** (plus a notices folder in the install).
+- **Ship-time checklist (do not skip):** ☐ NTIA disclaimer bundled & shown ☐ voacapl GPLv3 utility files excluded ☐ NEC2++ GPLv2 text bundled & shown ☐ NEC2++ corresponding-source offer bundled ☐ notices displayed by the installer ☐ notices in README + all docs.
+
 ## Version Scope
-**v1.0** covers everything in this document. **v2.0 (future, not in scope now):** multi-park/route planning — sequencing band/antenna plans across multiple stops in one day, with inter-stop timing. Deliberately deferred until v1.0's single-session planning model is built and proven; it requires a different planning unit (a route, not a single session) rather than an extension of the current data model.
+**v1.0** covers everything in this document. **Future / not in scope now:**
+- **Multi-park/route planning (v2.0)** — sequencing band/antenna plans across multiple stops in one day, with inter-stop timing. Deliberately deferred until v1.0's single-session planning model is built and proven; it requires a different planning unit (a route, not a single session) rather than an extension of the current data model.
+- **3D far-field antenna surface view** — deferred because the intended engine (`Ab4d.SharpEngine.AvaloniaUI`) is Avalonia-11-only and we are staying on Avalonia 12. The v1.0 2D polar plots (Item #17) render the same data; revisit 3D when an Avalonia-12-compatible engine is available. (2D is in scope for v1.0.)
 
 ## Additional v1.0 Features (beyond core planning)
 - **Export plan as PDF** — operator-selectable content (bands/antenna/checklist, any combination), triggered via a dedicated Export button
 - **Propagation trend view** — rolling few-hour window, automatic background VOACAP sampling every ~15–30 min, session-local only (no persistence, consistent with the stateless-replanning rule)
-- **Grey-line indicator** — informational overlay on the propagation chart (real sunrise/sunset from lat/lon+date); highlights when a band VOACAP already ranks well coincides with the grey-line window — never a separate ranking boost, to avoid double-counting an effect VOACAP's own model likely already reflects
+- **Grey-line indicator** — real sunrise/sunset from lat/lon+date; highlights when a band VOACAP already ranks well coincides with the grey-line window — never a separate ranking boost, to avoid double-counting an effect VOACAP's own model likely already reflects. **Presented as its own dedicated tab** (revised — the subtle chart overlay proved too hard to see; see the "Added Mid-Build" note and Decisions Log Item #13 revision), **not** an overlay on the heatmap.
 - **Quick Mode** — fast-access entry point reusing the same replanning logic (Item #4), skips setup screens and lands directly on the full (not truncated) band/antenna recommendation view
 
 
 ## Additional v1 Features — Added Mid-Build
 - **Local + UTC time/date display** — persistent header/status bar, local above UTC, both live
-- **Antenna far-field pattern plots** — 2D polar cuts via Avalonia's native Skia rendering; 3D surface via `Ab4d.SharpEngine.AvaloniaUI`; data sourced from existing NEC2++/type-13 antenna data (no new data collection). Own dedicated tab.
+- **Antenna far-field pattern plots (2D — v1.0)** — 2D polar cuts (azimuth/elevation) via Avalonia's native Skia rendering, no extra dependency; data sourced from existing NEC2++/type-13 antenna data (no new data collection). Own dedicated tab. **3D surface view is deferred to the future-add category** — the intended engine (`Ab4d.SharpEngine.AvaloniaUI`) is Avalonia-11-only, and we are staying on Avalonia 12; revisit when it ships an Avalonia-12 build.
 - **GPS priority:** external hardware GPS receiver (USB/serial NMEA) takes priority when connected, on either desktop or laptop machines; falls back to geo-IP otherwise. Not OS-level Wi-Fi-based location services.
 - **Installer bundles VOACAP and NEC2++ directly** — both are redistributable per their respective terms (see Item #3 in Decisions Log for VOACAP; NEC2++ is GPLv2). Include a license notices screen/folder satisfying both.
 - **Grey-line indicator is its own dedicated tab**, not a subtle chart overlay — same underlying correlation-highlight logic from Item #13, given clearer visual presentation.
