@@ -3,11 +3,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="650"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
         x:Class="ActivationPlanner.UI.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Width="900" Height="650"
-        MinWidth="720" MinHeight="520"
+        Width="960" Height="680"
+        MinWidth="760" MinHeight="540"
         Title="Activation Planner">
-    <ContentControl Content="{Binding CurrentPage}" />
+    <DockPanel>
+        <!-- Top navigation (hidden during the first-run wizard) -->
+        <Border DockPanel.Dock="Top" IsVisible="{Binding ShowNavigation}"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="16,10">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Activation Planner" FontWeight="SemiBold" FontSize="16"
+                           VerticalAlignment="Center" Margin="0,0,16,0" />
+                <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" />
+                <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" />
+            </StackPanel>
+        </Border>
+
+        <ContentControl Content="{Binding CurrentPage}" />
+    </DockPanel>
 </Window>

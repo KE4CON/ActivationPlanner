@@ -12,7 +12,7 @@ namespace ActivationPlanner.PropagationModel.Voacap;
 /// <see cref="IVoacapRunner"/>, which keeps this layer testable without a VOACAP install.
 /// </para>
 /// </summary>
-public sealed class VoacapPropagationEngine
+public sealed class VoacapPropagationEngine : IPropagationPredictor
 {
     private readonly IVoacapRunner _runner;
     private readonly VoacapCircuitMapper _mapper;

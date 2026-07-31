@@ -1,0 +1,182 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
+             xmlns:planning="clr-namespace:ActivationPlanner.UI.ViewModels.Planning"
+             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+             x:Class="ActivationPlanner.UI.Views.PlanningView"
+             x:DataType="vm:PlanningViewModel">
+    <Grid ColumnDefinitions="320,*" Margin="20">
+        <!-- ============ Inputs ============ -->
+        <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1" CornerRadius="6">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Plan a session" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Opacity="0.7" TextWrapping="Wrap"
+                           Text="Enter the path and current solar conditions, then generate a plan." />
+
+                <TextBlock Text="Your location" FontWeight="SemiBold" Margin="0,6,0,0" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Latitude" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding OperatorLatitude}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Longitude" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding OperatorLongitude}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Target location" FontWeight="SemiBold" Margin="0,6,0,0" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Latitude" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding TargetLatitude}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Longitude" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding TargetLongitude}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Conditions" FontWeight="SemiBold" Margin="0,6,0,0" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Sunspot no." FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding SunspotNumber}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Power (W)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding TransmitPowerWatts}" />
+                    </StackPanel>
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Month" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding Month}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Year" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding Year}" />
+                    </StackPanel>
+                </Grid>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Noise environment" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding NoiseOptions}" SelectedItem="{Binding Noise}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+                <CheckBox Content="Long path" IsChecked="{Binding UseLongPath}" />
+
+                <Button Content="Generate plan" Command="{Binding GeneratePlanCommand}"
+                        Classes="accent" HorizontalAlignment="Stretch" Margin="0,6,0,0" />
+                <TextBlock Text="Generating…" IsVisible="{Binding IsBusy}" Opacity="0.7" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- ============ Results ============ -->
+        <DockPanel Grid.Column="1">
+            <Border DockPanel.Dock="Top" IsVisible="{Binding IsSampleData}"
+                    Background="#33C99A2B" BorderBrush="#C99A2B" BorderThickness="1"
+                    CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
+                <TextBlock TextWrapping="Wrap"
+                           Text="Sample data — VOACAP is not configured yet, so these predictions are illustrative, not real. Configure a VOACAP install to get real propagation." />
+            </Border>
+
+            <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" FontWeight="SemiBold"
+                       IsVisible="{Binding HasResults}" Margin="0,0,0,4" />
+            <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap"
+                       Opacity="0.8" Margin="0,0,0,8"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+            <!-- Empty state -->
+            <TextBlock DockPanel.Dock="Top" IsVisible="{Binding !HasResults}" Opacity="0.6"
+                       TextWrapping="Wrap" VerticalAlignment="Top"
+                       Text="No plan yet. Set your path and conditions, then choose Generate plan." />
+
+            <ScrollViewer IsVisible="{Binding HasResults}">
+                <ItemsControl ItemsSource="{Binding Bands}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="planning:BandRecommendationViewModel">
+                            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                                <StackPanel Spacing="8">
+                                    <!-- Header -->
+                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                        <TextBlock Grid.Column="0" Text="{Binding BandName}"
+                                                   FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Text="{Binding FrequencyLabel}" Opacity="0.7"
+                                                   VerticalAlignment="Center" Margin="8,0,0,0" />
+                                        <TextBlock Grid.Column="3" Text="{Binding BestHourLabel}" Opacity="0.7"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+
+                                    <!-- Average reliability bar -->
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                                        <TextBlock Grid.Column="0" Text="Reliability" Opacity="0.7"
+                                                   VerticalAlignment="Center" Width="72" />
+                                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="100"
+                                                     Value="{Binding AverageReliabilityPercent}"
+                                                     Foreground="{Binding AverageBrush}" Height="10" />
+                                        <TextBlock Grid.Column="2" Text="{Binding AverageReliabilityLabel}"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center" Width="44"
+                                                   TextAlignment="Right" />
+                                    </Grid>
+
+                                    <!-- 24-hour reliability heatmap -->
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="By hour (UTC)" FontSize="12" Opacity="0.6" />
+                                        <ItemsControl ItemsSource="{Binding HourCells}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" Spacing="1" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="planning:HourCellViewModel">
+                                                    <Border Width="20" Height="20" CornerRadius="2"
+                                                            Background="{Binding CellBrush}"
+                                                            ToolTip.Tip="{Binding Tooltip}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                    <!-- Owned antennas for this band -->
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Your antennas" FontSize="12" Opacity="0.6" />
+                                        <TextBlock Text="None owned for this band yet." FontSize="12" Opacity="0.5"
+                                                   IsVisible="{Binding HasNoAntennas}" />
+                                        <ItemsControl ItemsSource="{Binding Antennas}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="planning:AntennaSuggestionViewModel">
+                                                    <Border BorderBrush="{Binding StatusBrush}" BorderThickness="1"
+                                                            CornerRadius="10" Padding="8,3" Margin="0,0,6,6"
+                                                            ToolTip.Tip="{Binding Reason}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <Ellipse Width="8" Height="8" Fill="{Binding StatusBrush}"
+                                                                     VerticalAlignment="Center" />
+                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                                            <TextBlock Text="{Binding StatusText}" Opacity="0.7"
+                                                                       FontSize="12" VerticalAlignment="Center" />
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</UserControl>

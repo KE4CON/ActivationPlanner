@@ -1,4 +1,7 @@
+using ActivationPlanner.PropagationModel.Voacap;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Planning;
+using ActivationPlanner.UI.Sample;
 using ActivationPlanner.UI.ViewModels;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -17,15 +20,24 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Composition root — Phase 1 wires the gear-inventory stack by hand
-            // (no DI container package). JSON persistence to the per-user app-data dir.
+            // Composition root — wires the app by hand (no DI container package).
             var store = JsonGearStore.CreateDefault();
             var inventoryService = new GearInventoryService(store);
-            var mainViewModel = new MainWindowViewModel(inventoryService);
+
+            // Propagation source. Until the user has configured a VOACAP install (a later
+            // settings feature), predictions come from an offline sample stand-in and the
+            // planning screen flags them as sample data. When real VOACAP wiring lands, the
+            // real VoacapPropagationEngine is constructed here instead of the sample predictor.
+            var samplePredictor = new SamplePropagationPredictor();
+            IPropagationPredictor predictor = samplePredictor;
+            var planningService = new PlanningService(predictor);
+
+            var mainViewModel = new MainWindowViewModel(
+                inventoryService, planningService, isSampleData: samplePredictor.IsSample);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 
-            // Load persisted gear and route to wizard/editor once the window exists.
+            // Load persisted gear and route to wizard / planning once the window exists.
             _ = mainViewModel.InitializeAsync();
         }
 
