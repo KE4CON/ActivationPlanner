@@ -7,6 +7,9 @@ using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.PropagationModel.Geo;
 using ActivationPlanner.PropagationModel.Missions;
 using ActivationPlanner.PropagationModel.Voacap;
+using System.IO;
+using ActivationPlanner.Services.Checklists;
+using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Planning;
@@ -27,18 +30,28 @@ public sealed partial class PlanningViewModel : ViewModelBase
     private readonly PlanningService _planning;
     private readonly GearInventoryService _inventory;
     private readonly LocationService _location;
+    private readonly ChecklistService _checklist;
+    private readonly PdfExportService _pdf;
+    private readonly SessionState _session;
+    private SessionPlan? _lastPlan;
 
     public PlanningViewModel(
         PlanningService planning, GearInventoryService inventory, LocationService location,
+        ChecklistService checklist, PdfExportService pdf,
         SessionState session, bool isSampleData, bool quickStart = false)
     {
         ArgumentNullException.ThrowIfNull(planning);
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(location);
+        ArgumentNullException.ThrowIfNull(checklist);
+        ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(session);
         _planning = planning;
         _inventory = inventory;
         _location = location;
+        _checklist = checklist;
+        _pdf = pdf;
+        _session = session;
         IsSampleData = isSampleData;
 
         var now = DateTime.UtcNow;
@@ -162,6 +175,7 @@ public sealed partial class PlanningViewModel : ViewModelBase
             var antennas = _inventory.Current.Antennas;
 
             SessionPlan plan = await _planning.PlanAsync(query, antennas);
+            _lastPlan = plan;
 
             IReadOnlySet<int> greyLine = ComputeGreyLineHours(plan.HoursUtc);
 
@@ -176,6 +190,7 @@ public sealed partial class PlanningViewModel : ViewModelBase
             Summary = BuildSummary(plan, antennas.Count);
             HasPlan = true;
             OnPropertyChanged(nameof(HasResults));
+            OnPropertyChanged(nameof(CanExport));
 
             if (antennas.Count == 0)
                 StatusMessage = "No antennas in your inventory yet — add some to see which to use per band.";
@@ -197,6 +212,42 @@ public sealed partial class PlanningViewModel : ViewModelBase
     }
 
     [ObservableProperty] private string? _greyLineInfo;
+
+    // ---- PDF export (operator-selectable sections) ----
+
+    [ObservableProperty] private bool _exportBands = true;
+    [ObservableProperty] private bool _exportAntennas = true;
+    [ObservableProperty] private bool _exportChecklist = true;
+
+    /// <summary>True once a plan exists to export.</summary>
+    public bool CanExport => _lastPlan is not null;
+
+    /// <summary>Suggested file name for the export dialog.</summary>
+    public string SuggestedExportFileName =>
+        $"activation-plan-{DateTime.Now:yyyyMMdd-HHmm}.pdf";
+
+    /// <summary>Render the current plan to <paramref name="output"/> as PDF (called by the view's save flow).</summary>
+    public async Task ExportAsync(Stream output)
+    {
+        if (_lastPlan is not { } plan)
+            return;
+
+        var request = new PdfExportRequest
+        {
+            Title = "Activation Plan",
+            Subtitle = $"{MissionContext} • {plan.DistanceKm:0} km path • generated {DateTime.Now:yyyy-MM-dd HH:mm}",
+            IsSampleData = IsSampleData,
+            IncludeBands = ExportBands,
+            IncludeAntennas = ExportAntennas,
+            IncludeChecklist = ExportChecklist,
+            Bands = plan.Bands,
+            Checklist = ExportChecklist
+                ? _checklist.Build(_session.SelectedMission, _inventory.Current)
+                : null,
+        };
+
+        await _pdf.WriteAsync(request, output);
+    }
 
     /// <summary>Grey-line hours for the operator's location today, used to mark the heatmap.</summary>
     private IReadOnlySet<int> ComputeGreyLineHours(IReadOnlyList<int> hours)

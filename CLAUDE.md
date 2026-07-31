@@ -59,7 +59,9 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - **Avalonia** 12.x (UI) — `Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`; `Avalonia.Diagnostics` (Debug only)
 - **CommunityToolkit.Mvvm** 8.x (UI MVVM — `ObservableObject`/`[ObservableProperty]`/`[RelayCommand]`)
 - **xUnit** + `xunit.runner.visualstudio` + `Microsoft.NET.Test.Sdk` (test projects only)
+- **QuestPDF** 2026.x (Services — PDF plan export). Community license (free for small orgs/individuals), set once at startup via `QuestPDF.Settings.License = LicenseType.Community`.
 - Persistence uses framework `System.Text.Json` — no package needed.
+- Network I/O (POTA, geo-IP) uses framework `System.Net.Http.HttpClient` — no package needed.
 > Chose Avalonia **12** (not the doc's original 11): greenfield start, longer support runway; IcomRigControl to be aligned to 12 when it moves here.
 
 ## Feature Priorities (build in this order)

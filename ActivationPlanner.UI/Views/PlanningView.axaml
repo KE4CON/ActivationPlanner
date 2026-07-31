@@ -114,6 +114,19 @@
             <TextBlock DockPanel.Dock="Top" Text="{Binding GreyLineInfo}" FontSize="12" Opacity="0.7"
                        Margin="0,0,0,8"
                        IsVisible="{Binding GreyLineInfo, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+            <!-- Export bar (operator-selectable content) -->
+            <Border DockPanel.Dock="Top" IsVisible="{Binding CanExport}" Margin="0,0,0,10"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1" CornerRadius="6" Padding="10,6">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Export:" VerticalAlignment="Center" Opacity="0.8" />
+                    <CheckBox Content="Bands" IsChecked="{Binding ExportBands}" />
+                    <CheckBox Content="Antennas" IsChecked="{Binding ExportAntennas}" />
+                    <CheckBox Content="Checklist" IsChecked="{Binding ExportChecklist}" />
+                    <Button Content="Export PDF…" Click="OnExportClick" Classes="accent" />
+                </StackPanel>
+            </Border>
             <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap"
                        Opacity="0.8" Margin="0,0,0,8"
                        IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -166,9 +179,11 @@
                                                     <StackPanel Spacing="2">
                                                         <Panel Width="20" Height="20" ToolTip.Tip="{Binding Tooltip}">
                                                             <Border CornerRadius="2" Background="{Binding CellBrush}" />
-                                                            <!-- Grey-line marker: sunrise/sunset window -->
-                                                            <Border VerticalAlignment="Top" Height="3" CornerRadius="2,2,0,0"
-                                                                    Background="#EFEFEF" IsVisible="{Binding IsGreyLine}" />
+                                                            <!-- Grey-line marker: a bright outline + top bar on sunrise/sunset hours -->
+                                                            <Border CornerRadius="2" BorderThickness="2" BorderBrush="#33D6FF"
+                                                                    IsVisible="{Binding IsGreyLine}" />
+                                                            <Border VerticalAlignment="Top" Height="3" Background="#33D6FF"
+                                                                    IsVisible="{Binding IsGreyLine}" />
                                                         </Panel>
                                                         <TextBlock Text="{Binding AxisLabel}" FontSize="9"
                                                                    Opacity="0.6" Width="20" TextAlignment="Center" />

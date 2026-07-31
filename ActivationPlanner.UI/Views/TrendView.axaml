@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
+             xmlns:trend="clr-namespace:ActivationPlanner.UI.ViewModels.Trend"
+             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+             x:Class="ActivationPlanner.UI.Views.TrendView"
+             x:DataType="vm:TrendViewModel">
+    <DockPanel Margin="20">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Text="Propagation trend" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Opacity="0.7" FontSize="12" TextWrapping="Wrap"
+                           Text="How each band's reliability has moved recently (samples every ~15 min, this session only)." />
+                <TextBlock Text="{Binding LastSampled}" FontSize="12" Opacity="0.7"
+                           IsVisible="{Binding LastSampled, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="Sample now" Command="{Binding SampleNowCommand}"
+                    VerticalAlignment="Center" />
+        </Grid>
+
+        <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap" Opacity="0.8"
+                   Margin="0,0,0,8"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <TextBlock DockPanel.Dock="Top" IsVisible="{Binding !HasSamples}" Opacity="0.6" TextWrapping="Wrap"
+                   Text="Collecting the first sample… the trend fills in as time passes (oldest on the left, now on the right)." />
+
+        <ScrollViewer IsVisible="{Binding HasSamples}">
+            <ItemsControl ItemsSource="{Binding Bands}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="trend:TrendBandViewModel">
+                        <Grid ColumnDefinitions="52,48,*" Margin="0,3">
+                            <TextBlock Grid.Column="0" Text="{Binding BandName}" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="{Binding LatestLabel}" Opacity="0.7"
+                                       VerticalAlignment="Center" FontSize="12" />
+                            <ItemsControl Grid.Column="2" ItemsSource="{Binding Cells}" VerticalAlignment="Center">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="1" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="trend:TrendCellViewModel">
+                                        <Border Width="14" Height="16" CornerRadius="2"
+                                                Background="{Binding CellBrush}" ToolTip.Tip="{Binding Tooltip}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

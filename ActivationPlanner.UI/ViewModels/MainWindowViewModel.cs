@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using ActivationPlanner.Services.Checklists;
+using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
@@ -28,13 +29,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly MissionTypeService _missions;
     private readonly ChecklistService _checklist;
     private readonly PotaClient _pota;
+    private readonly PdfExportService _pdf;
     private readonly SessionState _session;
     private readonly bool _isSampleData;
 
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist, PotaClient pota,
-        SessionState session, bool isSampleData)
+        PdfExportService pdf, SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
@@ -42,6 +44,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(missions);
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(pota);
+        ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(session);
         _inventory = inventory;
         _planning = planning;
@@ -49,6 +52,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _missions = missions;
         _checklist = checklist;
         _pota = pota;
+        _pdf = pdf;
         _session = session;
         _isSampleData = isSampleData;
     }
@@ -56,6 +60,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowNavigation))]
     private ViewModelBase? _currentPage;
+
+    // Dispose a page as we leave it, so any background work it owns (e.g. the trend sampler) stops.
+    partial void OnCurrentPageChanging(ViewModelBase? oldValue, ViewModelBase? newValue)
+    {
+        if (oldValue is IDisposable disposable)
+            disposable.Dispose();
+    }
 
     /// <summary>Nav bar is shown for the main app, hidden during the first-run wizard.</summary>
     public bool ShowNavigation => CurrentPage is not SetupWizardViewModel and not null;
@@ -73,16 +84,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowPlanning() =>
-        CurrentPage = new PlanningViewModel(_planning, _inventory, _location, _session, _isSampleData);
+        CurrentPage = new PlanningViewModel(
+            _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData);
 
     /// <summary>Quick Mode: jump straight to the recommendation view and auto-generate a plan.</summary>
     [RelayCommand]
     private void ShowQuickPlan() =>
-        CurrentPage = new PlanningViewModel(_planning, _inventory, _location, _session, _isSampleData, quickStart: true);
+        CurrentPage = new PlanningViewModel(
+            _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData, quickStart: true);
 
     [RelayCommand]
     private void ShowMissionChecklist() =>
         CurrentPage = new MissionChecklistViewModel(_missions, _checklist, _inventory, _session);
+
+    [RelayCommand]
+    private void ShowTrend() =>
+        CurrentPage = new TrendViewModel(_planning, _location, _inventory, _session);
 
     [RelayCommand]
     private void ShowPotaSpots() =>

@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using ActivationPlanner.PropagationModel.Voacap;
 using ActivationPlanner.Services.Checklists;
+using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
@@ -42,6 +43,9 @@ public partial class App : Application
             var missionService = new MissionTypeService();
             var checklistService = new ChecklistService();
 
+            // PDF plan export (QuestPDF).
+            var pdfExportService = new PdfExportService();
+
             // Refresh-on-demand location (Phase 6). Approximate network geo-IP by default; the
             // lookup only runs when the operator presses "Use my location".
             var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
@@ -56,7 +60,7 @@ public partial class App : Application
 
             var mainViewModel = new MainWindowViewModel(
                 inventoryService, planningService, locationService, missionService, checklistService,
-                potaClient, sessionState, isSampleData: samplePredictor.IsSample);
+                potaClient, pdfExportService, sessionState, isSampleData: samplePredictor.IsSample);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 
