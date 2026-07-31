@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using ActivationPlanner.PropagationModel.Gear;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Presets;
+using ActivationPlanner.UI.ViewModels.Wizard;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -20,15 +23,32 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     private readonly GearInventoryService _service;
 
     public InventoryEditViewModel(GearInventoryService service)
+        : this(service, PresetCatalog.Default) { }
+
+    private readonly GearPresetCatalog _catalog;
+
+    public InventoryEditViewModel(GearInventoryService service, GearPresetCatalog catalog)
     {
         ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(catalog);
         _service = service;
+        _catalog = catalog;
+
+        var choices = new List<AntennaPresetChoice> { AntennaPresetChoice.Custom };
+        choices.AddRange(catalog.Antennas.Select(a => new AntennaPresetChoice(a.DisplayName, a)));
+        AntennaPresets = choices;
+        _selectedAntennaPreset = choices[0];
+
+        RebuildGearPresets();
         Sync();
     }
 
     public IReadOnlyList<GearCategory> GearCategories { get; } = Enum.GetValues<GearCategory>();
     public IReadOnlyList<AntennaCategory> AntennaCategories { get; } = Enum.GetValues<AntennaCategory>();
     public IReadOnlyList<FeedPointType> FeedPoints { get; } = Enum.GetValues<FeedPointType>();
+
+    /// <summary>"Start from a model" options: catalog presets plus a Custom / Home-brew escape hatch.</summary>
+    public IReadOnlyList<AntennaPresetChoice> AntennaPresets { get; }
 
     public ObservableCollection<GearItem> Gear { get; } = [];
     public ObservableCollection<AntennaProfile> Antennas { get; } = [];
@@ -39,11 +59,39 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
 
     [ObservableProperty] private GearCategory _gearCategory = GearCategory.Radio;
 
+    /// <summary>Preset models for the selected gear category (Custom-only until a category is populated).</summary>
+    [ObservableProperty] private IReadOnlyList<GearPresetChoice> _gearPresets = [];
+    [ObservableProperty] private GearPresetChoice? _selectedGearPreset;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveGearCommand))]
     private string _gearName = string.Empty;
 
     [ObservableProperty] private string _gearNotes = string.Empty;
+
+    /// <summary>When the category changes, re-offer the presets that belong to it.</summary>
+    partial void OnGearCategoryChanged(GearCategory value) => RebuildGearPresets();
+
+    private void RebuildGearPresets()
+    {
+        var choices = new List<GearPresetChoice> { GearPresetChoice.Custom };
+        if (GearCategory == GearCategory.Radio)
+        {
+            choices.AddRange(_catalog.Radios.Select(r => new GearPresetChoice(
+                r.DisplayName, r.DisplayName, $"{r.Bands}, {r.PowerWatts:0} W. {r.Note}".Trim())));
+        }
+        GearPresets = choices;
+        SelectedGearPreset = choices[0];
+    }
+
+    /// <summary>Picking a real model prefills the (still editable) gear form; Custom leaves it alone.</summary>
+    partial void OnSelectedGearPresetChanged(GearPresetChoice? value)
+    {
+        if (value?.PrefillName is not { } name)
+            return; // Custom
+        GearName = name;
+        GearNotes = value.PrefillNotes ?? string.Empty;
+    }
 
     public string GearButtonText => _editingGearId is null ? "Add gear" : "Save gear";
 
@@ -96,6 +144,8 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     {
         _editingGearId = null;
         GearCategory = GearCategory.Radio;
+        if (GearPresets.Count > 0)
+            SelectedGearPreset = GearPresets[0]; // back to Custom (even if the category didn't change)
         GearName = string.Empty;
         GearNotes = string.Empty;
         OnPropertyChanged(nameof(GearButtonText));
@@ -104,6 +154,11 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     // ---- Antenna form ----------------------------------------------------
 
     private Guid? _editingAntennaId;
+
+    [ObservableProperty] private AntennaPresetChoice? _selectedAntennaPreset;
+
+    /// <summary>Provenance / confidence note for the chosen preset (null for Custom).</summary>
+    [ObservableProperty] private string? _antennaPresetNote;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveAntennaCommand))]
@@ -153,7 +208,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     public string HeightHint => AntennaCategory switch
     {
         AntennaCategory.Vertical or AntennaCategory.Whip =>
-            "Height of the feed point (the base) above ground. Standing on the ground? Enter 0.",
+            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height — the radials sit at this height too.",
         AntennaCategory.NvisCrossedDipole =>
             "Height of the center feed at the top of the mast (the apex) — the four legs slope down from here toward the ground. A typical NVIS mast is ~15 ft.",
         _ =>
@@ -217,12 +272,35 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
         Sync();
     }
 
+    /// <summary>Picking a real model prefills the (still editable) antenna form; Custom leaves it alone.</summary>
+    partial void OnSelectedAntennaPresetChanged(AntennaPresetChoice? value)
+    {
+        if (value?.Preset is not { } p)
+        {
+            AntennaPresetNote = null;
+            return;
+        }
+
+        AntennaName = p.DisplayName;
+        AntennaCategory = p.Category;
+        FeedPoint = p.FeedPoint;
+        LengthFeet = p.LengthFeet;
+        HeightFeet = p.HeightFeet;
+        RadialCount = p.RadialCount;
+        RadialLengthFeet = p.RadialLengthFeet;
+
+        AntennaPresetNote = p.ModelingConfidence == ModelingConfidence.Approximate
+            ? $"Approximate model — {p.Note} You can edit any field to match your actual antenna."
+            : p.Note;
+    }
+
     [RelayCommand]
     private void ClearAntennaForm() => ResetAntennaForm();
 
     private void ResetAntennaForm()
     {
         _editingAntennaId = null;
+        SelectedAntennaPreset = AntennaPresets[0]; // back to Custom (clears the preset note)
         AntennaName = string.Empty;
         AntennaCategory = AntennaCategory.Vertical;
         FeedPoint = FeedPointType.BaseFed;

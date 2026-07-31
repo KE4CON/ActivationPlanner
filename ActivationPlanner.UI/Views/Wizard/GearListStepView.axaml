@@ -3,13 +3,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
+             xmlns:vmroot="clr-namespace:ActivationPlanner.UI.ViewModels"
              xmlns:gear="clr-namespace:ActivationPlanner.PropagationModel.Gear;assembly=ActivationPlanner.PropagationModel"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="450"
              x:Class="ActivationPlanner.UI.Views.Wizard.GearListStepView"
              x:DataType="vm:GearListStepViewModel">
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Start from a model (shown only for categories that have presets, e.g. Radios) -->
+        <StackPanel Grid.Row="0" Spacing="2" Margin="0,0,0,8" IsVisible="{Binding HasPresets}">
+            <TextBlock Text="Start from a model" FontSize="12" Opacity="0.7" />
+            <ComboBox ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vmroot:GearPresetChoice">
+                        <TextBlock Text="{Binding Label}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
         <!-- Add form -->
-        <Grid Grid.Row="0" ColumnDefinitions="2*,3*,Auto" ColumnSpacing="8">
+        <Grid Grid.Row="1" ColumnDefinitions="2*,3*,Auto" ColumnSpacing="8">
             <TextBox Grid.Column="0"
                      PlaceholderText="{Binding NamePlaceholder}"
                      Text="{Binding NewName}" />
@@ -21,7 +35,7 @@
         </Grid>
 
         <!-- Running list -->
-        <Border Grid.Row="1" Margin="0,12,0,0"
+        <Border Grid.Row="2" Margin="0,12,0,0"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
             <ScrollViewer>

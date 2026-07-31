@@ -9,12 +9,33 @@
              x:DataType="vm:AntennaStepViewModel">
     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
 
-        <!-- Detail mini-form -->
+        <!-- Detail mini-form (scrollable so the Add/Clear buttons stay reachable on short windows) -->
         <Border Grid.Column="0" Width="320" Padding="16"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Antenna details" FontWeight="SemiBold" />
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Start from a model" FontSize="12" Opacity="0.7" />
+                    <ComboBox ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AntennaPresetChoice">
+                                <TextBlock Text="{Binding Label}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Text="Pick your antenna to prefill the fields, or choose Custom to enter your own."
+                               FontSize="11" Opacity="0.6" TextWrapping="Wrap" />
+                </StackPanel>
+
+                <Border Background="#332F6FEB" BorderBrush="#2F6FEB" BorderThickness="1" CornerRadius="6"
+                        Padding="8,6"
+                        IsVisible="{Binding PresetNote, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <TextBlock FontSize="11" TextWrapping="Wrap" Text="{Binding PresetNote}" />
+                </Border>
 
                 <StackPanel Spacing="2">
                     <TextBlock Text="Name" FontSize="12" Opacity="0.7" />
@@ -71,6 +92,7 @@
                             Command="{Binding ClearFormCommand}" Margin="8,0,0,0" />
                 </Grid>
             </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- Running list -->

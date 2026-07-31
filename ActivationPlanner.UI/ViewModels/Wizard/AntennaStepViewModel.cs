@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ActivationPlanner.PropagationModel.Gear;
+using ActivationPlanner.Services.Presets;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -21,8 +23,22 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
         "Add each antenna you own. Fill the details, then press Add to list. " +
         "Select a row to edit it.";
 
+    public AntennaStepViewModel() : this(PresetCatalog.Default) { }
+
+    public AntennaStepViewModel(GearPresetCatalog catalog)
+    {
+        ArgumentNullException.ThrowIfNull(catalog);
+        var choices = new List<AntennaPresetChoice> { AntennaPresetChoice.Custom };
+        choices.AddRange(catalog.Antennas.Select(a => new AntennaPresetChoice(a.DisplayName, a)));
+        Presets = choices;
+        _selectedPreset = choices[0];
+    }
+
     /// <summary>Antennas collected so far.</summary>
     public ObservableCollection<AntennaProfile> Antennas { get; } = [];
+
+    /// <summary>"Start from a model" options: the catalog presets plus a Custom / Home-brew escape hatch.</summary>
+    public IReadOnlyList<AntennaPresetChoice> Presets { get; }
 
     public IReadOnlyList<AntennaCategory> Categories { get; } = Enum.GetValues<AntennaCategory>();
 
@@ -30,6 +46,13 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
 
     // Id of the row currently being edited; null means the form will add a new one.
     private Guid? _editingId;
+
+    [ObservableProperty]
+    private AntennaPresetChoice? _selectedPreset;
+
+    /// <summary>Provenance / confidence note for the chosen preset (null for Custom).</summary>
+    [ObservableProperty]
+    private string? _presetNote;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
@@ -90,7 +113,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
     public string HeightHint => SelectedCategory switch
     {
         AntennaCategory.Vertical or AntennaCategory.Whip =>
-            "Height of the feed point (the base) above ground. Standing on the ground? Enter 0.",
+            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height — the radials sit at this height too.",
         AntennaCategory.NvisCrossedDipole =>
             "Height of the center feed at the top of the mast (the apex) — the four legs slope down from here toward the ground. A typical NVIS mast is ~15 ft.",
         _ =>
@@ -99,10 +122,32 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
 
     /// <summary>Plain-language help for the radial boxes.</summary>
     public string RadialHint =>
-        "On-ground wires spread out under a vertical. No radials (or a self-contained antenna)? Leave both at 0.";
+        "Wires spread out under a vertical — they sit at the feed height set above (on the ground, or elevated with the feed). No radials, or a self-contained antenna? Leave both at 0.";
 
     /// <summary>Add vs. Save Changes label for the form's primary button.</summary>
     public string SaveButtonText => _editingId is null ? "Add to list" : "Save changes";
+
+    /// <summary>Picking a real model prefills the (still editable) form; Custom leaves it alone.</summary>
+    partial void OnSelectedPresetChanged(AntennaPresetChoice? value)
+    {
+        if (value?.Preset is not { } p)
+        {
+            PresetNote = null;
+            return;
+        }
+
+        Name = p.DisplayName;
+        SelectedCategory = p.Category;
+        SelectedFeedPoint = p.FeedPoint;
+        LengthFeet = p.LengthFeet;
+        HeightFeet = p.HeightFeet;
+        RadialCount = p.RadialCount;
+        RadialLengthFeet = p.RadialLengthFeet;
+
+        PresetNote = p.ModelingConfidence == ModelingConfidence.Approximate
+            ? $"Approximate model — {p.Note} You can edit any field to match your actual antenna."
+            : p.Note;
+    }
 
     private bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
@@ -175,6 +220,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
     private void ResetForm()
     {
         _editingId = null;
+        SelectedPreset = Presets[0]; // back to Custom (clears the preset note)
         Name = string.Empty;
         SelectedCategory = AntennaCategory.Vertical;
         SelectedFeedPoint = FeedPointType.BaseFed;

@@ -9,6 +9,11 @@
     <PackageReference Include="System.IO.Ports" Version="10.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Bundled manufacturer preset catalog (updatable data, loaded as an embedded resource). -->
+    <EmbeddedResource Include="Presets\gear-presets.json" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ActivationPlanner.PropagationModel.Gear;
+using ActivationPlanner.Services.Presets;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -12,15 +15,33 @@ namespace ActivationPlanner.UI.ViewModels.Wizard;
 /// </summary>
 public sealed partial class GearListStepViewModel : WizardStepViewModel
 {
-    public GearListStepViewModel(GearCategory category, string title, string instructions, string namePlaceholder)
+    public GearListStepViewModel(
+        GearCategory category, string title, string instructions, string namePlaceholder,
+        GearPresetCatalog? catalog = null)
     {
         Category = category;
         Title = title;
         Instructions = instructions;
         NamePlaceholder = namePlaceholder;
+
+        catalog ??= PresetCatalog.Default;
+        var choices = new List<GearPresetChoice> { GearPresetChoice.Custom };
+        if (category == GearCategory.Radio)
+        {
+            choices.AddRange(catalog.Radios.Select(r => new GearPresetChoice(
+                r.DisplayName, r.DisplayName, $"{r.Bands}, {r.PowerWatts:0} W. {r.Note}".Trim())));
+        }
+        Presets = choices;
+        _selectedPreset = choices[0];
     }
 
     public GearCategory Category { get; }
+
+    /// <summary>"Start from a model" options for this step's category (Custom-only until populated).</summary>
+    public IReadOnlyList<GearPresetChoice> Presets { get; }
+
+    /// <summary>True when there are real models to pick (hides the picker for empty categories).</summary>
+    public bool HasPresets => Presets.Count > 1;
 
     public override string Title { get; }
 
@@ -32,12 +53,23 @@ public sealed partial class GearListStepViewModel : WizardStepViewModel
     /// <summary>Gear collected so far in this step.</summary>
     public ObservableCollection<GearItem> Items { get; } = [];
 
+    [ObservableProperty] private GearPresetChoice? _selectedPreset;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private string _newName = string.Empty;
 
     [ObservableProperty]
     private string _newNotes = string.Empty;
+
+    /// <summary>Picking a real model prefills the (still editable) name and notes; Custom leaves them.</summary>
+    partial void OnSelectedPresetChanged(GearPresetChoice? value)
+    {
+        if (value?.PrefillName is not { } name)
+            return;
+        NewName = name;
+        NewNotes = value.PrefillNotes ?? string.Empty;
+    }
 
     private bool CanAdd => !string.IsNullOrWhiteSpace(NewName);
 
@@ -50,6 +82,7 @@ public sealed partial class GearListStepViewModel : WizardStepViewModel
             Name = NewName.Trim(),
             Notes = string.IsNullOrWhiteSpace(NewNotes) ? null : NewNotes.Trim(),
         });
+        SelectedPreset = Presets[0]; // back to Custom
         NewName = string.Empty;
         NewNotes = string.Empty;
     }
