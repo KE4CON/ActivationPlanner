@@ -13,17 +13,28 @@
         <!-- Top navigation (hidden during the first-run wizard) -->
         <Border DockPanel.Dock="Top" IsVisible="{Binding ShowNavigation}"
                 Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                Padding="16,10">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock Text="Activation Planner" FontWeight="SemiBold" FontSize="16"
-                           VerticalAlignment="Center" Margin="0,0,16,0" />
-                <Button Content="Quick plan" Command="{Binding ShowQuickPlanCommand}" Classes="accent" />
-                <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" />
-                <Button Content="Trend" Command="{Binding ShowTrendCommand}" />
-                <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" />
-                <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" />
-                <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" />
-            </StackPanel>
+                Padding="16,8">
+            <Grid ColumnDefinitions="*,Auto">
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Quick plan" Command="{Binding ShowQuickPlanCommand}" Classes="accent" Margin="0,2,6,2" />
+                    <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" Margin="0,2,6,2" />
+                    <Button Content="Trend" Command="{Binding ShowTrendCommand}" Margin="0,2,6,2" />
+                    <Button Content="Grey line" Command="{Binding ShowGreyLineCommand}" Margin="0,2,6,2" />
+                    <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Margin="0,2,6,2" />
+                    <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Margin="0,2,6,2" />
+                    <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" Margin="0,2,6,2" />
+                </WrapPanel>
+
+                <!-- Persistent clock: local above UTC -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <TextBlock FontSize="12" TextAlignment="Right">
+                        <Run Text="Local " Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" /><Run Text="{Binding LocalTimeText}" />
+                    </TextBlock>
+                    <TextBlock FontSize="12" TextAlignment="Right" Opacity="0.75">
+                        <Run Text="UTC   " Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" /><Run Text="{Binding UtcTimeText}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <ContentControl Content="{Binding CurrentPage}" />

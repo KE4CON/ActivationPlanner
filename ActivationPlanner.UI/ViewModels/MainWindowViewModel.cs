@@ -8,6 +8,7 @@ using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.Services.Pota;
 using ActivationPlanner.UI.ViewModels.Wizard;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Inventory = ActivationPlanner.PropagationModel.Gear.GearInventory;
@@ -55,6 +56,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _pdf = pdf;
         _session = session;
         _isSampleData = isSampleData;
+
+        // Persistent live clock (local above UTC) for the header.
+        UpdateClock();
+        _clock = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clock.Tick += (_, _) => UpdateClock();
+        _clock.Start();
+    }
+
+    private readonly DispatcherTimer _clock;
+
+    [ObservableProperty] private string _localTimeText = "";
+    [ObservableProperty] private string _utcTimeText = "";
+
+    private void UpdateClock()
+    {
+        LocalTimeText = DateTime.Now.ToString("M/d/yyyy HH:mm:ss");
+        UtcTimeText = DateTime.UtcNow.ToString("M/d/yyyy HH:mm:ss");
     }
 
     [ObservableProperty]
@@ -100,6 +118,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowTrend() =>
         CurrentPage = new TrendViewModel(_planning, _location, _inventory, _session);
+
+    [RelayCommand]
+    private void ShowGreyLine() =>
+        CurrentPage = new GreyLineViewModel(_planning, _location, _inventory);
 
     [RelayCommand]
     private void ShowPotaSpots() =>

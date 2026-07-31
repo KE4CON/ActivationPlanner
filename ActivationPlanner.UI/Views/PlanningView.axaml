@@ -111,10 +111,6 @@
 
             <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" FontWeight="SemiBold"
                        IsVisible="{Binding HasResults}" Margin="0,0,0,4" />
-            <TextBlock DockPanel.Dock="Top" Text="{Binding GreyLineInfo}" FontSize="12" Opacity="0.7"
-                       Margin="0,0,0,8"
-                       IsVisible="{Binding GreyLineInfo, Converter={x:Static ObjectConverters.IsNotNull}}" />
-
             <!-- Export bar (operator-selectable content) -->
             <Border DockPanel.Dock="Top" IsVisible="{Binding CanExport}" Margin="0,0,0,10"
                     BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
@@ -177,14 +173,9 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="planning:HourCellViewModel">
                                                     <StackPanel Spacing="2">
-                                                        <Panel Width="20" Height="20" ToolTip.Tip="{Binding Tooltip}">
-                                                            <Border CornerRadius="2" Background="{Binding CellBrush}" />
-                                                            <!-- Grey-line marker: a bright outline + top bar on sunrise/sunset hours -->
-                                                            <Border CornerRadius="2" BorderThickness="2" BorderBrush="#33D6FF"
-                                                                    IsVisible="{Binding IsGreyLine}" />
-                                                            <Border VerticalAlignment="Top" Height="3" Background="#33D6FF"
-                                                                    IsVisible="{Binding IsGreyLine}" />
-                                                        </Panel>
+                                                        <Border Width="20" Height="20" CornerRadius="2"
+                                                                Background="{Binding CellBrush}"
+                                                                ToolTip.Tip="{Binding Tooltip}" />
                                                         <TextBlock Text="{Binding AxisLabel}" FontSize="9"
                                                                    Opacity="0.6" Width="20" TextAlignment="Center" />
                                                     </StackPanel>

@@ -8,24 +8,18 @@ namespace ActivationPlanner.UI.ViewModels.Planning;
 /// </summary>
 public sealed class HourCellViewModel
 {
-    public HourCellViewModel(int hourUtc, double? reliability, double? mufMhz, bool isGreyLine = false)
+    public HourCellViewModel(int hourUtc, double? reliability, double? mufMhz)
     {
         HourUtc = hourUtc;
         Reliability = reliability;
-        IsGreyLine = isGreyLine;
         CellBrush = ReliabilityPalette.Brush(reliability);
         Tooltip = reliability is { } r
             ? $"{hourUtc:00}:00 UTC — {r * 100:0}% reliable" + (mufMhz is { } m ? $", MUF {m:0.0} MHz" : "")
             : $"{hourUtc:00}:00 UTC — no prediction";
-        if (isGreyLine)
-            Tooltip += " • grey line";
 
         // Sparse ruler: label every 6th hour so the strip is readable without hovering.
         AxisLabel = hourUtc % 6 == 0 ? hourUtc.ToString("00") : string.Empty;
     }
-
-    /// <summary>True when this hour falls in the sunrise/sunset grey-line window.</summary>
-    public bool IsGreyLine { get; }
 
     /// <summary>Hour label shown under the strip at 6-hour intervals; empty otherwise.</summary>
     public string AxisLabel { get; }

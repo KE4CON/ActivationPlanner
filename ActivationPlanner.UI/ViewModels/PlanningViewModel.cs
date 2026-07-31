@@ -177,11 +177,9 @@ public sealed partial class PlanningViewModel : ViewModelBase
             SessionPlan plan = await _planning.PlanAsync(query, antennas);
             _lastPlan = plan;
 
-            IReadOnlySet<int> greyLine = ComputeGreyLineHours(plan.HoursUtc);
-
             Bands.Clear();
             foreach (var band in plan.Bands)
-                Bands.Add(new BandRecommendationViewModel(band, greyLine));
+                Bands.Add(new BandRecommendationViewModel(band));
 
             HourAxis.Clear();
             foreach (int h in plan.HoursUtc)
@@ -210,8 +208,6 @@ public sealed partial class PlanningViewModel : ViewModelBase
             IsBusy = false;
         }
     }
-
-    [ObservableProperty] private string? _greyLineInfo;
 
     // ---- PDF export (operator-selectable sections) ----
 
@@ -247,39 +243,6 @@ public sealed partial class PlanningViewModel : ViewModelBase
         };
 
         await _pdf.WriteAsync(request, output);
-    }
-
-    /// <summary>Grey-line hours for the operator's location today, used to mark the heatmap.</summary>
-    private IReadOnlySet<int> ComputeGreyLineHours(IReadOnlyList<int> hours)
-    {
-        try
-        {
-            var location = new GeoLocation(OperatorLatitude, OperatorLongitude);
-            var today = DateTime.UtcNow;
-            SolarEvents events = SolarCalculator.ForDate(location, today.Year, today.Month, today.Day);
-
-            if (!events.HasGreyLine)
-            {
-                GreyLineInfo = "No grey line today (polar day/night).";
-                return new HashSet<int>();
-            }
-
-            GreyLineInfo = $"Grey line ▸ sunrise {HourLabel(events.SunriseUtcHour!.Value)}, " +
-                           $"sunset {HourLabel(events.SunsetUtcHour!.Value)} UTC (marked on the strip).";
-            return hours.Where(h => SolarCalculator.IsWithinGreyLine(h, events)).ToHashSet();
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            GreyLineInfo = null;
-            return new HashSet<int>();
-        }
-    }
-
-    private static string HourLabel(double hourUtc)
-    {
-        int hh = (int)hourUtc % 24;
-        int mm = (int)Math.Round((hourUtc - Math.Floor(hourUtc)) * 60) % 60;
-        return $"{hh:00}:{mm:00}";
     }
 
     private CircuitQuery BuildQuery() => new()
