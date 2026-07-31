@@ -16,6 +16,9 @@ public enum GearCategory
     /// <summary>Digital-mode interface hardware (e.g. built-in USB codec, Digirig).</summary>
     DigitalInterface,
 
+    /// <summary>Portable computer/tablet used in the field (logging, digital modes, EMCOMM).</summary>
+    Computer,
+
     /// <summary>EMCOMM-specific gear (go-kit items, ICS forms, etc.).</summary>
     Emcomm,
 

@@ -47,12 +47,15 @@ public sealed partial class SetupWizardViewModel : ViewModelBase
         var digital = new GearListStepViewModel(
             GearCategory.DigitalInterface, "Digital Interfaces",
             "Digital-mode interfaces (skip if you run phone/CW only).", "Interface (e.g. Digirig)");
+        var computers = new GearListStepViewModel(
+            GearCategory.Computer, "Computers",
+            "Laptops or tablets you'll take to the field (logging, digital modes).", "Computer (e.g. Toughbook)");
         var emcomm = new GearListStepViewModel(
             GearCategory.Emcomm, "EMCOMM Gear",
             "Go-kit items specific to emergency operating.", "EMCOMM item");
         _summaryStep = new SummaryStepViewModel();
 
-        _gearSteps = [radios, power, digital, emcomm];
+        _gearSteps = [radios, power, digital, computers, emcomm];
 
         Steps =
         [
@@ -60,6 +63,7 @@ public sealed partial class SetupWizardViewModel : ViewModelBase
             _antennaStep,
             power,
             digital,
+            computers,
             emcomm,
             _summaryStep,
         ];
