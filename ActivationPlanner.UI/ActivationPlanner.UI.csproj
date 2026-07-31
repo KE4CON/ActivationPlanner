@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Bundled map data + other UI assets (Natural Earth 110m land, public domain). -->
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ActivationPlanner.Services\ActivationPlanner.Services.csproj" />
     <ProjectReference Include="..\ActivationPlanner.PropagationModel\ActivationPlanner.PropagationModel.csproj" />
   </ItemGroup>

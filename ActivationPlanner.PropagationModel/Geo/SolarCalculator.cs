@@ -58,6 +58,36 @@ public static class SolarCalculator
     }
 
     /// <summary>
+    /// The point on Earth where the sun is directly overhead at <paramref name="utc"/> — latitude is
+    /// the solar declination, longitude is where it is local solar noon. Used to draw the day/night
+    /// terminator (grey line) on a world map. Longitude uses the mean sun (equation of time ignored —
+    /// within ~1° for display).
+    /// </summary>
+    public static GeoLocation SubsolarPoint(DateTime utc)
+    {
+        double utcHour = utc.TimeOfDay.TotalHours;
+        double jdn = JulianDayNumber(utc.Year, utc.Month, utc.Day);
+        double n = jdn - 2451545.0 + 0.0008 + (utcHour - 12.0) / 24.0;
+
+        double m = Mod360(357.5291 + 0.98560028 * n);
+        double mRad = Deg2Rad(m);
+        double center = 1.9148 * Math.Sin(mRad) + 0.0200 * Math.Sin(2 * mRad) + 0.0003 * Math.Sin(3 * mRad);
+        double lambda = Mod360(m + center + 180 + 102.9372);
+        double declDeg = Rad2Deg(Math.Asin(Math.Sin(Deg2Rad(lambda)) * Math.Sin(Deg2Rad(23.44))));
+
+        double subLon = NormalizeLongitude(15.0 * (12.0 - utcHour));
+        return new GeoLocation(declDeg, subLon);
+    }
+
+    /// <summary>Normalize a longitude into the range (-180, 180].</summary>
+    public static double NormalizeLongitude(double lon)
+    {
+        double x = (lon + 180.0) % 360.0;
+        if (x < 0) x += 360.0;
+        return x - 180.0;
+    }
+
+    /// <summary>
     /// True when <paramref name="hourUtc"/> lies within <paramref name="windowHours"/> of either the
     /// sunrise or sunset (wrapping across midnight).
     /// </summary>

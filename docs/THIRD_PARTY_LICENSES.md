@@ -97,6 +97,13 @@ years from the date of distribution.
 - [ ] NEC2++ corresponding source (or written offer) bundled
 - [ ] Notices displayed by the installer and present in README + all docs
 
+## Bundled map data
+
+- **Natural Earth (110m land)** — used to draw continents on the grey-line world map. Natural
+  Earth vector/raster data is in the **public domain** (no permission or attribution required);
+  we credit it here as a courtesy. Source: https://www.naturalearthdata.com/ . The GeoJSON file is
+  bundled at `ActivationPlanner.UI/Assets/ne_110m_land.geojson`.
+
 ## References
 - voacapl LICENSE: https://github.com/jawatson/voacapl/blob/master/LICENSE
 - necpp COPYING (GPLv2): https://github.com/tmolteno/necpp/blob/master/COPYING

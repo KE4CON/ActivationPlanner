@@ -51,6 +51,10 @@ public sealed partial class GreyLineViewModel : ViewModelBase
     [ObservableProperty] private string? _sunsetLabel;
     [ObservableProperty] private string? _statusMessage;
 
+    // Operator QTH for the map marker (NaN until resolved).
+    [ObservableProperty] private double _qthLatitude = double.NaN;
+    [ObservableProperty] private double _qthLongitude = double.NaN;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
     private bool _isBusy;
@@ -126,6 +130,9 @@ public sealed partial class GreyLineViewModel : ViewModelBase
         {
             LocationLabel = $"{_latitude:0.##}, {_longitude:0.##} (default — location unavailable)";
         }
+
+        QthLatitude = _latitude;
+        QthLongitude = _longitude;
     }
 
     private static CircuitQuery BuildQuery(GeoLocation location)
