@@ -48,25 +48,35 @@ public sealed class NecRunner : INecRunner
         bool ownsRunDir = runDirectory is null;
         Directory.CreateDirectory(runDir);
 
+        string deckText = _writer.Write(geometry);
         try
         {
             string inputPath = Path.Combine(runDir, InputFileName);
             string outputPath = Path.Combine(runDir, OutputFileName);
-            await File.WriteAllTextAsync(inputPath, _writer.Write(geometry), ct).ConfigureAwait(false);
+            await File.WriteAllTextAsync(inputPath, deckText, ct).ConfigureAwait(false);
 
+            // Pass short, run-directory-relative filenames (not the absolute temp path): nec2c has a
+            // hardcoded input-filename length limit and aborts on a long path. The working directory
+            // is the run directory, so relative names resolve to the same files we read below.
             var request = new ProcessRequest(
                 _options.ExecutablePath,
-                ["-i", inputPath, "-o", outputPath],
+                ["-i", InputFileName, "-o", OutputFileName],
                 WorkingDirectory: runDir);
 
             ProcessResult result = await _transport.RunAsync(request, ct).ConfigureAwait(false);
             if (result.ExitCode != 0)
+            {
+                WriteFailureDiagnostic(deckText, result.StandardError, outputPath);
                 throw new NecExecutionException(
                     $"nec2++ exited with code {result.ExitCode}.", result.ExitCode, result.StandardError);
+            }
 
             if (!File.Exists(outputPath))
+            {
+                WriteFailureDiagnostic(deckText, result.StandardError, outputPath);
                 throw new NecExecutionException(
                     $"nec2++ produced no output file at '{outputPath}'.", result.ExitCode, result.StandardError);
+            }
 
             string outputText = await File.ReadAllTextAsync(outputPath, ct).ConfigureAwait(false);
             return _parser.Parse(outputText);
@@ -88,6 +98,30 @@ public sealed class NecRunner : INecRunner
         catch
         {
             // A stray temp directory is not worth failing a completed model over.
+        }
+    }
+
+    /// <summary>
+    /// On a NEC failure, drop the exact deck that failed plus nec2c's own output (which carries the
+    /// real reason, e.g. "GEOMETRY DATA ERROR") to a stable file, since the run directory is about
+    /// to be deleted. Best-effort — diagnostics must never mask the original failure.
+    /// </summary>
+    private static void WriteFailureDiagnostic(string deckText, string stdErr, string outputPath)
+    {
+        try
+        {
+            string necOutput = File.Exists(outputPath) ? File.ReadAllText(outputPath) : "(no output file written)";
+            string report =
+                "=== Activation Planner — NEC run failure ===\n\n" +
+                "--- Input deck (.nec) ---\n" + deckText + "\n" +
+                "--- nec2c stderr ---\n" + stdErr + "\n" +
+                "--- nec2c output (.out) ---\n" + necOutput + "\n";
+            File.WriteAllText(
+                Path.Combine(Path.GetTempPath(), "activationplanner-nec-last-failure.txt"), report);
+        }
+        catch
+        {
+            // Diagnostics are a convenience; never let them throw over the real error.
         }
     }
 }

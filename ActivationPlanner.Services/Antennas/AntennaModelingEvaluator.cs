@@ -43,6 +43,9 @@ public sealed class AntennaModelingEvaluator
                 => EvaluateVertical(antenna, frequencyMhz, heightWl, lengthWl),
             AntennaCategory.Dipole or AntennaCategory.EndFedHalfWave
                 => EvaluateHorizontalLike(antenna, frequencyMhz, heightWl, lengthWl),
+            AntennaCategory.NvisCrossedDipole
+                => CustomModeling(antenna, frequencyMhz, heightWl, lengthWl,
+                    "An NVIS crossed dipole has no community-library equivalent; custom NEC modeling required."),
             _ // MagneticLoop, Other — no trustworthy generic library model
                 => CustomModeling(antenna, frequencyMhz, heightWl, lengthWl,
                     $"No community-library model for a {antenna.Category} antenna; custom modeling required."),

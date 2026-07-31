@@ -45,6 +45,14 @@ public enum AntennaCategory
     /// <summary>Magnetic loop.</summary>
     MagneticLoop,
 
+    /// <summary>
+    /// NVIS crossed dipole — two dipoles crossed at 90°, apex/center-fed at the top of a short mast,
+    /// legs sloping down toward ground stakes (the U.S. Army AS-2259/GR pattern, e.g. Chameleon's
+    /// 4-wire NVIS). Radiates steeply upward for short-range regional / EMCOMM coverage. Has no
+    /// community-library match, so it always routes to custom NEC modeling.
+    /// </summary>
+    NvisCrossedDipole,
+
     /// <summary>Homebrew / unusual design that maps poorly to any library category.</summary>
     Other,
 }

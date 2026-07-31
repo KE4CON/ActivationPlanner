@@ -151,6 +151,16 @@ public sealed class AntennaModelingEvaluatorTests
         Assert.Equal(AntennaModelingOption.CustomModeling, d.Option);
     }
 
+    [Fact]
+    public void Nvis_crossed_dipole_always_requires_custom_modeling()
+    {
+        // No community-library equivalent for a crossed NVIS antenna; it must go through NEC.
+        var nvis = Antenna(AntennaCategory.NvisCrossedDipole, FeedPointType.CenterFed, lengthFeet: 45.0, heightFeet: 15.0);
+        var d = _eval.Evaluate(nvis, 5.35);
+        Assert.Equal(AntennaModelingOption.CustomModeling, d.Option);
+        Assert.Contains("NVIS", d.Reason);
+    }
+
     // ---- per-band batch ----
 
     [Fact]

@@ -33,4 +33,11 @@ public sealed record AntennaPattern
 
     /// <summary>Gain vs elevation angle (ascending elevation).</summary>
     public required IReadOnlyList<AntennaPatternSample> Elevation { get; init; }
+
+    /// <summary>
+    /// Set when the model rested on a substituted assumption the operator did not supply — e.g. a
+    /// resonant length filled in because the antenna's length was left blank. Null for a fully
+    /// specified model. The UI shows this so an estimated pattern is never mistaken for an exact one.
+    /// </summary>
+    public string? EstimateNote { get; init; }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Net.Http;
+using ActivationPlanner.PropagationModel.Antennas;
 using ActivationPlanner.PropagationModel.Voacap;
+using ActivationPlanner.UI.Composition;
 using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
@@ -31,12 +33,22 @@ public partial class App : Application
             var store = JsonGearStore.CreateDefault();
             var inventoryService = new GearInventoryService(store);
 
-            // Propagation source. Until the user has configured a VOACAP install (a later
-            // settings feature), predictions come from an offline sample stand-in and the
-            // planning screen flags them as sample data. When real VOACAP wiring lands, the
-            // real VoacapPropagationEngine is constructed here instead of the sample predictor.
-            var samplePredictor = new SamplePropagationPredictor();
-            IPropagationPredictor predictor = samplePredictor;
+            // Propagation source. If a bundled/configured VOACAP install is found, predictions come
+            // from the real VoacapPropagationEngine (shelled out to voacapl). Otherwise they come
+            // from an offline sample stand-in and the planning screen flags them as sample data.
+            var voacapPaths = ExternalToolLocator.TryLocateVoacap();
+            IPropagationPredictor predictor;
+            bool isSampleData;
+            if (voacapPaths is not null)
+            {
+                predictor = VoacapPropagationEngine.Create(voacapPaths.ExecutablePath, voacapPaths.ItshfbcDirectory);
+                isSampleData = false;
+            }
+            else
+            {
+                predictor = new SamplePropagationPredictor();
+                isSampleData = true;
+            }
             var planningService = new PlanningService(predictor);
 
             // Mission-type selection and the template/instance checklist engine (Phase 5).
@@ -45,6 +57,23 @@ public partial class App : Application
 
             // PDF plan export (QuestPDF).
             var pdfExportService = new PdfExportService();
+
+            // Antenna pattern source. If a bundled/configured NEC2 engine is found, patterns come
+            // from the real NecAntennaModeler (shelled out to nec2++/nec2c). Otherwise a
+            // representative offline model stands in behind the same IAntennaPatternSource interface.
+            var necPaths = ExternalToolLocator.TryLocateNec();
+            IAntennaPatternSource patternSource;
+            bool patternIsSample;
+            if (necPaths is not null)
+            {
+                patternSource = NecAntennaModeler.Create(necPaths.ExecutablePath);
+                patternIsSample = false;
+            }
+            else
+            {
+                patternSource = new SampleAntennaPatternProvider();
+                patternIsSample = true;
+            }
 
             // Refresh-on-demand location: prefer an external hardware NMEA GPS (USB/serial) when one
             // is connected, otherwise fall back to approximate network geo-IP (Item #18). The lookup
@@ -64,7 +93,8 @@ public partial class App : Application
 
             var mainViewModel = new MainWindowViewModel(
                 inventoryService, planningService, locationService, missionService, checklistService,
-                potaClient, pdfExportService, sessionState, isSampleData: samplePredictor.IsSample);
+                potaClient, pdfExportService, patternSource, patternIsSample: patternIsSample,
+                sessionState, isSampleData: isSampleData);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 

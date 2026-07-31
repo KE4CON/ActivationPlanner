@@ -24,10 +24,17 @@ public sealed class NecRunnerTests
             LastRequest = request;
             if (writeOutput)
             {
-                // nec2++ writes to the path following "-o".
+                // nec2++ writes to the path following "-o", resolved against its working directory
+                // (the argument is a run-dir-relative filename, as a real invocation uses).
                 int oIndex = request.Arguments.ToList().IndexOf("-o");
                 if (oIndex >= 0 && oIndex + 1 < request.Arguments.Count)
-                    File.WriteAllText(request.Arguments[oIndex + 1], NecFixtures.DipoleOutputText());
+                {
+                    string outArg = request.Arguments[oIndex + 1];
+                    string outPath = Path.IsPathRooted(outArg)
+                        ? outArg
+                        : Path.Combine(request.WorkingDirectory ?? string.Empty, outArg);
+                    File.WriteAllText(outPath, NecFixtures.DipoleOutputText());
+                }
             }
             return Task.FromResult(new ProcessResult(exitCode, string.Empty, string.Empty));
         }
@@ -41,7 +48,7 @@ public sealed class NecRunnerTests
 
         Assert.NotNull(result.Impedance);
         Assert.Equal(19, result.Pattern.Count);
-        Assert.Equal(6.20, result.PeakGain!.TotalGainDb, precision: 2);
+        Assert.Equal(7.05, result.PeakGain!.TotalGainDb, precision: 2);
     }
 
     [Fact]
@@ -56,6 +63,13 @@ public sealed class NecRunnerTests
         Assert.Contains("-i", args);
         Assert.Contains("-o", args);
         Assert.Equal("nec2++", transport.LastRequest.ExecutablePath);
+
+        // nec2c aborts on a long input filename, so the -i/-o arguments must be short relative
+        // names resolved against the working directory — never the (long) absolute temp path.
+        int i = args.ToList().IndexOf("-i");
+        string inArg = args[i + 1];
+        Assert.False(Path.IsPathRooted(inArg), "nec input filename must be relative to the run directory");
+        Assert.True(inArg.Length < 40, "nec input filename must stay well under nec2c's length limit");
     }
 
     [Fact]

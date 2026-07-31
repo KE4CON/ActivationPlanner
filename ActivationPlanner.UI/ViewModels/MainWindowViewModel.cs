@@ -4,6 +4,7 @@ using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
+using ActivationPlanner.PropagationModel.Antennas;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.Services.Pota;
@@ -31,13 +32,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly ChecklistService _checklist;
     private readonly PotaClient _pota;
     private readonly PdfExportService _pdf;
+    private readonly IAntennaPatternSource _patternSource;
+    private readonly bool _patternIsSample;
     private readonly SessionState _session;
     private readonly bool _isSampleData;
 
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist, PotaClient pota,
-        PdfExportService pdf, SessionState session, bool isSampleData)
+        PdfExportService pdf, IAntennaPatternSource patternSource, bool patternIsSample,
+        SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
@@ -46,6 +50,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(pota);
         ArgumentNullException.ThrowIfNull(pdf);
+        ArgumentNullException.ThrowIfNull(patternSource);
         ArgumentNullException.ThrowIfNull(session);
         _inventory = inventory;
         _planning = planning;
@@ -54,6 +59,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _checklist = checklist;
         _pota = pota;
         _pdf = pdf;
+        _patternSource = patternSource;
+        _patternIsSample = patternIsSample;
         _session = session;
         _isSampleData = isSampleData;
 
@@ -126,6 +133,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowPotaSpots() =>
         CurrentPage = new PotaSpotsViewModel(_pota);
+
+    [RelayCommand]
+    private void ShowAntennaPattern() =>
+        CurrentPage = new AntennaPatternViewModel(_patternSource, _inventory, _patternIsSample);
 
     [RelayCommand]
     private void ShowInventory() =>

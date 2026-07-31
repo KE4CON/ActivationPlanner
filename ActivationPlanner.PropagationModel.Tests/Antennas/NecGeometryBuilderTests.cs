@@ -80,7 +80,66 @@ public sealed class NecGeometryBuilderTests
         var deck = _builder.Build(vertical, f);
 
         Assert.Equal(1 + 4, deck.Wires.Count); // radiator + 4 radials
-        Assert.All(deck.Wires.Skip(1), r => Assert.Equal(0.0, r.Z1, precision: 6)); // radials at base height 0
+        // Base height is 0, but radials are horizontal wires — NEC rejects them in the ground plane,
+        // so the whole assembly is lifted to the ground clearance. Radiator base and radials share
+        // that height (electrically connected at the feed).
+        Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, deck.Wires[0].Z1, precision: 6);
+        Assert.All(deck.Wires.Skip(1), r =>
+            Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, r.Z1, precision: 6));
+    }
+
+    [Fact]
+    public void Ground_mounted_dipole_is_lifted_clear_of_the_ground_plane()
+    {
+        // A dipole entered with zero height would lie in the ground plane (NEC "GEOMETRY DATA
+        // ERROR"); it is nudged up to the ground clearance instead.
+        var dipole = Antenna(AntennaCategory.Dipole, FeedPointType.CenterFed, Feet(0.5, 14.1), heightFeet: 0);
+        var deck = _builder.Build(dipole, 14.1);
+        Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, deck.Wires[0].Z1, precision: 6);
+    }
+
+    [Fact]
+    public void Zero_length_antenna_is_rejected_with_a_clear_error()
+    {
+        // A radiator with no length is a degenerate zero-length wire; fail loudly rather than
+        // emitting a deck nec2c rejects with an opaque exit code. (The modeler substitutes a
+        // resonant length before this point; this guards direct/degenerate calls.)
+        var vertical = Antenna(AntennaCategory.Vertical, FeedPointType.BaseFed, lengthFeet: 0, heightFeet: 25);
+        Assert.Throws<ArgumentException>(() => _builder.Build(vertical, 14.1));
+    }
+
+    [Fact]
+    public void Nvis_crossed_dipole_has_four_legs_meeting_at_an_apex_feed()
+    {
+        const double f = 5.35;
+        var nvis = Antenna(AntennaCategory.NvisCrossedDipole, FeedPointType.CenterFed,
+            lengthFeet: 45, heightFeet: 15);
+
+        var deck = _builder.Build(nvis, f);
+
+        // Four legs, one per wire.
+        Assert.Equal(4, deck.Wires.Count);
+
+        // All four share the apex as their first endpoint (the common feed point), at the mast top.
+        double apexZ = Wavelength.FeetToMetres(15);
+        Assert.All(deck.Wires, w =>
+        {
+            Assert.Equal(0.0, w.X1, precision: 6);
+            Assert.Equal(0.0, w.Y1, precision: 6);
+            Assert.Equal(apexZ, w.Z1, precision: 6);
+        });
+
+        // Legs run along +X, -X, +Y, -Y and slope downward (tip below the apex).
+        Assert.All(deck.Wires, w => Assert.True(w.Z2 < w.Z1, "each leg should slope down from the apex"));
+        Assert.Contains(deck.Wires, w => w.X2 > 0 && Math.Abs(w.Y2) < 1e-6);
+        Assert.Contains(deck.Wires, w => w.X2 < 0 && Math.Abs(w.Y2) < 1e-6);
+        Assert.Contains(deck.Wires, w => w.Y2 > 0 && Math.Abs(w.X2) < 1e-6);
+        Assert.Contains(deck.Wires, w => w.Y2 < 0 && Math.Abs(w.X2) < 1e-6);
+
+        // Fed at the apex (segment 1 of the first leg), over ground.
+        Assert.Equal(1, deck.Excitation.Tag);
+        Assert.Equal(1, deck.Excitation.Segment);
+        Assert.NotNull(deck.Ground);
     }
 
     [Fact]

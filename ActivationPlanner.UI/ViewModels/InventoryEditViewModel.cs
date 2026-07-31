@@ -111,6 +111,9 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowRadials))]
+    [NotifyPropertyChangedFor(nameof(LengthLabel))]
+    [NotifyPropertyChangedFor(nameof(LengthHint))]
+    [NotifyPropertyChangedFor(nameof(HeightHint))]
     private AntennaCategory _antennaCategory = AntennaCategory.Vertical;
 
     [ObservableProperty] private FeedPointType _feedPoint = FeedPointType.BaseFed;
@@ -120,6 +123,46 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     [ObservableProperty] private double? _radialLengthFeet;
 
     public bool ShowRadials => AntennaCategory is AntennaCategory.Vertical or AntennaCategory.Whip;
+
+    /// <summary>Length-field label; "length" means a different thing per antenna type. Mirrors the wizard.</summary>
+    public string LengthLabel => AntennaCategory switch
+    {
+        AntennaCategory.Dipole => "Length — tip to tip (ft)",
+        AntennaCategory.EndFedHalfWave => "Wire length (ft)",
+        AntennaCategory.Vertical or AntennaCategory.Whip => "Element length (ft)",
+        AntennaCategory.NvisCrossedDipole => "Leg length (ft)",
+        _ => "Length (ft)",
+    };
+
+    /// <summary>Plain-language help for the length box, including what happens if it is left at 0.</summary>
+    public string LengthHint => AntennaCategory switch
+    {
+        AntennaCategory.Dipole =>
+            "The whole dipole end to end, both legs together. Not sure? Leave it 0 — we'll model a resonant half-wave and label the pattern an estimate.",
+        AntennaCategory.EndFedHalfWave =>
+            "Total length of the wire. Not sure? Leave it 0 — we'll model a resonant half-wave and label the pattern an estimate.",
+        AntennaCategory.Vertical or AntennaCategory.Whip =>
+            "Just the vertical element (not the radials). Loaded or modular — a Chameleon, a screwdriver, a Wolf River? Leave it 0 and we'll estimate a quarter-wave.",
+        AntennaCategory.NvisCrossedDipole =>
+            "Length of ONE of the four wires, measured from the center feed out to its far (staked) end — not all four added up. Chameleon's 4-wire NVIS uses ~45 ft legs. Not sure? Leave it 0 and we'll estimate a resonant quarter-wave leg.",
+        _ =>
+            "Longest dimension of the radiating element. Leave it 0 to let us estimate a resonant length.",
+    };
+
+    /// <summary>Plain-language help for the height box.</summary>
+    public string HeightHint => AntennaCategory switch
+    {
+        AntennaCategory.Vertical or AntennaCategory.Whip =>
+            "Height of the feed point (the base) above ground. Standing on the ground? Enter 0.",
+        AntennaCategory.NvisCrossedDipole =>
+            "Height of the center feed at the top of the mast (the apex) — the four legs slope down from here toward the ground. A typical NVIS mast is ~15 ft.",
+        _ =>
+            "Height of the feed point — the center of a dipole, the fed end of an end-fed — above ground.",
+    };
+
+    /// <summary>Plain-language help for the radial boxes.</summary>
+    public string RadialHint =>
+        "On-ground wires spread out under a vertical. No radials (or a self-contained antenna)? Leave both at 0.";
 
     public string AntennaButtonText => _editingAntennaId is null ? "Add antenna" : "Save antenna";
 

@@ -22,6 +22,7 @@
                     <Button Content="Grey line" Command="{Binding ShowGreyLineCommand}" Margin="0,2,6,2" />
                     <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Margin="0,2,6,2" />
                     <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Margin="0,2,6,2" />
+                    <Button Content="Antenna" Command="{Binding ShowAntennaPatternCommand}" Margin="0,2,6,2" />
                     <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" Margin="0,2,6,2" />
                 </WrapPanel>
 

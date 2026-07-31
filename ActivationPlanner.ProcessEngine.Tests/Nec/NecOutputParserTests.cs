@@ -3,6 +3,7 @@ using ActivationPlanner.ProcessEngine.Tests.Fixtures;
 
 namespace ActivationPlanner.ProcessEngine.Tests.Nec;
 
+// Fixture is a real nec2c run of a 20m dipole at 10m over average ground (14.1 MHz).
 public sealed class NecOutputParserTests
 {
     private static NecRawResult Parse() =>
@@ -13,15 +14,16 @@ public sealed class NecOutputParserTests
     {
         var z = Parse().Impedance;
         Assert.NotNull(z);
-        Assert.Equal(79.889, z!.ResistanceOhms, precision: 3);
-        Assert.Equal(16.298, z.ReactanceOhms, precision: 3);
+        Assert.Equal(66.289, z!.ResistanceOhms, precision: 3);
+        Assert.Equal(-47.059, z.ReactanceOhms, precision: 3);
     }
 
     [Fact]
     public void Parses_the_full_elevation_cut()
     {
         var pattern = Parse().Pattern;
-        Assert.Equal(19, pattern.Count); // theta 0..90 in 5-degree steps
+        // theta 0..90 in 5-degree steps (the 90-degree zenith row has a blank SENSE field).
+        Assert.Equal(19, pattern.Count);
         Assert.Equal(0.0, pattern[0].ThetaDeg);
         Assert.Equal(90.0, pattern[^1].ThetaDeg);
     }
@@ -31,16 +33,20 @@ public sealed class NecOutputParserTests
     {
         var peak = Parse().PeakGain;
         Assert.NotNull(peak);
-        Assert.Equal(6.20, peak!.TotalGainDb, precision: 2);
-        Assert.Equal(65.0, peak.ThetaDeg); // elevation 25 deg for a dipole at 10 m
+        Assert.Equal(7.05, peak!.TotalGainDb, precision: 2);
+        Assert.Equal(60.0, peak.ThetaDeg); // 30-degree take-off for a dipole ~0.5 wavelength up
     }
 
     [Fact]
-    public void Reads_vertical_and_horizontal_gain_columns()
+    public void Reads_the_gain_columns_positionally()
     {
-        var peak = Parse().Pattern.Single(s => s.ThetaDeg == 65.0);
-        Assert.Equal(6.14, peak.HorizontalGainDb, precision: 2);
-        Assert.Equal(-14.50, peak.VerticalGainDb, precision: 2);
+        // nec2c labels the gain columns MAJOR/MINOR/TOTAL; we read them positionally, so
+        // VerticalGainDb=major, HorizontalGainDb=minor. This dipole is linearly polarized, so the
+        // minor axis is the NEC "no field" sentinel and the major axis equals the total gain.
+        var peak = Parse().Pattern.Single(s => s.ThetaDeg == 60.0);
+        Assert.Equal(7.05, peak.VerticalGainDb, precision: 2);   // major
+        Assert.Equal(-999.99, peak.HorizontalGainDb, precision: 2); // minor (linear pol)
+        Assert.Equal(7.05, peak.TotalGainDb, precision: 2);
     }
 
     [Fact]
