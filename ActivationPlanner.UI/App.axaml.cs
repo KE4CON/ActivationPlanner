@@ -46,10 +46,14 @@ public partial class App : Application
             // PDF plan export (QuestPDF).
             var pdfExportService = new PdfExportService();
 
-            // Refresh-on-demand location (Phase 6). Approximate network geo-IP by default; the
-            // lookup only runs when the operator presses "Use my location".
+            // Refresh-on-demand location: prefer an external hardware NMEA GPS (USB/serial) when one
+            // is connected, otherwise fall back to approximate network geo-IP (Item #18). The lookup
+            // only runs when the operator asks for it.
             var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
-            var locationService = new LocationService(new GeoIpLocationProvider(httpClient));
+            var locationProvider = new CompositeLocationProvider(
+                new SerialGpsLocationProvider(),
+                new GeoIpLocationProvider(httpClient));
+            var locationService = new LocationService(locationProvider);
 
             // POTA public read-only data (Phase 7). Self-spotting exists but is gated off pending
             // POTA confirmation, so it is deliberately not constructed/wired here.

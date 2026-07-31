@@ -56,8 +56,8 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - **CommunityToolkit.Mvvm** 8.x (UI MVVM — `ObservableObject`/`[ObservableProperty]`/`[RelayCommand]`)
 - **xUnit** + `xunit.runner.visualstudio` + `Microsoft.NET.Test.Sdk` (test projects only)
 - **QuestPDF** 2026.x (Services — PDF plan export). Community license (free for small orgs/individuals), set once at startup via `QuestPDF.Settings.License = LicenseType.Community`.
+- **System.IO.Ports** 10.x (Services — external NMEA GPS receiver over USB/serial, Item #18; cross-platform incl. Linux/Raspberry Pi).
 - Persistence uses framework `System.Text.Json`; network I/O (POTA, geo-IP) uses framework `System.Net.Http.HttpClient` — no packages needed.
-- **Planned (add when the feature is built):** `System.IO.Ports` (external NMEA GPS — Item #18, cross-platform incl. Linux/Raspberry Pi).
 - **Future (not now):** `Ab4d.SharpEngine.AvaloniaUI` for the 3D far-field view — Avalonia-11-only today; revisit when an Avalonia-12 build exists.
 
 ## Feature Priorities (build in this order)

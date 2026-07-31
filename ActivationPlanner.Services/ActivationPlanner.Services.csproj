@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="QuestPDF" Version="2026.7.2" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.10" />
   </ItemGroup>
 
   <PropertyGroup>
