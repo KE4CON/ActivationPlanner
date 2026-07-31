@@ -27,6 +27,11 @@
 | 13 | Sunrise/sunset and grey-line indicator | 🟣 **SETTLED** |
 | 14 | "Quick mode" for in-field fast replanning | 🟣 **SETTLED** |
 | 15 | Multi-park/route planning | 🟢 Accepted in concept — **deferred to v2.0**, not in current build |
+| 16 | Local + UTC time/date display | 🟣 **SETTLED** |
+| 17 | Antenna far-field pattern plot views (2D/3D) | 🟣 **SETTLED** |
+| 18 | GPS primary / geo-IP fallback location | 🟣 **SETTLED** |
+| 19 | Auto-install dependencies (VOACAP, NEC2++) during setup | 🟣 **SETTLED** |
+| 20 | Visual design language (buttons/depth/polish) | 🟣 **SETTLED** |
 
 ---
 
@@ -309,6 +314,8 @@ The `POST /spot/` call sends a plain JSON body (`activator`, `spotter`, `frequen
 - Rather than adding a separate score boost for bands during grey-line, the UI highlights when a band **VOACAP already ranks well** happens to **coincide** with the grey-line window — surfacing a real correlation in the existing prediction rather than adding a second opinion on top of it.
 - **Reasoning:** VOACAP's own physics model already incorporates day/night solar zenith angle and D-layer absorption when computing reliability at a given time — grey-line propagation is, in effect, already partially reflected in its output. A separate artificial "grey-line boost" risks double-counting an effect the real prediction may have already accounted for, which conflicts with the "never let the tool assume a band works — always compute from real data" principle established in Item #7.
 
+**Revision (post-build, during v1 development):** the overlay-as-subtle-highlight approach proved hard to actually see once implemented. **Grey-line is promoted to its own dedicated tab** rather than a subtle chart annotation — same underlying data and correlation-highlight logic, just given a clearly visible, dedicated presentation instead of being easy to miss inside the main chart.
+
 ---
 
 ## Item #14 — "Quick Mode" for In-Field Fast Replanning 🟣 SETTLED
@@ -331,6 +338,39 @@ The `POST /spot/` call sends a plain JSON body (`activator`, `spotter`, `frequen
 **Reasoning for deferral (clarified this session):** Items #11–#14 all extend the *existing* single-session planning model without changing its core data shape — export reads existing data, the trend view is a rolling window on existing predictions, grey-line is an overlay, Quick Mode is a faster path to the same replan. Multi-park routing is structurally different: it implies planning across multiple locations and multiple time windows in sequence (e.g., "leave Park A at 2pm, arrive Park B by 4pm — what band/antenna at each, accounting for travel time and how conditions will have shifted by arrival"). That's a genuinely different planning unit — a *route* of sessions, not one session — likely requiring new concepts (inter-stop scheduling/timing, a per-stop plan UI) rather than a bigger version of what's already designed.
 
 **Decision:** Build and ship v1.0 (single-session planning, Items #1–#14) first, prove it works, then design multi-park/route planning properly as a v2.0 feature once there's a solid, tested foundation to extend — rather than guessing at a second planning paradigm's design before the first one exists.
+
+---
+
+## Items #16–20 — Added Mid-Build (v1 Development Session)
+
+*(These arose while Jim was building v1 in Claude Code and brought back here for planning — same working style as Items #1–#15, one at a time to a real conclusion.)*
+
+### Item #16 — Local + UTC Time/Date Display 🟣 SETTLED
+Persistent header/status bar showing both, always visible regardless of screen. **Local time/date displayed above UTC time/date**, both updating live.
+
+### Item #17 — Antenna Far-Field Pattern Plot Views (2D/3D) 🟣 SETTLED
+**Concept:** Visual plots of the antenna's far-field radiation pattern — 2D polar cuts and a full 3D surface view.
+
+**Technical approach:**
+- **2D polar plots** (azimuth/elevation cuts): rendered natively via Avalonia's built-in Skia rendering engine — no additional dependency needed.
+- **3D surface plot**: via **Ab4d.SharpEngine.AvaloniaUI**, a real, currently-maintained NuGet package for 3D rendering inside Avalonia — the most viable option found for this stack.
+- **Data source:** both NEC2++ output (Option B) and community library type-13 files (Option A) already contain full azimuth/elevation gain data — this is a new PropagationModel → UI rendering path on data already being parsed, not a new data-collection requirement.
+- **Presentation:** its own dedicated tab (2D pattern / 3D pattern), reachable from the selected antenna's recommendation.
+
+### Item #18 — GPS Primary / Geo-IP Fallback Location 🟣 SETTLED
+**Concept:** If a GPS is connected or available, use it as the primary location source; otherwise fall back to geo-IP.
+
+**Clarified scope:** "GPS connected" refers specifically to an **external hardware GPS receiver** (USB/serial, sending NMEA sentences) — not OS-level location services. This applies regardless of machine type (desktop or laptop): a desktop generally has no location capability at all without external hardware, and a laptop's OS-level location typically resolves via Wi-Fi positioning rather than true GPS anyway — so external hardware GPS is the right primary source either way, with geo-IP as the fallback on both. Precedence: external hardware GPS (if connected) → geo-IP fallback.
+
+### Item #19 — Auto-Install Dependencies During Setup 🟣 SETTLED
+**Concept:** The installer bundles and installs VOACAP and NEC2++ directly, rather than requiring the operator to separately find and install them.
+
+**Licensing basis (already established):** both are redistributable — VOACAP under NTIA's permissive terms (Item #3, condition: keep the disclaimer text present), NEC2++ under GPLv2 (open source, redistributable with attribution). The installer includes a license notices screen/folder satisfying both conditions.
+
+### Item #20 — Visual Design Language 🟣 SETTLED
+**Concept:** Jim's original framing was literal 3D-shaped/bevelled buttons to make the UI "pop" and feel less flat.
+
+**Design guidance given and accepted:** literal skeuomorphic 3D buttons (bevels, gradients mimicking physical buttons) read as dated rather than modern — that style peaked roughly 15 years ago. Recommended instead: **flat surfaces with intentional depth cues** — soft drop shadows, subtle elevation/layering between panels, a strong accent color, and real hover/press micro-animations (buttons that visibly lift or shift color on interaction). Achieves the desired "feels alive and professional" effect using current design conventions rather than a dated skeuomorphic look. Claude Code to implement this direction.
 
 ---
 

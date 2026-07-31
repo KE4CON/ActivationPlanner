@@ -4,7 +4,7 @@
 Name: Activation Planner
 Author: Jim, KE4CON
 Language: C# (.NET 10)
-UI Framework: Avalonia 12 (cross-platform — Windows, macOS, Linux)
+UI Framework: Avalonia 11 (cross-platform — Windows, macOS, Linux)
 Purpose: Pre-operation (and re-invokable) individual planning tool for ham radio operating sessions — POTA, SOTA, Field Day, EMCOMM, or general operating. Recommends bands, matches antennas from owned inventory, and builds packing checklists, grounded in real VOACAP propagation predictions rather than guesswork.
 
 ## Related Programs — Do Not Merge
@@ -31,10 +31,6 @@ Layer 3 — **Services**: Multiple independent peer services, each consuming Pro
   GET  https://api.pota.app/programs/locations/
   POST https://api.pota.app/spot/   (self-spot = spotter == activator)
   ```
-- `LocationService` — refresh-on-demand location only (no continuous tracking). Positioning I/O is behind an `ILocationProvider` seam; the default provider is approximate network geo-IP (runs only on explicit operator request), so a real platform GPS provider can plug in later. Endpoint:
-  ```
-  GET  https://ipapi.co/json/   (no-key geo-IP; approximate city-level lat/lon)
-  ```
 
 Layer 4 — **UI**: Avalonia views and viewmodels. Consumes Services and PropagationModel only.
 
@@ -54,15 +50,6 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - `ActivationPlanner.PropagationModel` (+ `.Tests`)
 - `ActivationPlanner.Services` (+ `.Tests`)
 - `ActivationPlanner.UI`
-
-## Approved NuGet Packages (list before adding — see "What NOT to Do")
-- **Avalonia** 12.x (UI) — `Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`; `Avalonia.Diagnostics` (Debug only)
-- **CommunityToolkit.Mvvm** 8.x (UI MVVM — `ObservableObject`/`[ObservableProperty]`/`[RelayCommand]`)
-- **xUnit** + `xunit.runner.visualstudio` + `Microsoft.NET.Test.Sdk` (test projects only)
-- **QuestPDF** 2026.x (Services — PDF plan export). Community license (free for small orgs/individuals), set once at startup via `QuestPDF.Settings.License = LicenseType.Community`.
-- Persistence uses framework `System.Text.Json` — no package needed.
-- Network I/O (POTA, geo-IP) uses framework `System.Net.Http.HttpClient` — no package needed.
-> Chose Avalonia **12** (not the doc's original 11): greenfield start, longer support runway; IcomRigControl to be aligned to 12 when it moves here.
 
 ## Feature Priorities (build in this order)
 Phase 1: Gear inventory — guided/required first-use setup wizard (step-by-step, Back/Next, progress indicator, skippable categories, Finish summary). Antenna entry uses a sub-list-and-detail pattern (add one antenna at a time to a running list, not a flat form). Data persists and is fully editable afterward via a separate non-wizard screen.
@@ -108,6 +95,15 @@ Phase 8: NEC2++ shell-out (Option B custom antenna modeling)
 - **Propagation trend view** — rolling few-hour window, automatic background VOACAP sampling every ~15–30 min, session-local only (no persistence, consistent with the stateless-replanning rule)
 - **Grey-line indicator** — informational overlay on the propagation chart (real sunrise/sunset from lat/lon+date); highlights when a band VOACAP already ranks well coincides with the grey-line window — never a separate ranking boost, to avoid double-counting an effect VOACAP's own model likely already reflects
 - **Quick Mode** — fast-access entry point reusing the same replanning logic (Item #4), skips setup screens and lands directly on the full (not truncated) band/antenna recommendation view
+
+
+## Additional v1 Features — Added Mid-Build
+- **Local + UTC time/date display** — persistent header/status bar, local above UTC, both live
+- **Antenna far-field pattern plots** — 2D polar cuts via Avalonia's native Skia rendering; 3D surface via `Ab4d.SharpEngine.AvaloniaUI`; data sourced from existing NEC2++/type-13 antenna data (no new data collection). Own dedicated tab.
+- **GPS priority:** external hardware GPS receiver (USB/serial NMEA) takes priority when connected, on either desktop or laptop machines; falls back to geo-IP otherwise. Not OS-level Wi-Fi-based location services.
+- **Installer bundles VOACAP and NEC2++ directly** — both are redistributable per their respective terms (see Item #3 in Decisions Log for VOACAP; NEC2++ is GPLv2). Include a license notices screen/folder satisfying both.
+- **Grey-line indicator is its own dedicated tab**, not a subtle chart overlay — same underlying correlation-highlight logic from Item #13, given clearer visual presentation.
+- **Visual design direction:** flat surfaces with intentional depth — soft drop shadows, panel elevation/layering, a strong accent color, real hover/press micro-animations. Avoid literal skeuomorphic 3D/bevelled buttons (dated style).
 
 
 ## Reference
