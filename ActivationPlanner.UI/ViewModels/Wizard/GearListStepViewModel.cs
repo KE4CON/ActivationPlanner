@@ -31,6 +31,12 @@ public sealed partial class GearListStepViewModel : WizardStepViewModel
             choices.AddRange(catalog.Radios.Select(r => new GearPresetChoice(
                 r.DisplayName, r.DisplayName, $"{r.Bands}, {r.PowerWatts:0} W. {r.Note}".Trim())));
         }
+        else
+        {
+            choices.AddRange(catalog.Gear
+                .Where(g => g.Category == category)
+                .Select(g => new GearPresetChoice(g.DisplayName, g.DisplayName, g.Note)));
+        }
         Presets = choices;
         _selectedPreset = choices[0];
     }

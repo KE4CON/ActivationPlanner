@@ -111,6 +111,62 @@
       "modelingConfidence": "Approximate",
       "note": "Highly configurable: overall length changes with coil taps and whip extension. Adjust length/height to match your actual build.",
       "source": "https://www.buddipole.com"
+    },
+    {
+      "id": "gabil-gra-7350t",
+      "manufacturer": "Gabil",
+      "model": "GRA-7350T",
+      "category": "Vertical",
+      "feedPoint": "BaseFed",
+      "lengthFeet": 8.5,
+      "heightFeet": 0,
+      "radialCount": null,
+      "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Loaded telescopic whip (~8.5 ft) with an internal tuning coil, 3.5-50 MHz. Coil-loaded, so the pattern is representative. Add a counterpoise/radials as you deploy it.",
+      "source": "https://www.gabilradio.com/product/0/detail-3f945440-c815-11ef-bf8f-f1f9b98086b7"
+    },
+    {
+      "id": "superantenna-mp1",
+      "manufacturer": "SuperAntenna",
+      "model": "MP1",
+      "category": "Vertical",
+      "feedPoint": "BaseFed",
+      "lengthFeet": 7,
+      "heightFeet": 0,
+      "radialCount": null,
+      "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Shortened loaded quarter-wave: ~7 ft whip over a high-Q slide-tuned coil, 40-10 m (80 m with extra coil). Coil-loaded, so treat the pattern as representative.",
+      "source": "http://newsuperantenna.com/MP1-SuperStick-Portable-Vertical-Antenna-Deluxe/"
+    },
+    {
+      "id": "packtenna-efhw-4010",
+      "manufacturer": "PackTenna",
+      "model": "Mini EFHW (40-10)",
+      "category": "EndFedHalfWave",
+      "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 65,
+      "heightFeet": 30,
+      "radialCount": null,
+      "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "~65 ft resonant half-wave on 40 m (also 20/15/10 m). Set the height to your support; sloper or inverted-V is common.",
+      "source": "https://www.packtenna.com/"
+    },
+    {
+      "id": "chameleon-emcomm-iii-p",
+      "manufacturer": "Chameleon",
+      "model": "EMCOMM III Portable",
+      "category": "EndFedHalfWave",
+      "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 73,
+      "heightFeet": 25,
+      "radialCount": null,
+      "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "73 ft end-fed wire on a 5:1 transformer with a 25 ft counterpoise, 160-10 m. Broadband (not a resonant half-wave), so the pattern is representative. Deploy as sloper, vertical, or inverted-L.",
+      "source": "https://chameleonantenna.com/products/cha-emcomm-iii-portable"
     }
   ],
   "radios": [
@@ -126,5 +182,14 @@
     { "id": "xiegu-x6100", "manufacturer": "Xiegu", "model": "X6100", "bands": "HF", "powerWatts": 5, "note": "5 W QRP portable SDR." },
     { "id": "xiegu-x6200", "manufacturer": "Xiegu", "model": "X6200", "bands": "HF", "powerWatts": 10, "note": "~10 W QRP portable SDR." },
     { "id": "lab599-tx-500", "manufacturer": "Lab599", "model": "Discovery TX-500", "bands": "HF", "powerWatts": 10, "note": "10 W weatherproof field radio." }
+  ],
+  "gear": [
+    { "id": "bioenno-blf-1220a", "category": "Power", "manufacturer": "Bioenno", "model": "BLF-1220A", "note": "12 V 20 Ah LiFePO4 battery." },
+    { "id": "bioenno-blf-1212a", "category": "Power", "manufacturer": "Bioenno", "model": "BLF-1212A", "note": "12 V 12 Ah LiFePO4 battery." },
+    { "id": "bioenno-blf-1206a", "category": "Power", "manufacturer": "Bioenno", "model": "BLF-1206A", "note": "12 V 6 Ah LiFePO4 battery." },
+    { "id": "talentcell-yb1206000", "category": "Power", "manufacturer": "Talentcell", "model": "YB1206000", "note": "12 V 6 Ah rechargeable Li-ion pack." },
+    { "id": "digirig-mobile", "category": "DigitalInterface", "manufacturer": "Digirig", "model": "Mobile", "note": "All-in-one sound-card + CAT (rig-control) interface." },
+    { "id": "signalink-usb", "category": "DigitalInterface", "manufacturer": "Tigertronics", "model": "SignaLink USB", "note": "USB sound-card interface for digital modes." },
+    { "id": "xiegu-de-19", "category": "DigitalInterface", "manufacturer": "Xiegu", "model": "DE-19", "note": "Data/audio expansion interface for G90 / X6100 / X6200." }
   ]
 }

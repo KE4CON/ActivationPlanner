@@ -42,6 +42,15 @@ public sealed class PresetCatalogTests
     }
 
     [Fact]
+    public void Gear_presets_cover_power_and_digital_interfaces()
+    {
+        var gear = PresetCatalog.Default.Gear;
+        Assert.Contains(gear, g => g.Category == GearCategory.Power);
+        Assert.Contains(gear, g => g.Category == GearCategory.DigitalInterface);
+        Assert.All(gear, g => Assert.False(string.IsNullOrWhiteSpace(g.DisplayName)));
+    }
+
+    [Fact]
     public void Every_preset_cites_a_source_and_names_a_manufacturer()
     {
         Assert.All(PresetCatalog.Default.Antennas, a =>

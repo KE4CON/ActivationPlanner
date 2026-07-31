@@ -5,9 +5,13 @@
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
              xmlns:wiz="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
              xmlns:gear="clr-namespace:ActivationPlanner.PropagationModel.Gear;assembly=ActivationPlanner.PropagationModel"
+             xmlns:conv="clr-namespace:ActivationPlanner.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="650"
              x:Class="ActivationPlanner.UI.Views.InventoryEditView"
              x:DataType="vm:InventoryEditViewModel">
+    <UserControl.Resources>
+        <conv:CategoryLabelConverter x:Key="CategoryLabel" />
+    </UserControl.Resources>
     <DockPanel Margin="24">
         <TextBlock DockPanel.Dock="Top" Text="Gear Inventory"
                    FontSize="24" FontWeight="SemiBold" Margin="0,0,0,4" />
@@ -28,7 +32,13 @@
                                 <TextBlock Text="Category" FontSize="12" Opacity="0.7" />
                                 <ComboBox ItemsSource="{Binding GearCategories}"
                                           SelectedItem="{Binding GearCategory}"
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:CompileBindings="False">
+                                            <TextBlock Text="{Binding Converter={StaticResource CategoryLabel}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="Start from a model" FontSize="12" Opacity="0.7" />
@@ -76,7 +86,7 @@
                                                 <StackPanel Grid.Column="0" Spacing="2">
                                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
-                                                               Text="{Binding Category, StringFormat='{}{0}'}" />
+                                                               Text="{Binding Category, Converter={StaticResource CategoryLabel}}" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
                                                                Text="{Binding Notes}"
                                                                IsVisible="{Binding Notes, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -133,7 +143,13 @@
                                 <TextBlock Text="Category" FontSize="12" Opacity="0.7" />
                                 <ComboBox ItemsSource="{Binding AntennaCategories}"
                                           SelectedItem="{Binding AntennaCategory}"
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:CompileBindings="False">
+                                            <TextBlock Text="{Binding Converter={StaticResource CategoryLabel}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="Feed point" FontSize="12" Opacity="0.7" />
@@ -192,7 +208,7 @@
                                                 <StackPanel Grid.Column="0" Spacing="2">
                                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
-                                                               Text="{Binding Category, StringFormat='{}{0}'}" />
+                                                               Text="{Binding Category, Converter={StaticResource CategoryLabel}}" />
                                                     <TextBlock Opacity="0.7" FontSize="12">
                                                         <Run Text="{Binding LengthFeet, Mode=OneWay}" /><Run Text=" ft long, " /><Run Text="{Binding HeightFeet, Mode=OneWay}" /><Run Text=" ft high" />
                                                     </TextBlock>

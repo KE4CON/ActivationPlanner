@@ -54,12 +54,27 @@ public sealed record RadioPreset(
     public string DisplayName => $"{Manufacturer} {Model}";
 }
 
+/// <summary>
+/// A real, description-only piece of gear (battery, digital interface, etc.) tagged with the gear
+/// <see cref="Category"/> it belongs to, so the gear form can offer it under the right category.
+/// </summary>
+public sealed record GearItemPreset(
+    string Id,
+    GearCategory Category,
+    string Manufacturer,
+    string Model,
+    string? Note)
+{
+    public string DisplayName => $"{Manufacturer} {Model}";
+}
+
 /// <summary>The full bundled preset catalog, one list per gear category covered so far.</summary>
 public sealed record GearPresetCatalog(
     IReadOnlyList<AntennaPreset> Antennas,
-    IReadOnlyList<RadioPreset> Radios)
+    IReadOnlyList<RadioPreset> Radios,
+    IReadOnlyList<GearItemPreset> Gear)
 {
-    public static GearPresetCatalog Empty { get; } = new([], []);
+    public static GearPresetCatalog Empty { get; } = new([], [], []);
 }
 
 /// <summary>

@@ -80,6 +80,12 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
             choices.AddRange(_catalog.Radios.Select(r => new GearPresetChoice(
                 r.DisplayName, r.DisplayName, $"{r.Bands}, {r.PowerWatts:0} W. {r.Note}".Trim())));
         }
+        else
+        {
+            choices.AddRange(_catalog.Gear
+                .Where(g => g.Category == GearCategory)
+                .Select(g => new GearPresetChoice(g.DisplayName, g.DisplayName, g.Note)));
+        }
         GearPresets = choices;
         SelectedGearPreset = choices[0];
     }

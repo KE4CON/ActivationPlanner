@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels.Wizard"
              xmlns:gear="clr-namespace:ActivationPlanner.PropagationModel.Gear;assembly=ActivationPlanner.PropagationModel"
+             xmlns:conv="clr-namespace:ActivationPlanner.UI.Converters"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="480"
              x:Class="ActivationPlanner.UI.Views.Wizard.AntennaStepView"
              x:DataType="vm:AntennaStepViewModel">
+    <UserControl.Resources>
+        <conv:CategoryLabelConverter x:Key="CategoryLabel" />
+    </UserControl.Resources>
     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
 
         <!-- Detail mini-form (scrollable so the Add/Clear buttons stay reachable on short windows) -->
@@ -46,7 +50,13 @@
                     <TextBlock Text="Category" FontSize="12" Opacity="0.7" />
                     <ComboBox ItemsSource="{Binding Categories}"
                               SelectedItem="{Binding SelectedCategory}"
-                              HorizontalAlignment="Stretch" />
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <TextBlock Text="{Binding Converter={StaticResource CategoryLabel}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
 
                 <StackPanel Spacing="2">
@@ -110,7 +120,7 @@
                                     <StackPanel Grid.Column="0" Spacing="2">
                                         <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
                                         <TextBlock Opacity="0.7" FontSize="12"
-                                                   Text="{Binding Category, StringFormat='{}{0}'}" />
+                                                   Text="{Binding Category, Converter={StaticResource CategoryLabel}}" />
                                         <TextBlock Opacity="0.7" FontSize="12">
                                             <Run Text="{Binding LengthFeet, Mode=OneWay}" /><Run Text=" ft long, " /><Run Text="{Binding HeightFeet, Mode=OneWay}" /><Run Text=" ft high" />
                                         </TextBlock>
