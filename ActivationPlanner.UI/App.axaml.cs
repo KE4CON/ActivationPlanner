@@ -1,6 +1,9 @@
+using System;
+using System.Net.Http;
 using ActivationPlanner.PropagationModel.Voacap;
 using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.UI.Sample;
@@ -38,11 +41,16 @@ public partial class App : Application
             var missionService = new MissionTypeService();
             var checklistService = new ChecklistService();
 
+            // Refresh-on-demand location (Phase 6). Approximate network geo-IP by default; the
+            // lookup only runs when the operator presses "Use my location".
+            var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            var locationService = new LocationService(new GeoIpLocationProvider(httpClient));
+
             // Shared session selections carried between screens (e.g. mission -> planning framing).
             var sessionState = new SessionState();
 
             var mainViewModel = new MainWindowViewModel(
-                inventoryService, planningService, missionService, checklistService,
+                inventoryService, planningService, locationService, missionService, checklistService,
                 sessionState, isSampleData: samplePredictor.IsSample);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };

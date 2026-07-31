@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.UI.ViewModels.Wizard;
@@ -22,23 +23,26 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 {
     private readonly GearInventoryService _inventory;
     private readonly PlanningService _planning;
+    private readonly LocationService _location;
     private readonly MissionTypeService _missions;
     private readonly ChecklistService _checklist;
     private readonly SessionState _session;
     private readonly bool _isSampleData;
 
     public MainWindowViewModel(
-        GearInventoryService inventory, PlanningService planning,
+        GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist,
         SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
+        ArgumentNullException.ThrowIfNull(location);
         ArgumentNullException.ThrowIfNull(missions);
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(session);
         _inventory = inventory;
         _planning = planning;
+        _location = location;
         _missions = missions;
         _checklist = checklist;
         _session = session;
@@ -65,7 +69,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowPlanning() =>
-        CurrentPage = new PlanningViewModel(_planning, _inventory, _session, _isSampleData);
+        CurrentPage = new PlanningViewModel(_planning, _inventory, _location, _session, _isSampleData);
 
     [RelayCommand]
     private void ShowMissionChecklist() =>

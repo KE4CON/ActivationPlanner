@@ -49,6 +49,10 @@
                         <TextBox Text="{Binding OperatorLongitude}" />
                     </StackPanel>
                 </Grid>
+                <Button Content="Use my location" Command="{Binding UseMyLocationCommand}"
+                        HorizontalAlignment="Stretch" />
+                <TextBlock Text="{Binding LocationStatus}" TextWrapping="Wrap" FontSize="12" Opacity="0.7"
+                           IsVisible="{Binding LocationStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                 <TextBlock Text="Target location" FontWeight="SemiBold" Margin="0,6,0,0" />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">

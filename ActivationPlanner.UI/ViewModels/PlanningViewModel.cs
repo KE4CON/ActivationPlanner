@@ -8,6 +8,7 @@ using ActivationPlanner.PropagationModel.Geo;
 using ActivationPlanner.PropagationModel.Missions;
 using ActivationPlanner.PropagationModel.Voacap;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.UI.ViewModels.Planning;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,15 +26,19 @@ public sealed partial class PlanningViewModel : ViewModelBase
 {
     private readonly PlanningService _planning;
     private readonly GearInventoryService _inventory;
+    private readonly LocationService _location;
 
     public PlanningViewModel(
-        PlanningService planning, GearInventoryService inventory, SessionState session, bool isSampleData)
+        PlanningService planning, GearInventoryService inventory, LocationService location,
+        SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(planning);
         ArgumentNullException.ThrowIfNull(inventory);
+        ArgumentNullException.ThrowIfNull(location);
         ArgumentNullException.ThrowIfNull(session);
         _planning = planning;
         _inventory = inventory;
+        _location = location;
         IsSampleData = isSampleData;
 
         var now = DateTime.UtcNow;
@@ -75,6 +80,44 @@ public sealed partial class PlanningViewModel : ViewModelBase
 
     /// <summary>True when the regional/NVIS framing is selected — surfaces near-in-target guidance.</summary>
     public bool IsRegionalNvis => Framing == PropagationFraming.RegionalNvis;
+
+    // ---- location (refresh-on-demand) ----
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UseMyLocationCommand))]
+    private bool _isLocating;
+
+    [ObservableProperty] private string? _locationStatus;
+
+    private bool CanLocate => !IsLocating;
+
+    /// <summary>Fill the operator location from a one-shot location fix (network geo-IP).</summary>
+    [RelayCommand(CanExecute = nameof(CanLocate))]
+    private async Task UseMyLocationAsync()
+    {
+        IsLocating = true;
+        LocationStatus = "Locating…";
+        try
+        {
+            var fix = await _location.RefreshAsync();
+            OperatorLatitude = Math.Round(fix.Location.LatitudeDeg, 4);
+            OperatorLongitude = Math.Round(fix.Location.LongitudeDeg, 4);
+            string place = fix.PlaceName is { } p ? p + " — " : string.Empty;
+            LocationStatus = $"{place}{fix.SourceLabel}{(fix.IsApproximate ? " (approximate)" : string.Empty)}";
+        }
+        catch (LocationUnavailableException ex)
+        {
+            LocationStatus = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            LocationStatus = $"Location failed: {ex.Message}";
+        }
+        finally
+        {
+            IsLocating = false;
+        }
+    }
 
     // ---- results / state ----
 
