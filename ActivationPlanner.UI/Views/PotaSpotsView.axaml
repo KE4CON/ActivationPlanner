@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
+             xmlns:pota="clr-namespace:ActivationPlanner.UI.ViewModels.Pota"
+             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+             x:Class="ActivationPlanner.UI.Views.PotaSpotsView"
+             x:DataType="vm:PotaSpotsViewModel">
+    <DockPanel Margin="20">
+        <!-- Header -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Text="POTA — live activator spots" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding LastUpdated}" FontSize="12" Opacity="0.7"
+                           IsVisible="{Binding LastUpdated, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}"
+                    VerticalAlignment="Center" />
+        </Grid>
+
+        <TextBlock DockPanel.Dock="Top" Text="Loading spots…" IsVisible="{Binding IsBusy}"
+                   Opacity="0.7" Margin="0,0,0,8" />
+        <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap" Opacity="0.8"
+                   Margin="0,0,0,8"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <!-- Column headings -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="70,90,60,220,90,*" Margin="4,0,4,4"
+              IsVisible="{Binding HasSpots}">
+            <TextBlock Grid.Column="0" Text="Band" FontSize="12" Opacity="0.6" />
+            <TextBlock Grid.Column="1" Text="Freq" FontSize="12" Opacity="0.6" />
+            <TextBlock Grid.Column="2" Text="Mode" FontSize="12" Opacity="0.6" />
+            <TextBlock Grid.Column="3" Text="Activator / park" FontSize="12" Opacity="0.6" />
+            <TextBlock Grid.Column="4" Text="Time" FontSize="12" Opacity="0.6" />
+            <TextBlock Grid.Column="5" Text="Spotter / comments" FontSize="12" Opacity="0.6" />
+        </Grid>
+
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Spots}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="pota:PotaSpotItemViewModel">
+                        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                BorderThickness="0,0,0,1" Padding="4,6">
+                            <Grid ColumnDefinitions="70,90,60,220,90,*">
+                                <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                        CornerRadius="4" Padding="6,1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding BandLabel}" FontWeight="SemiBold" FontSize="12" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="{Binding Frequency}" VerticalAlignment="Center" FontSize="12" />
+                                <TextBlock Grid.Column="2" Text="{Binding Mode}" VerticalAlignment="Center" FontSize="12" />
+                                <StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="1">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="{Binding Activator}" FontWeight="SemiBold" />
+                                        <Border Background="#333AA050" CornerRadius="7" Padding="5,0"
+                                                IsVisible="{Binding IsSelfSpot}" VerticalAlignment="Center">
+                                            <TextBlock Text="self" FontSize="10" Foreground="#3AA050" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding ParkName}" FontSize="11" Opacity="0.7"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="4" Text="{Binding Time}" VerticalAlignment="Center"
+                                           FontSize="12" Opacity="0.8" />
+                                <StackPanel Grid.Column="5" VerticalAlignment="Center" Spacing="1">
+                                    <TextBlock Text="{Binding Spotter}" FontSize="12" Opacity="0.8" />
+                                    <TextBlock Text="{Binding Comments}" FontSize="11" Opacity="0.6"
+                                               TextWrapping="Wrap" IsVisible="{Binding HasComments}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

@@ -31,6 +31,10 @@ Layer 3 — **Services**: Multiple independent peer services, each consuming Pro
   GET  https://api.pota.app/programs/locations/
   POST https://api.pota.app/spot/   (self-spot = spotter == activator)
   ```
+- `LocationService` — refresh-on-demand location only (no continuous tracking). Positioning I/O is behind an `ILocationProvider` seam; the default provider is approximate network geo-IP (runs only on explicit operator request), so a real platform GPS provider can plug in later. Endpoint:
+  ```
+  GET  https://ipapi.co/json/   (no-key geo-IP; approximate city-level lat/lon)
+  ```
 
 Layer 4 — **UI**: Avalonia views and viewmodels. Consumes Services and PropagationModel only.
 

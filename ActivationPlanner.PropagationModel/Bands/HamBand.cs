@@ -67,4 +67,36 @@ public static class HamBands
         }
         return best;
     }
+
+    // Amateur HF band edges in MHz (region-agnostic outer bounds), for mapping an actual
+    // operating frequency (e.g. a POTA spot) to the band it falls in.
+    private static readonly IReadOnlyDictionary<HamBand, (double Low, double High)> Edges =
+        new Dictionary<HamBand, (double, double)>
+        {
+            [HamBand.M160] = (1.80, 2.00),
+            [HamBand.M80] = (3.50, 4.00),
+            [HamBand.M60] = (5.25, 5.45),
+            [HamBand.M40] = (7.00, 7.30),
+            [HamBand.M30] = (10.10, 10.15),
+            [HamBand.M20] = (14.00, 14.35),
+            [HamBand.M17] = (18.06, 18.17),
+            [HamBand.M15] = (21.00, 21.45),
+            [HamBand.M12] = (24.89, 24.99),
+            [HamBand.M10] = (28.00, 29.70),
+        };
+
+    /// <summary>
+    /// The HF band that <paramref name="frequencyMhz"/> falls within, or null if it is outside
+    /// the amateur HF bands (e.g. a VHF/UHF frequency). Unlike <see cref="Nearest"/>, this uses
+    /// real band edges, so an out-of-band frequency is reported as no band rather than snapped.
+    /// </summary>
+    public static HamBand? BandForFrequencyMhz(double frequencyMhz)
+    {
+        foreach (var (band, edges) in Edges)
+        {
+            if (frequencyMhz >= edges.Low && frequencyMhz <= edges.High)
+                return band;
+        }
+        return null;
+    }
 }

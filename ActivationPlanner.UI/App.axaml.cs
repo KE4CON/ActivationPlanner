@@ -6,6 +6,7 @@ using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
+using ActivationPlanner.Services.Pota;
 using ActivationPlanner.UI.Sample;
 using ActivationPlanner.UI.ViewModels;
 using Avalonia;
@@ -46,12 +47,16 @@ public partial class App : Application
             var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
             var locationService = new LocationService(new GeoIpLocationProvider(httpClient));
 
+            // POTA public read-only data (Phase 7). Self-spotting exists but is gated off pending
+            // POTA confirmation, so it is deliberately not constructed/wired here.
+            var potaClient = new PotaClient(httpClient);
+
             // Shared session selections carried between screens (e.g. mission -> planning framing).
             var sessionState = new SessionState();
 
             var mainViewModel = new MainWindowViewModel(
                 inventoryService, planningService, locationService, missionService, checklistService,
-                sessionState, isSampleData: samplePredictor.IsSample);
+                potaClient, sessionState, isSampleData: samplePredictor.IsSample);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 

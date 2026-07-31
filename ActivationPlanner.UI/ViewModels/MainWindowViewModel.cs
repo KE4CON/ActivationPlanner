@@ -5,6 +5,7 @@ using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
+using ActivationPlanner.Services.Pota;
 using ActivationPlanner.UI.ViewModels.Wizard;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -26,12 +27,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly LocationService _location;
     private readonly MissionTypeService _missions;
     private readonly ChecklistService _checklist;
+    private readonly PotaClient _pota;
     private readonly SessionState _session;
     private readonly bool _isSampleData;
 
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
-        MissionTypeService missions, ChecklistService checklist,
+        MissionTypeService missions, ChecklistService checklist, PotaClient pota,
         SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
@@ -39,12 +41,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(location);
         ArgumentNullException.ThrowIfNull(missions);
         ArgumentNullException.ThrowIfNull(checklist);
+        ArgumentNullException.ThrowIfNull(pota);
         ArgumentNullException.ThrowIfNull(session);
         _inventory = inventory;
         _planning = planning;
         _location = location;
         _missions = missions;
         _checklist = checklist;
+        _pota = pota;
         _session = session;
         _isSampleData = isSampleData;
     }
@@ -74,6 +78,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowMissionChecklist() =>
         CurrentPage = new MissionChecklistViewModel(_missions, _checklist, _inventory, _session);
+
+    [RelayCommand]
+    private void ShowPotaSpots() =>
+        CurrentPage = new PotaSpotsViewModel(_pota);
 
     [RelayCommand]
     private void ShowInventory() =>
