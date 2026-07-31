@@ -9,8 +9,13 @@
     <DockPanel Margin="24">
         <!-- Header: title, progress, instructions -->
         <StackPanel DockPanel.Dock="Top" Spacing="6">
-            <TextBlock Text="Set up your gear inventory"
-                       FontSize="12" Opacity="0.6" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" Text="Set up your gear inventory"
+                           FontSize="12" Opacity="0.6" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Skip setup — quick plan"
+                        Command="{Binding SkipCommand}" IsVisible="{Binding CanSkip}"
+                        FontSize="12" Padding="8,2" />
+            </Grid>
             <Grid ColumnDefinitions="*,Auto">
                 <TextBlock Grid.Column="0"
                            Text="{Binding CurrentStep.Title}"

@@ -19,6 +19,7 @@ namespace ActivationPlanner.UI.ViewModels.Wizard;
 public sealed partial class SetupWizardViewModel : ViewModelBase
 {
     private readonly Func<Inventory, Task> _onCompleted;
+    private readonly Action? _onSkip;
     private readonly List<GearListStepViewModel> _gearSteps;
     private readonly AntennaStepViewModel _antennaStep;
     private readonly SummaryStepViewModel _summaryStep;
@@ -27,9 +28,14 @@ public sealed partial class SetupWizardViewModel : ViewModelBase
     /// Invoked with the assembled inventory when the operator presses Finish —
     /// the shell persists it and navigates onward.
     /// </param>
-    public SetupWizardViewModel(Func<Inventory, Task> onCompleted)
+    /// <param name="onSkip">
+    /// Optional: invoked when the operator chooses to skip setup and go straight to a quick plan
+    /// (Quick Mode). When null, no skip affordance is offered.
+    /// </param>
+    public SetupWizardViewModel(Func<Inventory, Task> onCompleted, Action? onSkip = null)
     {
         _onCompleted = onCompleted;
+        _onSkip = onSkip;
 
         var radios = new GearListStepViewModel(
             GearCategory.Radio, "Radios",
@@ -115,6 +121,13 @@ public sealed partial class SetupWizardViewModel : ViewModelBase
     {
         await _onCompleted(BuildInventory());
     }
+
+    /// <summary>True when a skip-to-quick-plan affordance should be shown.</summary>
+    public bool CanSkip => _onSkip is not null;
+
+    /// <summary>Skip setup and go straight to Quick Mode.</summary>
+    [RelayCommand]
+    private void Skip() => _onSkip?.Invoke();
 
     /// <summary>Assemble the inventory from every step's collected entries.</summary>
     public Inventory BuildInventory() => new()

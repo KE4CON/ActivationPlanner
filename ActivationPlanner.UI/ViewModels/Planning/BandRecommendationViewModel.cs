@@ -13,6 +13,11 @@ namespace ActivationPlanner.UI.ViewModels.Planning;
 public sealed class BandRecommendationViewModel
 {
     public BandRecommendationViewModel(BandRecommendation band)
+        : this(band, greyLineHours: null)
+    {
+    }
+
+    public BandRecommendationViewModel(BandRecommendation band, IReadOnlySet<int>? greyLineHours)
     {
         BandName = band.BandName;
         FrequencyLabel = band.FrequencyMhz.ToString("0.0##", CultureInfo.InvariantCulture) + " MHz";
@@ -27,7 +32,9 @@ public sealed class BandRecommendationViewModel
             : "no opening";
 
         HourCells = band.Prediction.Hours
-            .Select(s => new HourCellViewModel(s.HourUtc, s.Reliability, s.MufMhz))
+            .Select(s => new HourCellViewModel(
+                s.HourUtc, s.Reliability, s.MufMhz,
+                isGreyLine: greyLineHours?.Contains(s.HourUtc) ?? false))
             .ToList();
 
         Antennas = band.OwnedAntennas

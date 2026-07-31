@@ -30,7 +30,7 @@ public sealed partial class PlanningViewModel : ViewModelBase
 
     public PlanningViewModel(
         PlanningService planning, GearInventoryService inventory, LocationService location,
-        SessionState session, bool isSampleData)
+        SessionState session, bool isSampleData, bool quickStart = false)
     {
         ArgumentNullException.ThrowIfNull(planning);
         ArgumentNullException.ThrowIfNull(inventory);
@@ -49,6 +49,16 @@ public sealed partial class PlanningViewModel : ViewModelBase
         MissionProfile mission = MissionProfiles.For(session.SelectedMission);
         _framing = mission.Framing;
         MissionContext = $"Mission: {mission.DisplayName}";
+
+        // Quick Mode: locate and generate immediately so the operator lands on live recommendations.
+        if (quickStart)
+            _ = QuickStartAsync();
+    }
+
+    private async Task QuickStartAsync()
+    {
+        await UseMyLocationAsync();  // best-effort; reports its own status/errors
+        await GeneratePlanAsync();
     }
 
     /// <summary>True when predictions come from the offline sample stand-in, not a real VOACAP run.</summary>
@@ -153,9 +163,11 @@ public sealed partial class PlanningViewModel : ViewModelBase
 
             SessionPlan plan = await _planning.PlanAsync(query, antennas);
 
+            IReadOnlySet<int> greyLine = ComputeGreyLineHours(plan.HoursUtc);
+
             Bands.Clear();
             foreach (var band in plan.Bands)
-                Bands.Add(new BandRecommendationViewModel(band));
+                Bands.Add(new BandRecommendationViewModel(band, greyLine));
 
             HourAxis.Clear();
             foreach (int h in plan.HoursUtc)
@@ -182,6 +194,41 @@ public sealed partial class PlanningViewModel : ViewModelBase
         {
             IsBusy = false;
         }
+    }
+
+    [ObservableProperty] private string? _greyLineInfo;
+
+    /// <summary>Grey-line hours for the operator's location today, used to mark the heatmap.</summary>
+    private IReadOnlySet<int> ComputeGreyLineHours(IReadOnlyList<int> hours)
+    {
+        try
+        {
+            var location = new GeoLocation(OperatorLatitude, OperatorLongitude);
+            var today = DateTime.UtcNow;
+            SolarEvents events = SolarCalculator.ForDate(location, today.Year, today.Month, today.Day);
+
+            if (!events.HasGreyLine)
+            {
+                GreyLineInfo = "No grey line today (polar day/night).";
+                return new HashSet<int>();
+            }
+
+            GreyLineInfo = $"Grey line ▸ sunrise {HourLabel(events.SunriseUtcHour!.Value)}, " +
+                           $"sunset {HourLabel(events.SunsetUtcHour!.Value)} UTC (marked on the strip).";
+            return hours.Where(h => SolarCalculator.IsWithinGreyLine(h, events)).ToHashSet();
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            GreyLineInfo = null;
+            return new HashSet<int>();
+        }
+    }
+
+    private static string HourLabel(double hourUtc)
+    {
+        int hh = (int)hourUtc % 24;
+        int mm = (int)Math.Round((hourUtc - Math.Floor(hourUtc)) * 60) % 60;
+        return $"{hh:00}:{mm:00}";
     }
 
     private CircuitQuery BuildQuery() => new()

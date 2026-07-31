@@ -66,7 +66,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         await _inventory.LoadAsync();
 
         if (_inventory.IsFirstRun)
-            CurrentPage = new SetupWizardViewModel(OnWizardCompletedAsync);
+            CurrentPage = new SetupWizardViewModel(OnWizardCompletedAsync, ShowQuickPlan);
         else
             ShowPlanning();
     }
@@ -74,6 +74,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowPlanning() =>
         CurrentPage = new PlanningViewModel(_planning, _inventory, _location, _session, _isSampleData);
+
+    /// <summary>Quick Mode: jump straight to the recommendation view and auto-generate a plan.</summary>
+    [RelayCommand]
+    private void ShowQuickPlan() =>
+        CurrentPage = new PlanningViewModel(_planning, _inventory, _location, _session, _isSampleData, quickStart: true);
 
     [RelayCommand]
     private void ShowMissionChecklist() =>

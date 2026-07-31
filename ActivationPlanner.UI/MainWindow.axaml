@@ -17,6 +17,7 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <TextBlock Text="Activation Planner" FontWeight="SemiBold" FontSize="16"
                            VerticalAlignment="Center" Margin="0,0,16,0" />
+                <Button Content="Quick plan" Command="{Binding ShowQuickPlanCommand}" Classes="accent" />
                 <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" />
                 <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" />
                 <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" />

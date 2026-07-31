@@ -111,6 +111,9 @@
 
             <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" FontWeight="SemiBold"
                        IsVisible="{Binding HasResults}" Margin="0,0,0,4" />
+            <TextBlock DockPanel.Dock="Top" Text="{Binding GreyLineInfo}" FontSize="12" Opacity="0.7"
+                       Margin="0,0,0,8"
+                       IsVisible="{Binding GreyLineInfo, Converter={x:Static ObjectConverters.IsNotNull}}" />
             <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap"
                        Opacity="0.8" Margin="0,0,0,8"
                        IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -161,9 +164,12 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="planning:HourCellViewModel">
                                                     <StackPanel Spacing="2">
-                                                        <Border Width="20" Height="20" CornerRadius="2"
-                                                                Background="{Binding CellBrush}"
-                                                                ToolTip.Tip="{Binding Tooltip}" />
+                                                        <Panel Width="20" Height="20" ToolTip.Tip="{Binding Tooltip}">
+                                                            <Border CornerRadius="2" Background="{Binding CellBrush}" />
+                                                            <!-- Grey-line marker: sunrise/sunset window -->
+                                                            <Border VerticalAlignment="Top" Height="3" CornerRadius="2,2,0,0"
+                                                                    Background="#EFEFEF" IsVisible="{Binding IsGreyLine}" />
+                                                        </Panel>
                                                         <TextBlock Text="{Binding AxisLabel}" FontSize="9"
                                                                    Opacity="0.6" Width="20" TextAlignment="Center" />
                                                     </StackPanel>
