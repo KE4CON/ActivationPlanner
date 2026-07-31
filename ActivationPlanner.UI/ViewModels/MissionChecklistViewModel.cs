@@ -15,16 +15,20 @@ using CommunityToolkit.Mvvm.Input;
 namespace ActivationPlanner.UI.ViewModels;
 
 /// <summary>
-/// Mission selection + packing checklist (Phase 5). Choosing a mission type selects its
-/// checklist template and shows the operator's owned gear as "pack this" (grouped, with
-/// check-off and progress) alongside a clearly separated "consider acquiring" list. Also
-/// surfaces the mission's default propagation framing. Check-off state is session-local.
+/// Mission selection + tailored gear list (Phase 5). Choosing an operation type generates a packing
+/// list from the operator's <b>actual owned inventory</b> (radios, antennas, power, interfaces,
+/// computers), plus personal reminders, tailored by the mission — and a clearly separated "consider
+/// acquiring" list for mission needs nothing is owned for. The list is fully editable: check off,
+/// remove, add an owned item the generator skipped, or add a free-text one-off. Session-local.
 /// </summary>
 public sealed partial class MissionChecklistViewModel : ViewModelBase
 {
     private readonly ChecklistService _checklist;
     private readonly GearInventoryService _inventory;
     private readonly SessionState _session;
+
+    // Owned item name -> display group, so removed items can be re-offered and re-added correctly.
+    private Dictionary<string, string> _ownedByGroup = new(StringComparer.OrdinalIgnoreCase);
 
     public MissionChecklistViewModel(
         MissionTypeService missions, ChecklistService checklist,
@@ -39,7 +43,6 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
         _session = session;
 
         MissionOptions = missions.Profiles;
-        // Restore the mission carried over from elsewhere in the session.
         _selectedMission = MissionOptions.FirstOrDefault(p => p.Type == session.SelectedMission)
                            ?? MissionOptions[0];
         Rebuild();
@@ -52,36 +55,39 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
 
     partial void OnSelectedMissionChanged(MissionProfile value)
     {
-        // Carry the choice so the planning screen can default its framing from it.
         _session.SelectedMission = value.Type;
         Rebuild();
     }
 
     // ---- mission framing ----
-
     [ObservableProperty] private string _framingLabel = "";
     [ObservableProperty] private string _framingNote = "";
-
-    // ---- checklist ----
-
-    public ObservableCollection<ChecklistCategoryGroupViewModel> PackGroups { get; } = [];
-    public ObservableCollection<AcquireItemViewModel> AcquireItems { get; } = [];
-
+    [ObservableProperty] private string _packingTip = "";
     [ObservableProperty] private string _templateName = "";
+
+    // ---- the editable list ----
+    public ObservableCollection<GearListItemViewModel> PackItems { get; } = [];
+    public ObservableCollection<GearPlanEntry> AcquireItems { get; } = [];
     [ObservableProperty] private bool _hasAcquireItems;
 
-    // ---- progress ----
+    /// <summary>Owned items the operator removed from the list — offered for re-adding.</summary>
+    public ObservableCollection<string> AddableOwnedItems { get; } = [];
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddOwnedItemCommand))]
+    private string? _selectedAddableItem;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddCustomItemCommand))]
+    private string _newItemName = "";
+
+    // ---- progress ----
     [ObservableProperty] private int _packedCount;
     [ObservableProperty] private int _packTotal;
     [ObservableProperty] private double _progressPercent;
     [ObservableProperty] private string _progressText = "";
     [ObservableProperty] private int _essentialRemaining;
-
-    /// <summary>True when every essential pack item is checked — safe to head out.</summary>
     [ObservableProperty] private bool _allEssentialsPacked;
-
-    private IReadOnlyList<ChecklistItemViewModel> _allPackItems = [];
 
     private void Rebuild()
     {
@@ -89,65 +95,101 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
             ? "Regional / NVIS" : "DX / point-to-point";
         FramingNote = SelectedMission.FramingNote;
 
-        ChecklistInstance instance = _checklist.Build(SelectedMission.Type, _inventory.Current);
-        TemplateName = instance.TemplateName;
+        GearPlan plan = _checklist.BuildGearPlan(SelectedMission.Type, _inventory.Current);
+        TemplateName = plan.TemplateName;
+        PackingTip = plan.PackingTip;
 
-        // Detach old handlers before rebuilding so stale rows don't keep firing progress updates.
-        foreach (var item in _allPackItems)
-            item.PropertyChanged -= OnItemChanged;
+        foreach (var row in PackItems)
+            row.PropertyChanged -= OnItemChanged;
+        PackItems.Clear();
 
-        PackGroups.Clear();
-        var packItemVms = new List<ChecklistItemViewModel>();
-
-        // Group packable items by category, preserving enum order.
-        foreach (ChecklistCategory category in Enum.GetValues<ChecklistCategory>())
+        _ownedByGroup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (GearPlanEntry e in plan.Pack)
         {
-            var rows = instance.PackItems
-                .Where(i => i.Category == category)
-                .Select(i => new ChecklistItemViewModel(i))
-                .ToList();
-            if (rows.Count == 0)
-                continue;
-
-            foreach (var row in rows)
-            {
-                row.PropertyChanged += OnItemChanged;
-                packItemVms.Add(row);
-            }
-            PackGroups.Add(new ChecklistCategoryGroupViewModel(category, rows));
+            bool owned = e.Source == GearPlanSource.OwnedGear;
+            if (owned)
+                _ownedByGroup[e.Name] = e.Group;
+            AddRow(new GearListItemViewModel(
+                e.Name, e.Group, e.Essential, owned ? "in your kit" : "reminder", owned));
         }
 
-        _allPackItems = packItemVms;
-
         AcquireItems.Clear();
-        foreach (var item in instance.AcquireItems)
-            AcquireItems.Add(new AcquireItemViewModel(item));
+        foreach (GearPlanEntry e in plan.Acquire)
+            AcquireItems.Add(e);
         HasAcquireItems = AcquireItems.Count > 0;
 
+        RefreshAddable();
         UpdateProgress();
+    }
+
+    private void AddRow(GearListItemViewModel row)
+    {
+        row.PropertyChanged += OnItemChanged;
+        PackItems.Add(row);
     }
 
     private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ChecklistItemViewModel.IsChecked))
+        if (e.PropertyName == nameof(GearListItemViewModel.IsPacked))
             UpdateProgress();
+    }
+
+    private void RefreshAddable()
+    {
+        var present = PackItems.Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        AddableOwnedItems.Clear();
+        foreach (string name in _ownedByGroup.Keys.Where(n => !present.Contains(n)).OrderBy(n => n))
+            AddableOwnedItems.Add(name);
+    }
+
+    [RelayCommand]
+    private void Remove(GearListItemViewModel? item)
+    {
+        if (item is null)
+            return;
+        item.PropertyChanged -= OnItemChanged;
+        PackItems.Remove(item);
+        RefreshAddable();
+        UpdateProgress();
+    }
+
+    private bool CanAddOwned => SelectedAddableItem is not null;
+
+    [RelayCommand(CanExecute = nameof(CanAddOwned))]
+    private void AddOwnedItem()
+    {
+        if (SelectedAddableItem is not { } name || !_ownedByGroup.TryGetValue(name, out string? group))
+            return;
+        AddRow(new GearListItemViewModel(name, group, essential: false, "in your kit", isOwned: true));
+        RefreshAddable();
+        UpdateProgress();
+    }
+
+    private bool CanAddCustom => !string.IsNullOrWhiteSpace(NewItemName);
+
+    [RelayCommand(CanExecute = nameof(CanAddCustom))]
+    private void AddCustomItem()
+    {
+        AddRow(new GearListItemViewModel(NewItemName.Trim(), "Added by you", essential: false, "added", isOwned: false));
+        NewItemName = "";
+        UpdateProgress();
     }
 
     private void UpdateProgress()
     {
-        PackTotal = _allPackItems.Count;
-        PackedCount = _allPackItems.Count(i => i.IsChecked);
+        PackTotal = PackItems.Count;
+        PackedCount = PackItems.Count(i => i.IsPacked);
         ProgressPercent = PackTotal == 0 ? 0 : (double)PackedCount / PackTotal * 100;
         ProgressText = $"{PackedCount} of {PackTotal} packed";
-        EssentialRemaining = _allPackItems.Count(i => i.Essential && !i.IsChecked);
+        EssentialRemaining = PackItems.Count(i => i.Essential && !i.IsPacked);
         AllEssentialsPacked = EssentialRemaining == 0;
     }
 
-    /// <summary>Uncheck everything — "reset for next time" without losing the checklist.</summary>
+    /// <summary>Uncheck everything — "reset for next time" without losing the edited list.</summary>
     [RelayCommand]
     private void Reset()
     {
-        foreach (var item in _allPackItems)
-            item.IsChecked = false;
+        foreach (var item in PackItems)
+            item.IsPacked = false;
     }
 }

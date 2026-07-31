@@ -54,7 +54,7 @@ public static class ChecklistTemplates
             [
                 new() { Category = ChecklistCategory.Communications, Name = "Digital-mode interface", GearCategory = GC.DigitalInterface },
                 new() { Category = ChecklistCategory.Power, Name = "Extra power / generator fuel", GearCategory = GC.Power },
-                new() { Category = ChecklistCategory.Documentation, Name = "Logging computer" },
+                new() { Category = ChecklistCategory.Documentation, Name = "Logging computer", GearCategory = GC.Computer },
                 new() { Category = ChecklistCategory.Safety, Name = "Canopy / shelter" },
             ],
             [MissionType.Emcomm] =

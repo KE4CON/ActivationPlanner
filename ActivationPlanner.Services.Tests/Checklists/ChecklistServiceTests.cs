@@ -110,4 +110,59 @@ public sealed class ChecklistServiceTests
         Assert.Throws<System.ArgumentNullException>(
             () => new ChecklistService().Build(MissionType.Pota, null!));
     }
+
+    // ---- BuildGearPlan (tailored, specific-item plan) ----
+
+    [Fact]
+    public void Gear_plan_lists_the_operators_actual_owned_items_by_name()
+    {
+        var inventory = new Inventory
+        {
+            Items = [Item(GearCategory.Radio, "Icom IC-705"), Item(GearCategory.Power, "Bioenno BLF-1220A")],
+            Antennas = [Antenna()],
+        };
+
+        var plan = new ChecklistService().BuildGearPlan(MissionType.Pota, inventory);
+
+        Assert.Contains(plan.Pack, e => e.Name == "Icom IC-705" && e.Group == "Radio" && e.Source == GearPlanSource.OwnedGear);
+        Assert.Contains(plan.Pack, e => e.Name == "Bioenno BLF-1220A" && e.Group == "Power");
+        Assert.Contains(plan.Pack, e => e.Name == "40m EFHW" && e.Group == "Antennas");
+    }
+
+    [Fact]
+    public void Gear_plan_keeps_personal_reminders_in_the_pack_list()
+    {
+        var plan = new ChecklistService().BuildGearPlan(MissionType.Pota, Inventory.Empty);
+        Assert.Contains(plan.Pack, e => e.Name == "First aid kit" && e.Source == GearPlanSource.Reminder);
+    }
+
+    [Fact]
+    public void Gear_plan_flags_unowned_mission_needs_as_acquire_only()
+    {
+        // EMCOMM needs a digital interface; empty inventory -> it must be an acquire gap, never packed.
+        var plan = new ChecklistService().BuildGearPlan(MissionType.Emcomm, Inventory.Empty);
+
+        Assert.Contains(plan.Acquire, e => e.Name.Contains("Digital-mode interface"));
+        Assert.DoesNotContain(plan.Pack, e => e.Name.Contains("Digital-mode interface"));
+        Assert.Empty(plan.Pack.Intersect(plan.Acquire));
+    }
+
+    [Fact]
+    public void Gear_plan_does_not_duplicate_an_owned_role_into_acquire()
+    {
+        // Owning a digital interface means it shows as owned gear, not as an acquire gap.
+        var inventory = new Inventory { Items = [Item(GearCategory.DigitalInterface, "Digirig Mobile")] };
+        var plan = new ChecklistService().BuildGearPlan(MissionType.Emcomm, inventory);
+
+        Assert.Contains(plan.Pack, e => e.Name == "Digirig Mobile" && e.Group == "Digital Interface");
+        Assert.DoesNotContain(plan.Acquire, e => e.Name.Contains("Digital-mode interface"));
+    }
+
+    [Fact]
+    public void Gear_plan_carries_a_mission_packing_tip()
+    {
+        var sota = new ChecklistService().BuildGearPlan(MissionType.Sota, Inventory.Empty);
+        Assert.False(string.IsNullOrWhiteSpace(sota.PackingTip));
+        Assert.Contains("light", sota.PackingTip, System.StringComparison.OrdinalIgnoreCase);
+    }
 }

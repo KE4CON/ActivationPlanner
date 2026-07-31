@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
              xmlns:checklists="clr-namespace:ActivationPlanner.UI.ViewModels.Checklists"
+             xmlns:cl="clr-namespace:ActivationPlanner.PropagationModel.Checklists;assembly=ActivationPlanner.PropagationModel"
              xmlns:missions="clr-namespace:ActivationPlanner.PropagationModel.Missions;assembly=ActivationPlanner.PropagationModel"
-             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+             mc:Ignorable="d" d:DesignWidth="980" d:DesignHeight="680"
              x:Class="ActivationPlanner.UI.Views.MissionChecklistView"
              x:DataType="vm:MissionChecklistViewModel">
     <Grid ColumnDefinitions="320,*" Margin="20">
@@ -14,10 +15,10 @@
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
             <StackPanel Spacing="10">
-                <TextBlock Text="Mission &amp; checklist" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="Operation &amp; gear list" FontSize="20" FontWeight="SemiBold" />
 
                 <StackPanel Spacing="2">
-                    <TextBlock Text="Mission type" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="Operation type" FontSize="12" Opacity="0.7" />
                     <ComboBox ItemsSource="{Binding MissionOptions}" SelectedItem="{Binding SelectedMission}"
                               HorizontalAlignment="Stretch">
                         <ComboBox.ItemTemplate>
@@ -56,39 +57,58 @@
             </StackPanel>
         </Border>
 
-        <!-- ============ Checklist ============ -->
+        <!-- ============ Gear list ============ -->
         <ScrollViewer Grid.Column="1">
             <StackPanel Spacing="12">
                 <TextBlock Text="{Binding TemplateName}" FontSize="16" FontWeight="SemiBold" />
-                <TextBlock Opacity="0.7" TextWrapping="Wrap"
-                           Text="Pack this — your owned gear and personal-item reminders for this mission." />
 
-                <!-- Pack-this groups -->
-                <ItemsControl ItemsSource="{Binding PackGroups}">
+                <!-- Mission packing tip -->
+                <Border Background="#332F6FEB" BorderBrush="#2F6FEB" BorderThickness="1" CornerRadius="6" Padding="10,8">
+                    <TextBlock Text="{Binding PackingTip}" TextWrapping="Wrap" FontSize="12" />
+                </Border>
+
+                <TextBlock Opacity="0.7" TextWrapping="Wrap"
+                           Text="Built from your inventory for this operation. Check items off as you pack, remove what you're not bringing, or add anything missing." />
+
+                <!-- Add controls -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                        BorderThickness="1" CornerRadius="6" Padding="12">
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding AddableOwnedItems}"
+                                      SelectedItem="{Binding SelectedAddableItem}"
+                                      PlaceholderText="Add back an owned item you removed…" />
+                            <Button Grid.Column="1" Content="Add owned" Command="{Binding AddOwnedItemCommand}" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <TextBox Grid.Column="0" Text="{Binding NewItemName}"
+                                     PlaceholderText="Add your own item (e.g. sunscreen, coax jumper)…" />
+                            <Button Grid.Column="1" Content="Add item" Command="{Binding AddCustomItemCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Pack list -->
+                <ItemsControl ItemsSource="{Binding PackItems}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="checklists:ChecklistCategoryGroupViewModel">
+                        <DataTemplate x:DataType="checklists:GearListItemViewModel">
                             <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                    BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,4">
-                                <StackPanel Spacing="6">
-                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-                                    <ItemsControl ItemsSource="{Binding Items}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="checklists:ChecklistItemViewModel">
-                                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,2">
-                                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}"
-                                                              Content="{Binding Name}" />
-                                                    <Border Grid.Column="1" CornerRadius="8" Padding="6,1" Margin="6,0"
-                                                            VerticalAlignment="Center" Background="#333AA050"
-                                                            IsVisible="{Binding Essential}">
-                                                        <TextBlock Text="essential" FontSize="11" Foreground="#3AA050" />
-                                                    </Border>
-                                                    <TextBlock Grid.Column="2" Text="{Binding StatusLabel}"
-                                                               FontSize="11" Opacity="0.6" VerticalAlignment="Center" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
+                                    BorderThickness="0,0,0,1" Padding="2,6">
+                                <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsPacked}" Content="{Binding Name}" />
+                                    <Border Grid.Column="1" CornerRadius="8" Padding="6,1" VerticalAlignment="Center"
+                                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                                        <TextBlock Text="{Binding Group}" FontSize="11" Opacity="0.8" />
+                                    </Border>
+                                    <Border Grid.Column="2" CornerRadius="8" Padding="6,1" VerticalAlignment="Center"
+                                            Background="#333AA050" IsVisible="{Binding Essential}">
+                                        <TextBlock Text="essential" FontSize="11" Foreground="#3AA050" />
+                                    </Border>
+                                    <Button Grid.Column="3" Content="Remove" Padding="8,2" FontSize="12"
+                                            Command="{Binding $parent[UserControl].((vm:MissionChecklistViewModel)DataContext).RemoveCommand}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -98,16 +118,16 @@
                 <StackPanel Spacing="6" IsVisible="{Binding HasAcquireItems}">
                     <TextBlock Text="Consider acquiring" FontSize="16" FontWeight="SemiBold" Margin="0,8,0,0" />
                     <TextBlock Opacity="0.7" TextWrapping="Wrap"
-                               Text="This mission typically calls for these, but they're not in your inventory. Not part of your pack list." />
+                               Text="This operation typically calls for these, but you don't own one. Not part of your pack list." />
                     <Border BorderBrush="#C99A2B" BorderThickness="1" CornerRadius="6" Padding="12" Background="#22C99A2B">
                         <ItemsControl ItemsSource="{Binding AcquireItems}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="checklists:AcquireItemViewModel">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,3">
-                                        <TextBlock Grid.Column="0" Text="{Binding Category}" FontSize="11"
-                                                   Opacity="0.6" Width="180" VerticalAlignment="Center"
+                                <DataTemplate x:DataType="cl:GearPlanEntry">
+                                    <Grid ColumnDefinitions="140,*,Auto" Margin="0,3">
+                                        <TextBlock Grid.Column="0" Text="{Binding Group}" FontSize="11"
+                                                   Opacity="0.6" VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" TextWrapping="Wrap" />
                                         <TextBlock Grid.Column="2" Text="essential" FontSize="11" Foreground="#C99A2B"
                                                    VerticalAlignment="Center" IsVisible="{Binding Essential}" />
                                     </Grid>
