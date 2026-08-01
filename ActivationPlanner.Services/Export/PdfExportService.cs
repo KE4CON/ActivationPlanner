@@ -33,6 +33,21 @@ public sealed class PdfExportService
         return Build(request).GeneratePdf();
     }
 
+    /// <summary>Render a selected-only gear pack list to <paramref name="output"/> (off the UI thread).</summary>
+    public Task WriteGearListAsync(GearListPrintRequest request, Stream output, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(output);
+        return Task.Run(() => BuildGearList(request).GeneratePdf(output), ct);
+    }
+
+    /// <summary>Render a selected-only gear pack list to a PDF byte array.</summary>
+    public byte[] BuildGearListBytes(GearListPrintRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return BuildGearList(request).GeneratePdf();
+    }
+
     private static IDocument Build(PdfExportRequest request) => Document.Create(container =>
     {
         container.Page(page =>
@@ -60,6 +75,61 @@ public sealed class PdfExportService
                     col.Item().Element(e => AntennasSection(e, request.Bands));
                 if (request.IncludeChecklist && request.Checklist is { } checklist)
                     col.Item().Element(e => ChecklistSection(e, checklist));
+            });
+
+            page.Footer().AlignRight().Text(t =>
+            {
+                t.Span("Activation Planner • ").FontSize(8).FontColor(Colors.Grey.Medium);
+                t.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Medium);
+                t.Span(" / ").FontSize(8).FontColor(Colors.Grey.Medium);
+                t.TotalPages().FontSize(8).FontColor(Colors.Grey.Medium);
+            });
+        });
+    });
+
+    // A standalone packing sheet of only the items the operator selected on the gear-list screen,
+    // grouped by kind, each with a tick box to check off as it goes in the bag.
+    private static IDocument BuildGearList(GearListPrintRequest request) => Document.Create(container =>
+    {
+        container.Page(page =>
+        {
+            page.Margin(36);
+            page.Size(PageSizes.A4);
+            page.DefaultTextStyle(t => t.FontSize(11));
+
+            page.Header().Column(col =>
+            {
+                col.Item().Text(request.Title).FontSize(20).SemiBold();
+                if (!string.IsNullOrWhiteSpace(request.Subtitle))
+                    col.Item().Text(request.Subtitle).FontSize(9).FontColor(Colors.Grey.Darken1);
+                if (!string.IsNullOrWhiteSpace(request.PackingTip))
+                    col.Item().PaddingTop(4).Text(request.PackingTip).FontSize(9).Italic().FontColor(Colors.Blue.Darken2);
+            });
+
+            page.Content().PaddingVertical(12).Column(col =>
+            {
+                col.Spacing(10);
+                if (request.Items.Count == 0)
+                {
+                    col.Item().Text("No items selected.").Italic().FontColor(Colors.Grey.Darken1);
+                    return;
+                }
+
+                foreach (var group in request.Items.GroupBy(i => i.Group))
+                {
+                    col.Item().PaddingTop(4).Text(group.Key).FontSize(13).SemiBold();
+                    foreach (var item in group)
+                        col.Item().Row(row =>
+                        {
+                            row.AutoItem().Text("☐  ");
+                            row.RelativeItem().Text(t =>
+                            {
+                                t.Span(item.Name);
+                                if (item.Essential)
+                                    t.Span("  (essential)").FontSize(9).FontColor(Colors.Green.Darken2);
+                            });
+                        });
+                }
             });
 
             page.Footer().AlignRight().Text(t =>

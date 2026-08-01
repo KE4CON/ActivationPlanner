@@ -120,7 +120,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowMissionChecklist() =>
-        CurrentPage = new MissionChecklistViewModel(_missions, _checklist, _inventory, _session);
+        CurrentPage = new MissionChecklistViewModel(_missions, _checklist, _inventory, _pdf, _session);
 
     [RelayCommand]
     private void ShowTrend() =>

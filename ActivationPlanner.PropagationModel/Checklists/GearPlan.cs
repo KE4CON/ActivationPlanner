@@ -35,6 +35,13 @@ public sealed record GearPlanEntry
 
     /// <summary>True when essential for the mission.</summary>
     public bool Essential { get; init; }
+
+    /// <summary>
+    /// True when this owned item is especially well suited to the selected operation — a QRP radio for
+    /// SOTA, a 100 W radio for Field Day, a logging computer for Field Day, etc. Drives a "Suggested"
+    /// badge and sorts the item toward the top; nothing is ever hidden (operator edits from there).
+    /// </summary>
+    public bool Recommended { get; init; }
 }
 
 /// <summary>

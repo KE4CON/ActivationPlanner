@@ -158,6 +158,98 @@ public sealed class ChecklistServiceTests
         Assert.DoesNotContain(plan.Acquire, e => e.Name.Contains("Digital-mode interface"));
     }
 
+    private static GearItem Radio(string name, string notes) =>
+        new() { Category = GearCategory.Radio, Name = name, Notes = notes };
+
+    [Fact]
+    public void Sota_suggests_qrp_radios_field_day_suggests_100w_nothing_hidden()
+    {
+        var inventory = new Inventory
+        {
+            Items =
+            [
+                Radio("Icom IC-705", "HF / VHF / UHF, 10 W. QRP portable."),
+                Radio("Yaesu FT-891", "HF + 6 m, 100 W."),
+            ],
+        };
+        var svc = new ChecklistService();
+
+        var sota = svc.BuildGearPlan(MissionType.Sota, inventory);
+        // Both radios still present (nothing hidden), but only the QRP one is suggested.
+        Assert.Contains(sota.Pack, e => e.Name == "Icom IC-705");
+        Assert.Contains(sota.Pack, e => e.Name == "Yaesu FT-891");
+        Assert.True(sota.Pack.Single(e => e.Name == "Icom IC-705").Recommended);
+        Assert.False(sota.Pack.Single(e => e.Name == "Yaesu FT-891").Recommended);
+
+        var fieldDay = svc.BuildGearPlan(MissionType.FieldDay, inventory);
+        Assert.False(fieldDay.Pack.Single(e => e.Name == "Icom IC-705").Recommended);
+        Assert.True(fieldDay.Pack.Single(e => e.Name == "Yaesu FT-891").Recommended);
+    }
+
+    [Fact]
+    public void Suggested_radios_sort_ahead_of_the_rest()
+    {
+        // 100 W radio listed first in inventory, but SOTA should surface the QRP one first.
+        var inventory = new Inventory
+        {
+            Items =
+            [
+                Radio("Yaesu FT-891", "100 W."),
+                Radio("QRP Labs QMX+", "5 W multi-band kit."),
+            ],
+        };
+
+        var radios = new ChecklistService().BuildGearPlan(MissionType.Sota, inventory)
+            .Pack.Where(e => e.Group == "Radio").ToList();
+
+        Assert.Equal("QRP Labs QMX+", radios[0].Name);
+    }
+
+    [Fact]
+    public void Computer_and_interface_are_suggested_for_field_day_but_not_hidden_on_sota()
+    {
+        var inventory = new Inventory
+        {
+            Items = [Item(GearCategory.Computer, "Panasonic Toughbook")],
+        };
+        var svc = new ChecklistService();
+
+        var fieldDay = svc.BuildGearPlan(MissionType.FieldDay, inventory);
+        Assert.True(fieldDay.Pack.Single(e => e.Name == "Panasonic Toughbook").Recommended);
+
+        var sota = svc.BuildGearPlan(MissionType.Sota, inventory);
+        // Still packed (nothing hidden), just not suggested for a light SOTA hike.
+        Assert.Contains(sota.Pack, e => e.Name == "Panasonic Toughbook");
+        Assert.False(sota.Pack.Single(e => e.Name == "Panasonic Toughbook").Recommended);
+    }
+
+    [Fact]
+    public void Owned_gear_is_never_dropped_when_switching_operations()
+    {
+        var inventory = new Inventory
+        {
+            Items =
+            [
+                Radio("Icom IC-705", "10 W QRP."),
+                Item(GearCategory.Power, "Bioenno 30Ah"),
+                Item(GearCategory.Computer, "Toughbook"),
+                Item(GearCategory.Emcomm, "Go-kit binder"),
+            ],
+            Antennas = [Antenna()],
+        };
+        var svc = new ChecklistService();
+
+        foreach (var mission in new[] { MissionType.Pota, MissionType.Sota, MissionType.FieldDay, MissionType.Emcomm, MissionType.General })
+        {
+            var packed = svc.BuildGearPlan(mission, inventory).Pack.Select(e => e.Name).ToHashSet();
+            Assert.Contains("Icom IC-705", packed);
+            Assert.Contains("Bioenno 30Ah", packed);
+            Assert.Contains("Toughbook", packed);
+            Assert.Contains("Go-kit binder", packed);
+            Assert.Contains("40m EFHW", packed);
+        }
+    }
+
     [Fact]
     public void Gear_plan_carries_a_mission_packing_tip()
     {

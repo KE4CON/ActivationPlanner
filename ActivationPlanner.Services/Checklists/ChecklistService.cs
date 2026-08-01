@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using ActivationPlanner.PropagationModel.Checklists;
 using ActivationPlanner.PropagationModel.Gear;
 using ActivationPlanner.PropagationModel.Missions;
@@ -86,16 +87,27 @@ public sealed class ChecklistService
 
         var entries = new List<GearPlanEntry>();
 
-        // 1) Owned gear — the real items. Radios first, then antennas, then support gear.
-        foreach (GearItem radio in inventory.ItemsIn(GearCategory.Radio))
-            entries.Add(OwnedEntry(radio.Name, GroupLabel(GearCategory.Radio)));
+        // "Specialty" categories this operation calls for beyond the shared base kit that every
+        // operation (including General) carries. Owned gear in these is flagged as suggested — e.g.
+        // a logging computer or a digital interface for Field Day, EMCOMM gear for EMCOMM.
+        var specialty = TemplateCategories(missionType);
+        specialty.ExceptWith(TemplateCategories(MissionType.General));
+
+        // 1) Owned gear — everything the operator owns, nothing hidden. Items well suited to the
+        //    operation are flagged Recommended (a "Suggested" badge) and sorted first in their group;
+        //    the list stays fully editable, so the operator trims or adds from this starting point.
+        //    Radios: QRP for SOTA, 100 W for Field Day; other operations don't discriminate on power.
+        foreach (GearItem radio in inventory.ItemsIn(GearCategory.Radio)
+                     .OrderByDescending(r => RadioSuitsMission(missionType, r)))
+            entries.Add(OwnedEntry(radio.Name, GroupLabel(GearCategory.Radio),
+                                   RadioSuitsMission(missionType, radio)));
 
         foreach (AntennaProfile antenna in inventory.Antennas)
             entries.Add(OwnedEntry(antenna.Name, "Antennas"));
 
         foreach (GearCategory category in GearOrder.Where(c => c != GearCategory.Radio))
             foreach (GearItem item in inventory.ItemsIn(category))
-                entries.Add(OwnedEntry(item.Name, GroupLabel(category)));
+                entries.Add(OwnedEntry(item.Name, GroupLabel(category), specialty.Contains(category)));
 
         // 2) Personal reminders — template items that don't map to trackable inventory.
         foreach (ChecklistTemplateItem t in template.Items.Where(t => !t.MapsToInventory))
@@ -135,8 +147,47 @@ public sealed class ChecklistService
         };
     }
 
-    private static GearPlanEntry OwnedEntry(string name, string group) =>
-        new() { Name = name, Group = group, Source = GearPlanSource.OwnedGear };
+    private static GearPlanEntry OwnedEntry(string name, string group, bool recommended = false) =>
+        new() { Name = name, Group = group, Source = GearPlanSource.OwnedGear, Recommended = recommended };
+
+    // ---- radio power-class matching (drives per-mission radio suggestions) ----
+
+    // QRP is conventionally ≤ ~10 W (covers the IC-705's 10 W); Field Day wants the 100 W class.
+    private const int QrpWattsCeiling = 10;
+    private const int FieldDayWattsFloor = 50;
+
+    // Radios came from the preset catalog, so their notes reliably carry the rating ("100 W", "5 W",
+    // "QRP"). Parse the first wattage figure; fall back to a "QRP" mention when no number is present.
+    private static readonly Regex WattsPattern = new(@"(\d+)\s*[wW]\b", RegexOptions.Compiled);
+
+    private static int? ExtractWatts(GearItem radio)
+    {
+        if (radio.Notes is not { } notes)
+            return null;
+        Match m = WattsPattern.Match(notes);
+        return m.Success && int.TryParse(m.Groups[1].Value, out int w) ? w : null;
+    }
+
+    private static bool RadioSuitsMission(MissionType mission, GearItem radio)
+    {
+        int? watts = ExtractWatts(radio);
+        bool qrp = watts is <= QrpWattsCeiling
+                   || (watts is null && radio.Notes?.Contains("QRP", StringComparison.OrdinalIgnoreCase) == true);
+        bool fullPower = watts is >= FieldDayWattsFloor;
+
+        return mission switch
+        {
+            MissionType.Sota => qrp,          // pack light — QRP only
+            MissionType.FieldDay => fullPower, // higher capacity — 100 W class
+            _ => false,                        // POTA / EMCOMM / General don't discriminate on power
+        };
+    }
+
+    private static HashSet<GearCategory> TemplateCategories(MissionType mission) =>
+        ChecklistTemplates.For(mission).Items
+            .Where(t => t.GearCategory is not null)
+            .Select(t => t.GearCategory!.Value)
+            .ToHashSet();
 
     private static string GroupLabel(GearCategory category) => category switch
     {

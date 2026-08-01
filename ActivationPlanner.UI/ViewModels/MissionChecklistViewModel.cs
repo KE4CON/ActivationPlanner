@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ActivationPlanner.PropagationModel.Checklists;
 using ActivationPlanner.PropagationModel.Missions;
 using ActivationPlanner.Services.Checklists;
+using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.UI.ViewModels.Checklists;
@@ -25,6 +28,7 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
 {
     private readonly ChecklistService _checklist;
     private readonly GearInventoryService _inventory;
+    private readonly PdfExportService _pdf;
     private readonly SessionState _session;
 
     // Owned item name -> display group, so removed items can be re-offered and re-added correctly.
@@ -32,14 +36,16 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
 
     public MissionChecklistViewModel(
         MissionTypeService missions, ChecklistService checklist,
-        GearInventoryService inventory, SessionState session)
+        GearInventoryService inventory, PdfExportService pdf, SessionState session)
     {
         ArgumentNullException.ThrowIfNull(missions);
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(inventory);
+        ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(session);
         _checklist = checklist;
         _inventory = inventory;
+        _pdf = pdf;
         _session = session;
 
         MissionOptions = missions.Profiles;
@@ -110,7 +116,7 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
             if (owned)
                 _ownedByGroup[e.Name] = e.Group;
             AddRow(new GearListItemViewModel(
-                e.Name, e.Group, e.Essential, owned ? "in your kit" : "reminder", owned));
+                e.Name, e.Group, e.Essential, owned ? "in your kit" : "reminder", owned, e.Recommended));
         }
 
         AcquireItems.Clear();
@@ -183,7 +189,31 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
         ProgressText = $"{PackedCount} of {PackTotal} packed";
         EssentialRemaining = PackItems.Count(i => i.Essential && !i.IsPacked);
         AllEssentialsPacked = EssentialRemaining == 0;
+        OnPropertyChanged(nameof(CanPrint));
     }
+
+    // ---- print the selected gear (checked items only) ----
+
+    /// <summary>Enabled once at least one item is checked — the print includes only checked items.</summary>
+    public bool CanPrint => PackItems.Any(i => i.IsPacked);
+
+    /// <summary>Default file name for the packing-list PDF (no spaces, safe for a save dialog).</summary>
+    public string SuggestedPrintFileName =>
+        $"{TemplateName.Replace(' ', '-')}-packing-list.pdf";
+
+    /// <summary>Build the print request from the checked items only, grouped in display order.</summary>
+    public GearListPrintRequest BuildPrintRequest() => new()
+    {
+        Title = $"{TemplateName} — packing list",
+        Subtitle = SelectedMission.DisplayName,
+        PackingTip = PackingTip,
+        Items = PackItems.Where(i => i.IsPacked)
+            .Select(i => new GearPrintItem { Name = i.Name, Group = i.Group, Essential = i.Essential })
+            .ToList(),
+    };
+
+    /// <summary>Render the selected-items packing list to <paramref name="output"/> as PDF.</summary>
+    public Task PrintSelectedAsync(Stream output) => _pdf.WriteGearListAsync(BuildPrintRequest(), output);
 
     /// <summary>Uncheck everything — "reset for next time" without losing the edited list.</summary>
     [RelayCommand]

@@ -9,13 +9,15 @@ namespace ActivationPlanner.UI.ViewModels.Checklists;
 /// </summary>
 public sealed partial class GearListItemViewModel : ObservableObject
 {
-    public GearListItemViewModel(string name, string group, bool essential, string statusLabel, bool isOwned)
+    public GearListItemViewModel(string name, string group, bool essential, string statusLabel,
+        bool isOwned, bool recommended = false)
     {
         Name = name;
         Group = group;
         Essential = essential;
         StatusLabel = statusLabel;
         IsOwned = isOwned;
+        Recommended = recommended;
     }
 
     public string Name { get; }
@@ -25,6 +27,9 @@ public sealed partial class GearListItemViewModel : ObservableObject
 
     /// <summary>True for a real owned inventory item (vs. a reminder or a free-text add).</summary>
     public bool IsOwned { get; }
+
+    /// <summary>True when this item is especially suited to the selected operation — shows a "Suggested" badge.</summary>
+    public bool Recommended { get; }
 
     /// <summary>Checked once physically packed. Starts unchecked and is not persisted.</summary>
     [ObservableProperty] private bool _isPacked;

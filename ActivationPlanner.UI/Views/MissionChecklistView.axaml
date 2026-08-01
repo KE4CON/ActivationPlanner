@@ -9,6 +9,15 @@
              mc:Ignorable="d" d:DesignWidth="980" d:DesignHeight="680"
              x:Class="ActivationPlanner.UI.Views.MissionChecklistView"
              x:DataType="vm:MissionChecklistViewModel">
+    <UserControl.Styles>
+        <!-- Suggested pack-list rows: tinted background + bolder name so they can't be missed. -->
+        <Style Selector="Border.suggested">
+            <Setter Property="Background" Value="#1A2F6FEB" />
+        </Style>
+        <Style Selector="Border.suggested CheckBox">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </UserControl.Styles>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Mission + framing + progress ============ -->
         <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
@@ -54,6 +63,12 @@
 
                 <Button Content="Reset check-off" Command="{Binding ResetCommand}"
                         HorizontalAlignment="Stretch" Margin="0,6,0,0" />
+
+                <Button Content="🖨  Print selected (PDF)" Click="OnPrintSelectedClick"
+                        IsEnabled="{Binding CanPrint}" HorizontalAlignment="Stretch"
+                        ToolTip.Tip="Save a PDF packing sheet of only the items you've checked" />
+                <TextBlock Text="Only the items you've checked are printed." FontSize="11"
+                           Opacity="0.7" TextWrapping="Wrap" />
             </StackPanel>
         </Border>
 
@@ -93,19 +108,32 @@
                 <ItemsControl ItemsSource="{Binding PackItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="checklists:GearListItemViewModel">
-                            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                    BorderThickness="0,0,0,1" Padding="2,6">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsPacked}" Content="{Binding Name}" />
-                                    <Border Grid.Column="1" CornerRadius="8" Padding="6,1" VerticalAlignment="Center"
+                            <Border Classes.suggested="{Binding Recommended}"
+                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="0,0,0,1" CornerRadius="4" Padding="0,6,2,6" Margin="0,1">
+                                <Grid ColumnDefinitions="4,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                    <!-- Left accent stripe: blue for suggested, green for essential.
+                                         Essential is declared last so it wins when an item is both. -->
+                                    <Border Grid.Column="0" Width="4" CornerRadius="2" Background="#2F6FEB"
+                                            IsVisible="{Binding Recommended}" />
+                                    <Border Grid.Column="0" Width="4" CornerRadius="2" Background="#3AA050"
+                                            IsVisible="{Binding Essential}" />
+                                    <CheckBox Grid.Column="1" IsChecked="{Binding IsPacked}" Content="{Binding Name}"
+                                              Padding="8,0,0,0" />
+                                    <Border Grid.Column="2" CornerRadius="8" Padding="8,2" VerticalAlignment="Center"
+                                            Background="#2F6FEB" IsVisible="{Binding Recommended}"
+                                            ToolTip.Tip="Well suited to the selected operation type">
+                                        <TextBlock Text="★ SUGGESTED" FontSize="11" FontWeight="Bold" Foreground="White" />
+                                    </Border>
+                                    <Border Grid.Column="3" CornerRadius="8" Padding="6,1" VerticalAlignment="Center"
                                             Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
                                         <TextBlock Text="{Binding Group}" FontSize="11" Opacity="0.8" />
                                     </Border>
-                                    <Border Grid.Column="2" CornerRadius="8" Padding="6,1" VerticalAlignment="Center"
-                                            Background="#333AA050" IsVisible="{Binding Essential}">
-                                        <TextBlock Text="essential" FontSize="11" Foreground="#3AA050" />
+                                    <Border Grid.Column="4" CornerRadius="8" Padding="8,2" VerticalAlignment="Center"
+                                            Background="#3AA050" IsVisible="{Binding Essential}">
+                                        <TextBlock Text="★ ESSENTIAL" FontSize="11" FontWeight="Bold" Foreground="White" />
                                     </Border>
-                                    <Button Grid.Column="3" Content="Remove" Padding="8,2" FontSize="12"
+                                    <Button Grid.Column="5" Content="Remove" Padding="8,2" FontSize="12"
                                             Command="{Binding $parent[UserControl].((vm:MissionChecklistViewModel)DataContext).RemoveCommand}"
                                             CommandParameter="{Binding}" />
                                 </Grid>

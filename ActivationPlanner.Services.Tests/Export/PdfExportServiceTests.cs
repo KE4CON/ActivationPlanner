@@ -77,4 +77,35 @@ public sealed class PdfExportServiceTests
         await new PdfExportService().WriteAsync(new PdfExportRequest { Bands = [Band()] }, ms);
         Assert.True(ms.Length > 0);
     }
+
+    [Fact]
+    public void Gear_list_print_produces_a_valid_pdf()
+    {
+        var request = new GearListPrintRequest
+        {
+            Title = "POTA kit — packing list",
+            Subtitle = "POTA • 2026-07-31",
+            PackingTip = "Balanced portable kit.",
+            Items =
+            [
+                new GearPrintItem { Name = "Icom IC-705", Group = "Radio", Essential = false },
+                new GearPrintItem { Name = "Spare battery", Group = "Power", Essential = true },
+            ],
+        };
+
+        byte[] pdf = new PdfExportService().BuildGearListBytes(request);
+
+        Assert.True(pdf.Length > 0);
+        Assert.Equal("%PDF", Encoding.ASCII.GetString(pdf, 0, 4));
+    }
+
+    [Fact]
+    public async Task Gear_list_print_writes_even_with_no_items_selected()
+    {
+        // Guards the "nothing selected" branch — should still render a (near-empty) valid sheet.
+        using var ms = new MemoryStream();
+        await new PdfExportService().WriteGearListAsync(
+            new GearListPrintRequest { Title = "Empty", Items = [] }, ms);
+        Assert.True(ms.Length > 0);
+    }
 }
