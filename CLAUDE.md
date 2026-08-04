@@ -43,6 +43,7 @@ Layer 4 — **UI**: Avalonia views and viewmodels. Consumes Services and Propaga
 - No magic numbers — VOACAP card format constants and NEC2++ geometry constants centralized in dedicated constants files
 - MVVM: **CommunityToolkit.Mvvm** (`ObservableObject`, `[ObservableProperty]`, `[RelayCommand]`) — not ReactiveUI
 - Unit tests required for: VOACAP input deck formatting (fixed-column, bug-prone), VOACAP output parsing, Option A/B antenna trigger logic (height/length-to-wavelength math), the dipole empirical comparison harness, POTA auth flow
+- **Debugging / hardening sessions: read and follow `docs/BUG_HUNTING_PLAYBOOK.md`.** It defines the pillar model, a method pipeline ordered by bug-yield (static analysis → VOACAP/NEC2++ oracle diff + fuzz → correctness-critical/failure-path → human), a per-session workflow, and the one rule — **every bug found gets a regression test before moving on.** Getting the propagation math right is only one pillar; most bugs live in the services, UI, integrations, and persistence.
 
 ## Solution Structure
 Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference`:
