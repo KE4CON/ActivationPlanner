@@ -102,8 +102,9 @@ public sealed class ChecklistService
             entries.Add(OwnedEntry(radio.Name, GroupLabel(GearCategory.Radio),
                                    RadioSuitsMission(missionType, radio)));
 
-        foreach (AntennaProfile antenna in inventory.Antennas)
-            entries.Add(OwnedEntry(antenna.Name, "Antennas"));
+        foreach (AntennaProfile antenna in inventory.Antennas
+                     .OrderByDescending(a => AntennaSuitsMission(missionType, a)))
+            entries.Add(OwnedEntry(antenna.Name, "Antennas", AntennaSuitsMission(missionType, antenna)));
 
         foreach (GearCategory category in GearOrder.Where(c => c != GearCategory.Radio))
             foreach (GearItem item in inventory.ItemsIn(category))
@@ -182,6 +183,26 @@ public sealed class ChecklistService
             _ => false,                        // POTA / EMCOMM / General don't discriminate on power
         };
     }
+
+    // Antenna suitability by operation, driven by physical family (Item #9 category). Weight and
+    // per-band NVIS height aren't modeled here, so this is a family-level heuristic — a starting
+    // suggestion the operator edits, never a hard filter (nothing is hidden).
+    //   SOTA / POTA : light, quick-deploy portable — whips, end-fed wires, verticals.
+    //   Field Day   : full-size wire performers — dipoles and end-fed half-waves.
+    //   EMCOMM      : regional / NVIS high-angle — the NVIS crossed dipole and (low) dipoles.
+    private static bool AntennaSuitsMission(MissionType mission, AntennaProfile antenna) =>
+        mission switch
+        {
+            MissionType.Sota or MissionType.Pota =>
+                antenna.Category is AntennaCategory.Whip
+                    or AntennaCategory.EndFedHalfWave
+                    or AntennaCategory.Vertical,
+            MissionType.FieldDay =>
+                antenna.Category is AntennaCategory.Dipole or AntennaCategory.EndFedHalfWave,
+            MissionType.Emcomm =>
+                antenna.Category is AntennaCategory.NvisCrossedDipole or AntennaCategory.Dipole,
+            _ => false, // General — no operation-specific emphasis
+        };
 
     private static HashSet<GearCategory> TemplateCategories(MissionType mission) =>
         ChecklistTemplates.For(mission).Items

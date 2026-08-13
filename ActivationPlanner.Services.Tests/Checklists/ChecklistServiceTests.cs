@@ -250,6 +250,71 @@ public sealed class ChecklistServiceTests
         }
     }
 
+    private static AntennaProfile Ant(string name, AntennaCategory category, FeedPointType feed) => new()
+    {
+        Name = name, Category = category, FeedPoint = feed, LengthFeet = 30, HeightFeet = 15,
+    };
+
+    [Fact]
+    public void Emcomm_suggests_the_nvis_antenna_sota_does_not_nothing_hidden()
+    {
+        var inventory = new Inventory
+        {
+            Antennas =
+            [
+                Ant("Chameleon NVIS (4-wire)", AntennaCategory.NvisCrossedDipole, FeedPointType.CenterFed),
+                Ant("Chelegance MC-750", AntennaCategory.Vertical, FeedPointType.BaseFed),
+            ],
+        };
+        var svc = new ChecklistService();
+
+        var emcomm = svc.BuildGearPlan(MissionType.Emcomm, inventory);
+        Assert.True(emcomm.Pack.Single(e => e.Name == "Chameleon NVIS (4-wire)").Recommended);
+        Assert.False(emcomm.Pack.Single(e => e.Name == "Chelegance MC-750").Recommended);
+
+        var sota = svc.BuildGearPlan(MissionType.Sota, inventory);
+        // NVIS not suggested for SOTA, but still present (nothing hidden).
+        Assert.Contains(sota.Pack, e => e.Name == "Chameleon NVIS (4-wire)");
+        Assert.False(sota.Pack.Single(e => e.Name == "Chameleon NVIS (4-wire)").Recommended);
+        // Compact vertical is a light portable — suggested for SOTA.
+        Assert.True(sota.Pack.Single(e => e.Name == "Chelegance MC-750").Recommended);
+    }
+
+    [Fact]
+    public void Field_day_suggests_a_dipole_over_a_whip()
+    {
+        var inventory = new Inventory
+        {
+            Antennas =
+            [
+                Ant("Portable whip", AntennaCategory.Whip, FeedPointType.BaseFed),
+                Ant("40m dipole", AntennaCategory.Dipole, FeedPointType.CenterFed),
+            ],
+        };
+
+        var fieldDay = new ChecklistService().BuildGearPlan(MissionType.FieldDay, inventory);
+        Assert.True(fieldDay.Pack.Single(e => e.Name == "40m dipole").Recommended);
+        Assert.False(fieldDay.Pack.Single(e => e.Name == "Portable whip").Recommended);
+    }
+
+    [Fact]
+    public void Suggested_antennas_sort_ahead_of_the_rest()
+    {
+        var inventory = new Inventory
+        {
+            Antennas =
+            [
+                Ant("40m dipole", AntennaCategory.Dipole, FeedPointType.CenterFed),   // not SOTA-suited
+                Ant("End-fed wire", AntennaCategory.EndFedHalfWave, FeedPointType.EndFedHalfWave), // SOTA-suited
+            ],
+        };
+
+        var antennas = new ChecklistService().BuildGearPlan(MissionType.Sota, inventory)
+            .Pack.Where(e => e.Group == "Antennas").ToList();
+
+        Assert.Equal("End-fed wire", antennas[0].Name);
+    }
+
     [Fact]
     public void Gear_plan_carries_a_mission_packing_tip()
     {
