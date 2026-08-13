@@ -59,4 +59,39 @@ public sealed class PresetCatalogTests
             Assert.False(string.IsNullOrWhiteSpace(a.Source));
         });
     }
+
+    [Fact]
+    public void Antenna_preset_ids_are_unique_and_carry_valid_geometry()
+    {
+        var antennas = PresetCatalog.Default.Antennas;
+
+        // No duplicate IDs (a dup would let two models collide in the picker / lookups).
+        var ids = antennas.Select(a => a.Id).ToList();
+        Assert.Equal(ids.Count, ids.Distinct().Count());
+
+        // Every preset has a positive radiator length and a non-empty display name.
+        Assert.All(antennas, a =>
+        {
+            Assert.True(a.LengthFeet > 0, $"{a.Id} has non-positive length");
+            Assert.False(string.IsNullOrWhiteSpace(a.DisplayName));
+        });
+    }
+
+    [Fact]
+    public void Catalog_covers_the_expanded_portable_brand_lineup()
+    {
+        var antennas = PresetCatalog.Default.Antennas;
+
+        // Spot-check models from the expansion across several manufacturers.
+        Assert.Contains(antennas, a => a.Id == "chameleon-tdl");          // Chameleon Tactical Delta Loop
+        Assert.Contains(antennas, a => a.Id == "elecraft-ax1");            // Elecraft AX1
+        Assert.Contains(antennas, a => a.Id == "sotabeams-band-hopper-iii"); // SOTAbeams linked dipole
+        Assert.Contains(antennas, a => a.Id == "lnr-ef-mtr");             // LNR/Par EndFedz
+
+        // Resonant wire antennas model accurately; loaded/broadband ones are flagged approximate.
+        Assert.Equal(ModelingConfidence.Measured,
+            antennas.Single(a => a.Id == "lnr-ef-mtr").ModelingConfidence);
+        Assert.Equal(ModelingConfidence.Approximate,
+            antennas.Single(a => a.Id == "elecraft-ax1").ModelingConfidence);
+    }
 }

@@ -152,6 +152,330 @@
       "modelingConfidence": "Approximate",
       "note": "73 ft end-fed wire on a 5:1 transformer with a 25 ft counterpoise, 160-10 m. Broadband (not a resonant half-wave), so the pattern is representative. Deploy as sloper, vertical, or inverted-L.",
       "source": "https://chameleonantenna.com/products/cha-emcomm-iii-portable"
+    },
+    {
+      "id": "chameleon-mpas-lite",
+      "manufacturer": "Chameleon", "model": "MPAS Lite",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 17, "heightFeet": 0, "radialCount": 1, "radialLengthFeet": 25,
+      "modelingConfidence": "Approximate",
+      "note": "Modular portable: 17 ft SS17 whip on a 5:1 transformer with a 25 ft counterpoise (also runs as a 60 ft sloper), 160-6 m. Broadband/not resonant, so the pattern is representative.",
+      "source": "https://chameleonantenna.com/products/cha-mpas-lite"
+    },
+    {
+      "id": "chameleon-prv-2",
+      "manufacturer": "Chameleon", "model": "PRV 2.0",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 8.1, "heightFeet": 0, "radialCount": 4, "radialLengthFeet": 12.5,
+      "modelingConfidence": "Approximate",
+      "note": "Portable Resonant Vertical: ~8 ft center-loaded whip (MCC coil tuned to resonance) with four 12.5 ft radials, 40-10 m. Coil-loaded, so the pattern is representative.",
+      "source": "https://chameleonantenna.com/products/cha-prv-2-0"
+    },
+    {
+      "id": "chameleon-bv",
+      "manufacturer": "Chameleon", "model": "BV (Basic Vertical)",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 17, "heightFeet": 0, "radialCount": 4, "radialLengthFeet": 12.5,
+      "modelingConfidence": "Approximate",
+      "note": "17 ft SS17 whip vertical with four 12.5 ft radials. Resonant on 20-6 m; a base coil loads it on 40/30 m (representative there).",
+      "source": "https://chameleonantenna.com/products/cha-bv-basic-vertical"
+    },
+    {
+      "id": "chameleon-td-2",
+      "manufacturer": "Chameleon", "model": "TD 2.0 (Tactical Dipole)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 170, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Broadband tactical dipole on a 9:1 transformer, ~170 ft tip-to-tip (2x60 ft + 2x25 ft), 1.8-54 MHz. Not resonant, so the pattern is representative. Set height to your supports.",
+      "source": "https://chameleonantenna.com/products/cha-td-2-0-tactical-dipole"
+    },
+    {
+      "id": "chameleon-td-lite-2",
+      "manufacturer": "Chameleon", "model": "TD Lite 2.0",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 120, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Broadband dipole on a 5:1 transformer, 120 ft tip-to-tip (2x60 ft), 1.8-54 MHz. Representative pattern; set height to your supports.",
+      "source": "https://chameleonantenna.com/products/cha-td-lite-2-0"
+    },
+    {
+      "id": "chameleon-ocf40",
+      "manufacturer": "Chameleon", "model": "OCF40",
+      "category": "Dipole", "feedPoint": "OffCenterFed",
+      "lengthFeet": 66, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Off-center-fed dipole ~66 ft tip-to-tip (44 ft 5 in + 22 ft 1 in), resonant no-tuner on 40/20/10/6 m (more bands with a tuner). Set height to your supports.",
+      "source": "https://chameleonantenna.com/products/cha-ocf40-cha-rg-316-25ft-w-rfi"
+    },
+    {
+      "id": "chameleon-lefs-8010",
+      "manufacturer": "Chameleon", "model": "LEFS-8010",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 130, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Lightweight 130 ft end-fed half-wave (49:1) for 80-10 m. Deploy as a sloper/inverted-V; set height to your support.",
+      "source": "https://chameleonantenna.com/products/cha-lefs-8010-lightweight-end-fed-sloper-efhw"
+    },
+    {
+      "id": "chameleon-lefs-feather",
+      "manufacturer": "Chameleon", "model": "LEFS FEATHER",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 61.5, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Ultralight QRP 61.5 ft end-fed half-wave (49:1), 40/20/15/10 m no-tuner. Sloper/inverted-V; set height to your support.",
+      "source": "https://chameleonantenna.com/products/cha-lefs-feather"
+    },
+    {
+      "id": "chameleon-emcomm-ii-v2",
+      "manufacturer": "Chameleon", "model": "EMCOMM II V2",
+      "category": "Other", "feedPoint": "EndFedRandomWire",
+      "lengthFeet": 60, "heightFeet": 12, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "60 ft broadband end-fed on a 5:1 transformer, 160-6 m. Deploy low (~9-12 ft) for NVIS or as a sloper. Not resonant, so the pattern is representative.",
+      "source": "https://chameleonantenna.com/products/cha-emcomm-ii-v2"
+    },
+    {
+      "id": "chameleon-basic-le",
+      "manufacturer": "Chameleon", "model": "BASIC Limited Edition",
+      "category": "Other", "feedPoint": "EndFedRandomWire",
+      "lengthFeet": 60, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Broadband end-fed (5:1) with 30/60/130 ft wire options (60 ft shown), 160-6 m with a tuner. Representative pattern; adjust length/height to your build.",
+      "source": "https://chameleonantenna.com/products/cha-basic-limited-edition"
+    },
+    {
+      "id": "chameleon-hybrid-micro",
+      "manufacturer": "Chameleon", "model": "HYBRID-MICRO",
+      "category": "Other", "feedPoint": "EndFedRandomWire",
+      "lengthFeet": 60, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Portable 5:1 broadband end-fed with 30/60/130 ft wire options (60 ft shown), 160-6 m with a tuner, 100 W. Representative pattern.",
+      "source": "https://chameleonantenna.com/products/cha-hybrid-micro"
+    },
+    {
+      "id": "chameleon-f-loop-3",
+      "manufacturer": "Chameleon", "model": "F-LOOP 3.0",
+      "category": "MagneticLoop", "feedPoint": "Other",
+      "lengthFeet": 9.4, "heightFeet": 4, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "High-Q portable magnetic loop, ~9.4 ft circumference (36 in loop; 48 in booster option), operator-tuned 60-10 m depending on config. Small tuned loop, so the pattern is representative.",
+      "source": "https://chameleonantenna.com/products/cha-f-loop-3-0"
+    },
+    {
+      "id": "chameleon-tdl",
+      "manufacturer": "Chameleon", "model": "TDL (Tactical Delta Loop)",
+      "category": "Other", "feedPoint": "BaseFed",
+      "lengthFeet": 25.33, "heightFeet": 17, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Tactical delta loop, 25 ft 4 in perimeter on two 17 ft supports, 5:1 broadband transformer, 80-6 m (best 30-6). Representative pattern.",
+      "source": "https://chameleonantenna.com/products/tactical-delta-loop-tdl"
+    },
+    {
+      "id": "elecraft-ax1",
+      "manufacturer": "Elecraft", "model": "AX1",
+      "category": "Whip", "feedPoint": "BaseFed",
+      "lengthFeet": 4.25, "heightFeet": 2, "radialCount": 1, "radialLengthFeet": 13,
+      "modelingConfidence": "Approximate",
+      "note": "Ultra-compact loaded QRP whip: ~4 ft telescoping whip over a band-switched loading coil, with a 13 ft counterpoise. 20/17/15 m (10/12 with a tuner). Coil-loaded, so the pattern is representative.",
+      "source": "https://elecraft.com/products/ax1-antenna"
+    },
+    {
+      "id": "elecraft-ax2",
+      "manufacturer": "Elecraft", "model": "AX2",
+      "category": "Whip", "feedPoint": "BaseFed",
+      "lengthFeet": 4.3, "heightFeet": 2, "radialCount": 1, "radialLengthFeet": 13,
+      "modelingConfidence": "Approximate",
+      "note": "Miniature 20 m loaded QRP whip (~4 ft) with a 13 ft counterpoise (single-band mods for 17-6 m). Coil-loaded, so the pattern is representative.",
+      "source": "https://elecraft.com/products/ax2-minature-20-meter-whip-antenna"
+    },
+    {
+      "id": "chelegance-jpc-12",
+      "manufacturer": "Chelegance", "model": "JPC-12",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 13.4, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Portable multi-band vertical: ~13 ft of tubing plus a tapped loading coil and whip, 40-6 m, 100 W. Coil-loaded with an included counterpoise set (lengths not published), so the pattern is representative. Add radials as you deploy.",
+      "source": "https://www.dxengineering.com/parts/nce-ch0010003"
+    },
+    {
+      "id": "chelegance-jpc-7",
+      "manufacturer": "Chelegance", "model": "JPC-7",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 21.5, "heightFeet": 10, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Portable multi-band dipole ~21.5 ft tip-to-tip (tapped coils on each arm), 40-6 m, 1:1 choke balun. Coil-loaded, so the pattern is representative. Set height to your mast.",
+      "source": "https://chelegance.com/products/jpc-7-dp-portable-shortwave-antenna/"
+    },
+    {
+      "id": "comet-hfj-350m",
+      "manufacturer": "Comet", "model": "HFJ-350M",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 5.3, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "9-band telescoping loaded whip (~1.2-5.3 ft) with band taps, 80-6 m. Needs a counterpoise/radials (not published). Coil-loaded, so the pattern is representative.",
+      "source": "https://www.cometantenna.com/product/comet-hfj-350m/"
+    },
+    {
+      "id": "diamond-rhm-8b",
+      "manufacturer": "Diamond", "model": "RHM-8B",
+      "category": "Whip", "feedPoint": "BaseFed",
+      "lengthFeet": 5.8, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Telescoping tapped-coil whip (~1.6-5.8 ft), 40-6 m, ~120 W. Mobile/portable; needs a ground/counterpoise. Coil-loaded, so the pattern is representative.",
+      "source": "https://www.diamond-ant.co.jp/english/amateur/antenna/ante_3hand/ante_hand1.html"
+    },
+    {
+      "id": "diamond-rhm-10",
+      "manufacturer": "Diamond", "model": "RHM-10",
+      "category": "Whip", "feedPoint": "BaseFed",
+      "lengthFeet": 5.8, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Telescoping tapped-coil whip (~1.6-5.8 ft), 40/20/15/10 m (plus 2 m/70 cm). Needs a ground/counterpoise. Coil-loaded, so the HF pattern is representative.",
+      "source": "https://www.diamond-ant.co.jp/english/amateur/antenna/ante_3hand/ante_hand1.html"
+    },
+    {
+      "id": "tufteln-efhw-49",
+      "manufacturer": "Tufteln", "model": "EFHW 49:1 (40-10)",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 68, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "68 ft resonant end-fed half-wave (49:1) for 40/20/15/10 m (harmonic). QRP-rated. Deploy sloper/inverted-V; set height to your support.",
+      "source": "https://tufteln.com/products/efhw-qrp-antenna-49-1"
+    },
+    {
+      "id": "tufteln-efrw-9",
+      "manufacturer": "Tufteln", "model": "EFRW 9:1 (100W)",
+      "category": "Other", "feedPoint": "EndFedRandomWire",
+      "lengthFeet": 84, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "End-fed random wire on a 9:1 unun (wire options 84/71/58/41 ft; 84 ft shown), HF with a tuner. Non-resonant, so the pattern is representative. The coax feedline acts as counterpoise.",
+      "source": "https://tufteln.com/products/efrw-antenna-9-1-transformer"
+    },
+    {
+      "id": "tufteln-efrw-qrp-9",
+      "manufacturer": "Tufteln", "model": "EFRW QRP 9:1 (30W)",
+      "category": "Other", "feedPoint": "EndFedRandomWire",
+      "lengthFeet": 58, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "QRP end-fed random wire on a 9:1 unun (options 58/41/35 ft; 58 ft shown) with a 17 ft counterpoise, HF with a tuner. Non-resonant, so the pattern is representative.",
+      "source": "https://tufteln.com/products/efrw-qrp-antenna-long-wire-9-1"
+    },
+    {
+      "id": "qrpguys-no-tune-efhw",
+      "manufacturer": "QRPGuys", "model": "No-Tune End-Fed Half-Wave",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 66, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Single-band resonant EFHW; you cut the half-wave wire for your band (~66 ft for 40 m). Feedline serves as counterpoise. Set height/deployment to your support.",
+      "source": "https://qrpguys.com/qrpguys-end-fed-wire-antenna"
+    },
+    {
+      "id": "qrpguys-mini-efhw",
+      "manufacturer": "QRPGuys", "model": "Mini 80-10 No-Tune EFHW",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 125, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Multi-band no-tune EFHW with band-specific half-wave wire (80 m = 125 ft shown); a matching cap broadens SWR, so the pattern is representative off the cut band. Set height to your support.",
+      "source": "https://qrpguys.com/qrpguys-mini-80m-10m-no-tune-end-fed-half-wave-antenna"
+    },
+    {
+      "id": "qrpguys-triband-vertical",
+      "manufacturer": "QRPGuys", "model": "40/30/20 Tri-Band Vertical",
+      "category": "Vertical", "feedPoint": "BaseFed",
+      "lengthFeet": 17, "heightFeet": 0, "radialCount": 4, "radialLengthFeet": 10,
+      "modelingConfidence": "Measured",
+      "note": "17 ft quarter-wave vertical (resonant on 20 m; switched loading coils shorten it for 30/40 m) with four 10 ft ground radials.",
+      "source": "https://qrpguys.com/qrpguys-tri-band-portable-vertical-antenna"
+    },
+    {
+      "id": "lnr-ef-102040",
+      "manufacturer": "LNR Precision", "model": "Par EndFedz EF-10/20/40",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 41, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "41 ft resonant end-fed half-wave (matchbox), no-tuner on 40/20/10 m, 25 W. #18 wire; coax acts as counterpoise. Sloper/inverted-V; set height to your support.",
+      "source": "https://www.lnrprecision.com/manual/EF102040MKII.pdf"
+    },
+    {
+      "id": "lnr-ef-mtr",
+      "manufacturer": "LNR Precision", "model": "Par EndFedz EF-MTR (40/30/20)",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 65, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "65 ft resonant end-fed half-wave for 40/30/20 m (SMA link for 30 m), 25 W. Ultralight Mountain Topper wire; coax = counterpoise. Set height to your support.",
+      "source": "https://www.lnrprecision.com/wp-content/uploads/2012/06/EF-403020.pdf"
+    },
+    {
+      "id": "lnr-ef-quad",
+      "manufacturer": "LNR Precision", "model": "Par EndFedz EF-QUAD (40/20/15/10)",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 65, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "65 ft end-fed multiband (half-wave on 40 m; harmonic on 20/15/10 m via tuning stubs), 200 W. Sloper/horizontal; set height to your support.",
+      "source": "https://www.lnrprecision.com/manual/EF-QUAD.pdf"
+    },
+    {
+      "id": "sotabeams-band-hopper-ii",
+      "manufacturer": "SOTAbeams", "model": "Band Hopper II (20/40)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 66, "heightFeet": 20, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Linked resonant dipole for 20 and 40 m (~66 ft tip-to-tip on 40 m; links shorten it for 20 m), 125 W. Full-size half-wave per band on a ~6 m mast.",
+      "source": "https://www.sotabeams.co.uk/band-hopper-ii-two-band-20m-40m-portable-dipole-antenna-system/"
+    },
+    {
+      "id": "sotabeams-band-hopper-iii",
+      "manufacturer": "SOTAbeams", "model": "Band Hopper III (20/30/40)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 66, "heightFeet": 20, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Linked resonant dipole for 20/30/40 m (~66 ft tip-to-tip on 40 m; links shorten per band), 125 W. Full-size half-wave per band on a 6-8 m mast.",
+      "source": "https://www.sotabeams.co.uk/band-hopper-iii-three-band-linked-dipole/"
+    },
+    {
+      "id": "sotabeams-band-hopper-iv",
+      "manufacturer": "SOTAbeams", "model": "Band Hopper IV (20/30/40/80)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 131, "heightFeet": 20, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "Linked resonant dipole for 20/30/40/80 m (~131 ft tip-to-tip on 80 m; links shorten per band). Full-size half-wave per band on a 7-8 m mast.",
+      "source": "https://www.sotabeams.co.uk/four-band-portable-dipole-antenna-system-band-hopper-iv/"
+    },
+    {
+      "id": "spiderbeam-aerial51-404ul",
+      "manufacturer": "Spiderbeam", "model": "Aerial-51 404-UL",
+      "category": "Dipole", "feedPoint": "OffCenterFed",
+      "lengthFeet": 69, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Ultralight off-center-fed multiband dipole ~69 ft tip-to-tip (balun-matched), 40/20/17/15/12/10/6 m (30 m with a tuner). Balun-matched broadband, so the pattern is representative. Set height to your pole.",
+      "source": "https://shop.spiderbeam.com/en/shop/aerial-51-model-404-ul-1613"
+    },
+    {
+      "id": "spiderbeam-aerial51-807hd",
+      "manufacturer": "Spiderbeam", "model": "Aerial-51 807-HD",
+      "category": "Dipole", "feedPoint": "OffCenterFed",
+      "lengthFeet": 115, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Off-center-fed multiband dipole ~115 ft tip-to-tip (balun-matched), 80/40/30/20/17/15/12/10/6 m. Balun-matched broadband, so the pattern is representative. Set height to your supports.",
+      "source": "https://shop.spiderbeam.com/en/shop/aerial-51-807-hd-version-r1-2121"
+    },
+    {
+      "id": "alpha-ezmilitary-mil2",
+      "manufacturer": "Alpha Antenna", "model": "EZMilitary / MIL 2.0 (6-80m)",
+      "category": "Vertical", "feedPoint": "OffCenterFed",
+      "lengthFeet": 13, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Portable broadband vertical (Alpha Match): ~13 ft (or 9 ft 4 in) MilStick whip with a 25 ft NVIS wire and a tuned counterpoise (lengths not published), 6-80 m. Broadband/matched, so the pattern is representative.",
+      "source": "https://www.alphaantenna.com/product/military-hf-antenna-system-portable/"
+    },
+    {
+      "id": "alpha-fmj",
+      "manufacturer": "Alpha Antenna", "model": "FMJ (6-80m)",
+      "category": "Vertical", "feedPoint": "OffCenterFed",
+      "lengthFeet": 13, "heightFeet": 0, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Approximate",
+      "note": "Portable broadband vertical dipole (Alpha Match): ~13 ft (or 9 ft 4 in) MilStick whip plus a 25 ft NVIS element and a tuned counterpoise (not published), 6-80 m, up to 500 W. Broadband/matched, so the pattern is representative.",
+      "source": "https://www.alphaantenna.com/product/6-80-meter-hd-fmj-portable-hf-vertical-dipole-antenna/"
     }
   ],
   "radios": [
