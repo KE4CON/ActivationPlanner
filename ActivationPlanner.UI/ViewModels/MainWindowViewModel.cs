@@ -31,6 +31,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly MissionTypeService _missions;
     private readonly ChecklistService _checklist;
     private readonly PotaClient _pota;
+    private readonly PotaSelfSpotter _selfSpotter;
     private readonly PdfExportService _pdf;
     private readonly IAntennaPatternSource _patternSource;
     private readonly bool _patternIsSample;
@@ -40,8 +41,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist, PotaClient pota,
-        PdfExportService pdf, IAntennaPatternSource patternSource, bool patternIsSample,
-        SessionState session, bool isSampleData)
+        PotaSelfSpotter selfSpotter, PdfExportService pdf, IAntennaPatternSource patternSource,
+        bool patternIsSample, SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
@@ -49,6 +50,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(missions);
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(pota);
+        ArgumentNullException.ThrowIfNull(selfSpotter);
         ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(patternSource);
         ArgumentNullException.ThrowIfNull(session);
@@ -58,6 +60,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _missions = missions;
         _checklist = checklist;
         _pota = pota;
+        _selfSpotter = selfSpotter;
         _pdf = pdf;
         _patternSource = patternSource;
         _patternIsSample = patternIsSample;
@@ -151,7 +154,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowPotaSpots()
     {
-        CurrentPage = new PotaSpotsViewModel(_pota);
+        CurrentPage = new PotaSpotsViewModel(_pota, _selfSpotter, _session);
         ActivePage = NavPage.Pota;
     }
 

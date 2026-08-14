@@ -12,4 +12,7 @@ public sealed class SessionState
 {
     /// <summary>The mission type the operator most recently selected. Defaults to General.</summary>
     public MissionType SelectedMission { get; set; } = MissionType.General;
+
+    /// <summary>The operator's callsign, remembered within the session (e.g. for POTA self-spotting).</summary>
+    public string? Callsign { get; set; }
 }

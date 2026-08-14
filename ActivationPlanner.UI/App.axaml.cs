@@ -84,16 +84,22 @@ public partial class App : Application
                 new GeoIpLocationProvider(httpClient));
             var locationService = new LocationService(locationProvider);
 
-            // POTA public read-only data (Phase 7). Self-spotting exists but is gated off pending
-            // POTA confirmation, so it is deliberately not constructed/wired here.
+            // POTA public read-only data (Phase 7).
             var potaClient = new PotaClient(httpClient);
+
+            // Self-spotting is fully wired (service + UI), but kept OFF behind this single flag until
+            // POTA confirms third-party automated self-spotting is acceptable (email sent 2026-08-13).
+            // Flipping this to true both enables sending AND reveals the self-spot panel on the POTA
+            // tab. Keep false until POTA replies. See docs/POTA_self_spot_permission_request.txt.
+            const bool selfSpottingEnabled = false;
+            var potaSelfSpotter = new PotaSelfSpotter(httpClient, enabled: selfSpottingEnabled);
 
             // Shared session selections carried between screens (e.g. mission -> planning framing).
             var sessionState = new SessionState();
 
             var mainViewModel = new MainWindowViewModel(
                 inventoryService, planningService, locationService, missionService, checklistService,
-                potaClient, pdfExportService, patternSource, patternIsSample: patternIsSample,
+                potaClient, potaSelfSpotter, pdfExportService, patternSource, patternIsSample: patternIsSample,
                 sessionState, isSampleData: isSampleData);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };

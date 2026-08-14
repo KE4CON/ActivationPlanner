@@ -7,6 +7,11 @@
              mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
              x:Class="ActivationPlanner.UI.Views.PotaSpotsView"
              x:DataType="vm:PotaSpotsViewModel">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.spotok">
+            <Setter Property="Foreground" Value="#3AA050" />
+        </Style>
+    </UserControl.Styles>
     <DockPanel Margin="20">
         <!-- Header -->
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
@@ -18,6 +23,45 @@
             <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}"
                     VerticalAlignment="Center" />
         </Grid>
+
+        <!-- Self-spot panel — hidden and inert unless the app flag enables self-spotting (pending POTA OK) -->
+        <Border DockPanel.Dock="Top" IsVisible="{Binding IsSelfSpotEnabled}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1"
+                CornerRadius="6" Padding="12" Margin="0,0,0,12">
+            <StackPanel Spacing="8">
+                <TextBlock Text="Self-spot your activation" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" ColumnSpacing="8">
+                    <StackPanel Grid.Column="0" Spacing="2" Width="110">
+                        <TextBlock Text="Callsign" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding Callsign}" PlaceholderText="e.g. KE4CON" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2" Width="110">
+                        <TextBlock Text="Park" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding ParkReference}" PlaceholderText="e.g. US-1234" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="2" Width="100">
+                        <TextBlock Text="Freq (MHz)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding FrequencyMhz}" PlaceholderText="e.g. 14.074" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Spacing="2" Width="100">
+                        <TextBlock Text="Mode" FontSize="12" Opacity="0.7" />
+                        <ComboBox ItemsSource="{Binding Modes}" SelectedItem="{Binding SelfSpotMode}"
+                                  HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" Spacing="2">
+                        <TextBlock Text="Comment (optional)" FontSize="12" Opacity="0.7" />
+                        <TextBox Text="{Binding SelfSpotComments}" PlaceholderText="e.g. QRP, calling CQ" />
+                    </StackPanel>
+                    <Button Grid.Column="5" Content="Post self-spot" Command="{Binding SelfSpotCommand}"
+                            Classes="accent" VerticalAlignment="Bottom" />
+                </Grid>
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                           Text="Posts one spot to POTA when you click — the spotter is your own callsign. Nothing is ever sent automatically." />
+                <TextBlock Text="{Binding SelfSpotStatus}" TextWrapping="Wrap" FontSize="12"
+                           Classes.spotok="{Binding SelfSpotSucceeded}"
+                           IsVisible="{Binding SelfSpotStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            </StackPanel>
+        </Border>
 
         <TextBlock DockPanel.Dock="Top" Text="Loading spots…" IsVisible="{Binding IsBusy}"
                    Opacity="0.7" Margin="0,0,0,8" />
