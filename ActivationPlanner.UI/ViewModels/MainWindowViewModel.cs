@@ -15,7 +15,9 @@ using ActivationPlanner.Services.Pota;
 using ActivationPlanner.Services.SpaceWeather;
 using ActivationPlanner.Services.Weather;
 using ActivationPlanner.UI.ViewModels.Wizard;
+using Avalonia;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -181,6 +183,34 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         catch
         {
             // Best-effort background poll; try again on the next tick.
+        }
+    }
+
+    // ---- light / dark theme toggle ----
+
+    [ObservableProperty] private string _themeLabel = "◐ Auto";
+
+    /// <summary>Cycle the app theme: Auto (follow system) → Light → Dark → Auto.</summary>
+    [RelayCommand]
+    private void CycleTheme()
+    {
+        if (Application.Current is not { } app)
+            return;
+
+        if (app.RequestedThemeVariant == ThemeVariant.Light)
+        {
+            app.RequestedThemeVariant = ThemeVariant.Dark;
+            ThemeLabel = "☾ Dark";
+        }
+        else if (app.RequestedThemeVariant == ThemeVariant.Dark)
+        {
+            app.RequestedThemeVariant = ThemeVariant.Default;
+            ThemeLabel = "◐ Auto";
+        }
+        else
+        {
+            app.RequestedThemeVariant = ThemeVariant.Light;
+            ThemeLabel = "☀ Light";
         }
     }
 
