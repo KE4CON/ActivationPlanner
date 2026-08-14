@@ -79,7 +79,7 @@
             <TextBlock Grid.Column="5" Text="Spotter / comments" FontSize="12" Opacity="0.6" />
         </Grid>
 
-        <ScrollViewer>
+        <ScrollViewer Padding="0,0,10,0">
             <ItemsControl ItemsSource="{Binding Spots}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="pota:PotaSpotItemViewModel">

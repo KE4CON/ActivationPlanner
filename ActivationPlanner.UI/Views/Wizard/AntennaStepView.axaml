@@ -107,7 +107,7 @@
 
         <!-- Running list -->
         <Border Grid.Column="1" Classes="card">
-            <ScrollViewer>
+            <ScrollViewer Padding="0,0,10,0">
                 <ItemsControl ItemsSource="{Binding Antennas}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="gear:AntennaProfile">

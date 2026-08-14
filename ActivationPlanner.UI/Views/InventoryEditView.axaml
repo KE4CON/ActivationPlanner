@@ -75,7 +75,7 @@
 
                     <!-- List -->
                     <Border Grid.Column="1" Classes="card">
-                        <ScrollViewer>
+                        <ScrollViewer Padding="0,0,10,0">
                             <ItemsControl ItemsSource="{Binding Gear}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="gear:GearItem">
@@ -195,7 +195,7 @@
 
                     <!-- List -->
                     <Border Grid.Column="1" Classes="card">
-                        <ScrollViewer>
+                        <ScrollViewer Padding="0,0,10,0">
                             <ItemsControl ItemsSource="{Binding Antennas}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="gear:AntennaProfile">

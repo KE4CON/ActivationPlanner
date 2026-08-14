@@ -23,7 +23,7 @@
     </UserControl.Styles>
 
     <!-- Whole tab scrolls as one, so expanding the guidance never pushes content out of reach. -->
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="0,0,10,0">
         <StackPanel Margin="20">
             <!-- Header + plain-language explanation -->
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">

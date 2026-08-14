@@ -28,7 +28,7 @@
                    Text="Collecting the first sample… the trend fills in as time passes (oldest on the left, now on the right)." />
 
         <Border Classes="card" Padding="16" IsVisible="{Binding HasSamples}">
-            <ScrollViewer>
+            <ScrollViewer Padding="0,0,10,0">
             <ItemsControl ItemsSource="{Binding Bands}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="trend:TrendBandViewModel">

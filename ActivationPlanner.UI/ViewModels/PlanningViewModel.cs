@@ -67,6 +67,9 @@ public sealed partial class PlanningViewModel : ViewModelBase
         _framing = mission.Framing;
         MissionContext = $"Mission: {mission.DisplayName}";
 
+        // Seed the grid box from the starting coordinates (kept in sync thereafter).
+        SyncGridFromLocation();
+
         if (quickStart)
             // Quick Mode: fetch live solar, locate, and generate so the operator lands on live recs.
             _ = QuickStartAsync();
@@ -185,6 +188,34 @@ public sealed partial class PlanningViewModel : ViewModelBase
         finally
         {
             IsLocating = false;
+        }
+    }
+
+    // ---- grid square (two-way with lat/lon; read off a phone / radio in the field) ----
+
+    /// <summary>The Maidenhead grid — auto-filled from lat/lon, and used to set lat/lon on "Set from grid".</summary>
+    [ObservableProperty] private string _gridInput = "";
+
+    // Typing coordinates recomputes the grid so the two stay in sync.
+    partial void OnOperatorLatitudeChanged(double value) => SyncGridFromLocation();
+    partial void OnOperatorLongitudeChanged(double value) => SyncGridFromLocation();
+
+    private void SyncGridFromLocation() =>
+        GridInput = MaidenheadLocator.ToGrid(new GeoLocation(OperatorLatitude, OperatorLongitude));
+
+    /// <summary>Set the operator location from the typed grid square (e.g. read off the POTA app).</summary>
+    [RelayCommand]
+    private void SetLocationFromGrid()
+    {
+        if (MaidenheadLocator.TryParse(GridInput, out GeoLocation loc))
+        {
+            OperatorLatitude = Math.Round(loc.LatitudeDeg, 4);
+            OperatorLongitude = Math.Round(loc.LongitudeDeg, 4);
+            LocationStatus = $"Location set from grid {GridInput.Trim().ToUpperInvariant()}.";
+        }
+        else
+        {
+            LocationStatus = "That doesn't look like a valid grid square (try EM29 or EM29ok).";
         }
     }
 

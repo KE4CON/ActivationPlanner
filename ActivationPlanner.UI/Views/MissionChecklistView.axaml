@@ -78,7 +78,7 @@
         </Border>
 
         <!-- ============ Gear list ============ -->
-        <ScrollViewer Grid.Column="1">
+        <ScrollViewer Grid.Column="1" Padding="0,0,10,0">
             <StackPanel Spacing="12">
                 <TextBlock Text="{Binding TemplateName}" FontSize="16" FontWeight="SemiBold" />
 
