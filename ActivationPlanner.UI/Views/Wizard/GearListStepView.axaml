@@ -20,6 +20,8 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                       Text="Pick your model to fill in the name, or just type it in below. Leave the list on Custom to enter your own." />
         </StackPanel>
 
         <!-- Add form -->

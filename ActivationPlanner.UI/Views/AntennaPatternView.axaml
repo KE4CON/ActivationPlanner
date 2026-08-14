@@ -14,9 +14,10 @@
     </UserControl.Resources>
     <Grid ColumnDefinitions="300,*" Margin="20">
         <!-- Controls / readout -->
-        <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
+        <Border Grid.Column="0" Padding="16" Margin="0,0,16,0"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Antenna pattern" FontSize="20" FontWeight="SemiBold" />
                 <TextBlock Opacity="0.75" TextWrapping="Wrap"
@@ -81,6 +82,7 @@
                 <TextBlock Text="{Binding StatusMessage}" FontSize="12" Opacity="0.8" TextWrapping="Wrap"
                            IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
             </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- Polar plot -->

@@ -13,9 +13,10 @@
     </UserControl.Resources>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Inputs ============ -->
-        <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
+        <Border Grid.Column="0" Padding="16" Margin="0,0,16,0"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Plan a session" FontSize="20" FontWeight="SemiBold" />
                 <TextBlock Opacity="0.7" TextWrapping="Wrap"
@@ -49,6 +50,8 @@
                         <TextBox Text="{Binding OperatorLongitude}" />
                     </StackPanel>
                 </Grid>
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                           Text="Where you'll operate from, in decimal degrees (e.g. 39.83, -98.58). West longitude and south latitude are negative. Or just tap 'Use my location' below to fill it in." />
                 <Button Content="Use my location" Command="{Binding UseMyLocationCommand}"
                         HorizontalAlignment="Stretch" />
                 <TextBlock Text="{Binding LocationStatus}" TextWrapping="Wrap" FontSize="12" Opacity="0.7"
@@ -65,6 +68,8 @@
                         <TextBox Text="{Binding TargetLongitude}" />
                     </StackPanel>
                 </Grid>
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                           Text="Where you're trying to reach — the far-end (DX) point, or for regional/NVIS a nearby town. Decimal degrees; west/south are negative." />
 
                 <TextBlock Text="Conditions" FontWeight="SemiBold" Margin="0,6,0,0" />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
@@ -77,6 +82,8 @@
                         <TextBox Text="{Binding TransmitPowerWatts}" />
                     </StackPanel>
                 </Grid>
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                           Text="Sunspot number (SSN) drives the high bands (10/12/15m) — higher is better. Not sure? ~70 is a fair average; check a space-weather site for today's. Power is your transmit watts (5 = QRP, 100 = a typical HF radio)." />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                     <StackPanel Grid.Column="0" Spacing="2">
                         <TextBlock Text="Month" FontSize="12" Opacity="0.7" />
@@ -87,17 +94,24 @@
                         <TextBox Text="{Binding Year}" />
                     </StackPanel>
                 </Grid>
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                           Text="The month and year you'll operate — propagation is seasonal, so this matters. Defaults to right now." />
                 <StackPanel Spacing="2">
                     <TextBlock Text="Noise environment" FontSize="12" Opacity="0.7" />
                     <ComboBox ItemsSource="{Binding NoiseOptions}" SelectedItem="{Binding Noise}"
                               HorizontalAlignment="Stretch" />
+                    <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap"
+                               Text="How electrically noisy your site is: rural/quiet hears weak signals best, city/industrial worst. Not sure? Residential is a safe middle." />
                 </StackPanel>
                 <CheckBox Content="Long path" IsChecked="{Binding UseLongPath}" />
+                <TextBlock FontSize="11" Opacity="0.6" TextWrapping="Wrap" Margin="0,-4,0,0"
+                           Text="Leave this off for normal operating. Tick it only if you're aiming the long way around the globe (away from the direct bearing)." />
 
                 <Button Content="Generate plan" Command="{Binding GeneratePlanCommand}"
                         Classes="accent" HorizontalAlignment="Stretch" Margin="0,6,0,0" />
                 <TextBlock Text="Generating…" IsVisible="{Binding IsBusy}" Opacity="0.7" HorizontalAlignment="Center" />
             </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- ============ Results ============ -->

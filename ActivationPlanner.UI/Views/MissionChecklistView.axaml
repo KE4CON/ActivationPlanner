@@ -20,9 +20,10 @@
     </UserControl.Styles>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Mission + framing + progress ============ -->
-        <Border Grid.Column="0" VerticalAlignment="Top" Padding="16" Margin="0,0,16,0"
+        <Border Grid.Column="0" Padding="16" Margin="0,0,16,0"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="1" CornerRadius="6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Operation &amp; gear list" FontSize="20" FontWeight="SemiBold" />
 
@@ -75,6 +76,7 @@
                     <Button Content="None" Command="{Binding SelectNoneForPrintCommand}" Padding="8,2" FontSize="11" />
                 </StackPanel>
             </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- ============ Gear list ============ -->
