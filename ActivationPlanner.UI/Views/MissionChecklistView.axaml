@@ -64,11 +64,16 @@
                 <Button Content="Reset check-off" Command="{Binding ResetCommand}"
                         HorizontalAlignment="Stretch" Margin="0,6,0,0" />
 
-                <Button Content="🖨  Print selected (PDF)" Click="OnPrintSelectedClick"
+                <Button Content="🖨  Print list (PDF)" Click="OnPrintSelectedClick"
                         IsEnabled="{Binding CanPrint}" HorizontalAlignment="Stretch"
-                        ToolTip.Tip="Save a PDF packing sheet of only the items you've checked" />
-                <TextBlock Text="Only the items you've checked are printed." FontSize="11"
-                           Opacity="0.7" TextWrapping="Wrap" />
+                        ToolTip.Tip="Save a PDF packing sheet of the items with their 🖨 box checked" />
+                <TextBlock Text="Prints every item with its 🖨 box checked (all by default). This is separate from the pack check-off."
+                           FontSize="11" Opacity="0.7" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="Print selection:" FontSize="11" Opacity="0.7" VerticalAlignment="Center" />
+                    <Button Content="All" Command="{Binding SelectAllForPrintCommand}" Padding="8,2" FontSize="11" />
+                    <Button Content="None" Command="{Binding SelectNoneForPrintCommand}" Padding="8,2" FontSize="11" />
+                </StackPanel>
             </StackPanel>
         </Border>
 
@@ -111,7 +116,7 @@
                             <Border Classes.suggested="{Binding Recommended}"
                                     BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                                     BorderThickness="0,0,0,1" CornerRadius="4" Padding="0,6,2,6" Margin="0,1">
-                                <Grid ColumnDefinitions="4,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Grid ColumnDefinitions="4,*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
                                     <!-- Left accent stripe: blue for suggested, green for essential.
                                          Essential is declared last so it wins when an item is both. -->
                                     <Border Grid.Column="0" Width="4" CornerRadius="2" Background="#2F6FEB"
@@ -119,7 +124,7 @@
                                     <Border Grid.Column="0" Width="4" CornerRadius="2" Background="#3AA050"
                                             IsVisible="{Binding Essential}" />
                                     <CheckBox Grid.Column="1" IsChecked="{Binding IsPacked}" Content="{Binding Name}"
-                                              Padding="8,0,0,0" />
+                                              Padding="8,0,0,0" ToolTip.Tip="Check off as you physically pack this item" />
                                     <Border Grid.Column="2" CornerRadius="8" Padding="8,2" VerticalAlignment="Center"
                                             Background="#2F6FEB" IsVisible="{Binding Recommended}"
                                             ToolTip.Tip="Well suited to the selected operation type">
@@ -133,7 +138,11 @@
                                             Background="#3AA050" IsVisible="{Binding Essential}">
                                         <TextBlock Text="★ ESSENTIAL" FontSize="11" FontWeight="Bold" Foreground="White" />
                                     </Border>
-                                    <Button Grid.Column="5" Content="Remove" Padding="8,2" FontSize="12"
+                                    <CheckBox Grid.Column="5" IsChecked="{Binding IncludeInPrint}" VerticalAlignment="Center"
+                                              ToolTip.Tip="Include this item on the printed packing list">
+                                        <TextBlock Text="🖨" FontSize="13" />
+                                    </CheckBox>
+                                    <Button Grid.Column="6" Content="Remove" Padding="8,2" FontSize="12"
                                             Command="{Binding $parent[UserControl].((vm:MissionChecklistViewModel)DataContext).RemoveCommand}"
                                             CommandParameter="{Binding}" />
                                 </Grid>

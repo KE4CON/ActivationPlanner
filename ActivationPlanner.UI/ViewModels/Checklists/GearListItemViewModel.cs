@@ -33,4 +33,10 @@ public sealed partial class GearListItemViewModel : ObservableObject
 
     /// <summary>Checked once physically packed. Starts unchecked and is not persisted.</summary>
     [ObservableProperty] private bool _isPacked;
+
+    /// <summary>
+    /// Whether this item appears on the printed packing list — independent of <see cref="IsPacked"/>
+    /// (you print the list before you've packed anything). Defaults to on; not persisted.
+    /// </summary>
+    [ObservableProperty] private bool _includeInPrint = true;
 }

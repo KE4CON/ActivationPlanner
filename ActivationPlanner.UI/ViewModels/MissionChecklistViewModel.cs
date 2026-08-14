@@ -138,6 +138,8 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
     {
         if (e.PropertyName == nameof(GearListItemViewModel.IsPacked))
             UpdateProgress();
+        else if (e.PropertyName == nameof(GearListItemViewModel.IncludeInPrint))
+            OnPropertyChanged(nameof(CanPrint));
     }
 
     private void RefreshAddable()
@@ -192,28 +194,44 @@ public sealed partial class MissionChecklistViewModel : ViewModelBase
         OnPropertyChanged(nameof(CanPrint));
     }
 
-    // ---- print the selected gear (checked items only) ----
+    // ---- print the packing list (items flagged "include in print", independent of pack check-off) ----
 
-    /// <summary>Enabled once at least one item is checked — the print includes only checked items.</summary>
-    public bool CanPrint => PackItems.Any(i => i.IsPacked);
+    /// <summary>Enabled while at least one item is flagged to include on the printed list.</summary>
+    public bool CanPrint => PackItems.Any(i => i.IncludeInPrint);
 
     /// <summary>Default file name for the packing-list PDF (no spaces, safe for a save dialog).</summary>
     public string SuggestedPrintFileName =>
         $"{TemplateName.Replace(' ', '-')}-packing-list.pdf";
 
-    /// <summary>Build the print request from the checked items only, grouped in display order.</summary>
+    /// <summary>Build the print request from the items flagged to include, grouped in display order.</summary>
     public GearListPrintRequest BuildPrintRequest() => new()
     {
         Title = $"{TemplateName} — packing list",
         Subtitle = SelectedMission.DisplayName,
         PackingTip = PackingTip,
-        Items = PackItems.Where(i => i.IsPacked)
+        Items = PackItems.Where(i => i.IncludeInPrint)
             .Select(i => new GearPrintItem { Name = i.Name, Group = i.Group, Essential = i.Essential })
             .ToList(),
     };
 
-    /// <summary>Render the selected-items packing list to <paramref name="output"/> as PDF.</summary>
+    /// <summary>Render the to-print items packing list to <paramref name="output"/> as PDF.</summary>
     public Task PrintSelectedAsync(Stream output) => _pdf.WriteGearListAsync(BuildPrintRequest(), output);
+
+    /// <summary>Tick every item's "include in print" box.</summary>
+    [RelayCommand]
+    private void SelectAllForPrint()
+    {
+        foreach (var item in PackItems)
+            item.IncludeInPrint = true;
+    }
+
+    /// <summary>Clear every item's "include in print" box.</summary>
+    [RelayCommand]
+    private void SelectNoneForPrint()
+    {
+        foreach (var item in PackItems)
+            item.IncludeInPrint = false;
+    }
 
     /// <summary>Uncheck everything — "reset for next time" without losing the edited list.</summary>
     [RelayCommand]
