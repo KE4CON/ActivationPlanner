@@ -1,15 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using ActivationPlanner.Services.Checklists;
 using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.PropagationModel.Antennas;
+using ActivationPlanner.PropagationModel.Geo;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.Services.Pota;
 using ActivationPlanner.Services.SpaceWeather;
+using ActivationPlanner.Services.Weather;
 using ActivationPlanner.UI.ViewModels.Wizard;
+using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -34,6 +40,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly PotaClient _pota;
     private readonly PotaSelfSpotter _selfSpotter;
     private readonly SpaceWeatherClient _spaceWeather;
+    private readonly WeatherClient _weather;
     private readonly PdfExportService _pdf;
     private readonly IAntennaPatternSource _patternSource;
     private readonly bool _patternIsSample;
@@ -43,8 +50,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist, PotaClient pota,
-        PotaSelfSpotter selfSpotter, SpaceWeatherClient spaceWeather, PdfExportService pdf,
-        IAntennaPatternSource patternSource, bool patternIsSample, SessionState session, bool isSampleData)
+        PotaSelfSpotter selfSpotter, SpaceWeatherClient spaceWeather, WeatherClient weather,
+        PdfExportService pdf, IAntennaPatternSource patternSource, bool patternIsSample,
+        SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
@@ -54,6 +62,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(pota);
         ArgumentNullException.ThrowIfNull(selfSpotter);
         ArgumentNullException.ThrowIfNull(spaceWeather);
+        ArgumentNullException.ThrowIfNull(weather);
         ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(patternSource);
         ArgumentNullException.ThrowIfNull(session);
@@ -65,6 +74,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _pota = pota;
         _selfSpotter = selfSpotter;
         _spaceWeather = spaceWeather;
+        _weather = weather;
         _pdf = pdf;
         _patternSource = patternSource;
         _patternIsSample = patternIsSample;
@@ -76,12 +86,103 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _clock = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _clock.Tick += (_, _) => UpdateClock();
         _clock.Start();
+
+        // App-wide weather-alert watch: poll in the background so watches/warnings pop up on ANY
+        // page, not just the Weather tab. First check shortly after launch, then every 10 minutes.
+        _alertTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
+        _alertTimer.Tick += (_, _) => _ = MonitorAlertsAsync();
+        _alertTimer.Start();
+        _ = MonitorAlertsAsync();
     }
 
     private readonly DispatcherTimer _clock;
 
     [ObservableProperty] private string _localTimeText = "";
     [ObservableProperty] private string _utcTimeText = "";
+
+    // ---- App-wide weather alerts (watches/warnings) — surface on any page ----
+
+    private static readonly IBrush SevereAlertBrush = new SolidColorBrush(Color.FromRgb(0xC0, 0x39, 0x2B));
+    private static readonly IBrush ModerateAlertBrush = new SolidColorBrush(Color.FromRgb(0xC9, 0x6A, 0x1B));
+    private static readonly IBrush MinorAlertBrush = new SolidColorBrush(Color.FromRgb(0xC9, 0x9A, 0x2B));
+
+    private readonly DispatcherTimer _alertTimer;
+    private readonly HashSet<string> _acknowledgedAlertKeys = new(StringComparer.Ordinal);
+    private double? _alertLat;
+    private double? _alertLon;
+
+    /// <summary>Currently active watches/warnings for the operator's area.</summary>
+    public ObservableCollection<WeatherAlert> ActiveAlerts { get; } = [];
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowAlertOverlay))]
+    private bool _alertsAcknowledged = true;
+
+    [ObservableProperty] private string _alertHeadline = "";
+    [ObservableProperty] private IBrush _alertBrush = SevereAlertBrush;
+
+    /// <summary>True while any alert is active (drives the persistent banner).</summary>
+    public bool HasActiveAlerts => ActiveAlerts.Count > 0;
+
+    /// <summary>The blocking overlay shows while active alerts haven't been acknowledged.</summary>
+    public bool ShowAlertOverlay => HasActiveAlerts && !AlertsAcknowledged;
+
+    /// <summary>Dismiss the blocking overlay — the operator has read the current alerts.</summary>
+    [RelayCommand]
+    private void AcknowledgeAlerts()
+    {
+        foreach (WeatherAlert a in ActiveAlerts)
+            _acknowledgedAlertKeys.Add(a.Key);
+        AlertsAcknowledged = true;
+    }
+
+    /// <summary>Reopen the alert overlay from the persistent banner.</summary>
+    [RelayCommand]
+    private void ReopenAlerts() => AlertsAcknowledged = false;
+
+    private async Task MonitorAlertsAsync()
+    {
+        try
+        {
+            if (_alertLat is null || _alertLon is null)
+            {
+                LocationFix fix = await _location.RefreshAsync();
+                _alertLat = fix.Location.LatitudeDeg;
+                _alertLon = fix.Location.LongitudeDeg;
+            }
+
+            IReadOnlyList<WeatherAlert> alerts = await _weather.GetAlertsAsync(_alertLat.Value, _alertLon.Value);
+
+            ActiveAlerts.Clear();
+            foreach (WeatherAlert a in alerts)
+                ActiveAlerts.Add(a);
+
+            int worst = alerts.Count > 0 ? alerts.Max(a => a.SeverityRank) : 0;
+            AlertBrush = worst >= 3 ? SevereAlertBrush : worst == 2 ? ModerateAlertBrush : MinorAlertBrush;
+            AlertHeadline = alerts.Count switch
+            {
+                0 => "",
+                1 => "⚠  1 active weather alert",
+                var n => $"⚠  {n} active weather alerts",
+            };
+
+            // Force the blocking overlay only for a NEW significant alert — Moderate severity and up
+            // (warnings, watches, significant advisories). Minor statements still show in the banner
+            // (and in the overlay if reopened) but never interrupt.
+            const int significantSeverity = 2; // Moderate
+            if (alerts.Any(a => a.SeverityRank >= significantSeverity && !_acknowledgedAlertKeys.Contains(a.Key)))
+                AlertsAcknowledged = false;
+            else if (alerts.Count == 0)
+                AlertsAcknowledged = true;
+
+            OnPropertyChanged(nameof(HasActiveAlerts));
+            OnPropertyChanged(nameof(ShowAlertOverlay));
+        }
+        catch
+        {
+            // Best-effort background poll; try again on the next tick.
+        }
+    }
 
     private void UpdateClock()
     {
@@ -183,6 +284,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ActivePage = NavPage.Battery;
     }
 
+    [RelayCommand]
+    private void ShowWeather()
+    {
+        CurrentPage = new WeatherViewModel(_weather, _location);
+        ActivePage = NavPage.Weather;
+    }
+
     private async Task OnWizardCompletedAsync(Inventory inventory)
     {
         await _inventory.ReplaceAsync(inventory);
@@ -202,4 +310,5 @@ public enum NavPage
     Antenna,
     Inventory,
     Battery,
+    Weather,
 }

@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
         xmlns:conv="clr-namespace:ActivationPlanner.UI.Converters"
+        xmlns:weather="clr-namespace:ActivationPlanner.Services.Weather;assembly=ActivationPlanner.Services"
         mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
         x:Class="ActivationPlanner.UI.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -13,6 +14,7 @@
     <Window.Resources>
         <conv:NavActiveConverter x:Key="NavActive" />
     </Window.Resources>
+    <Grid>
     <DockPanel Background="{DynamicResource AppCanvas}">
         <!-- Top navigation (hidden during the first-run wizard) -->
         <Border DockPanel.Dock="Top" IsVisible="{Binding ShowNavigation}"
@@ -29,6 +31,8 @@
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Trend}" />
                     <Button Content="Grey line" Command="{Binding ShowGreyLineCommand}" Classes="nav" Margin="0,2,4,2"
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=GreyLine}" />
+                    <Button Content="Weather" Command="{Binding ShowWeatherCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Weather}" />
                     <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Classes="nav" Margin="0,2,4,2"
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Mission}" />
                     <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Classes="nav" Margin="0,2,4,2"
@@ -57,6 +61,59 @@
             </Grid>
         </Border>
 
+        <!-- App-wide weather-alert banner (shows on any page; click to reopen the full alert) -->
+        <Button DockPanel.Dock="Top" Command="{Binding ReopenAlertsCommand}" IsVisible="{Binding HasActiveAlerts}"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                Background="Transparent" Padding="0">
+            <Border Background="{Binding AlertBrush}" Padding="16,8">
+                <TextBlock Foreground="White" FontWeight="Bold" TextWrapping="Wrap">
+                    <Run Text="{Binding AlertHeadline}" /><Run Text="   —  click to read" />
+                </TextBlock>
+            </Border>
+        </Button>
+
         <ContentControl Content="{Binding CurrentPage}" />
     </DockPanel>
+
+    <!-- App-wide blocking alert overlay — must be read and dismissed, over any page -->
+    <Border IsVisible="{Binding ShowAlertOverlay}" Background="#B4000000">
+        <Border Classes="card" Margin="40" Padding="0" ClipToBounds="True"
+                MaxWidth="720" MaxHeight="560" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Background="{Binding AlertBrush}" Padding="18,14">
+                    <TextBlock Text="{Binding AlertHeadline}" FontSize="20" FontWeight="Bold" Foreground="White"
+                               TextWrapping="Wrap" />
+                </Border>
+                <Border DockPanel.Dock="Bottom" Padding="18,12">
+                    <Button Content="I've read this — dismiss" Command="{Binding AcknowledgeAlertsCommand}"
+                            Classes="accent" HorizontalAlignment="Right" />
+                </Border>
+                <ScrollViewer Padding="18,10">
+                    <ItemsControl ItemsSource="{Binding ActiveAlerts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="weather:WeatherAlert">
+                                <Border BorderBrush="{DynamicResource RowSeparator}" BorderThickness="0,0,0,1" Padding="0,10">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="{Binding Event}" FontWeight="Bold" FontSize="16" TextWrapping="Wrap" />
+                                        <TextBlock FontSize="12" Opacity="0.75" TextWrapping="Wrap">
+                                            <Run Text="{Binding Severity}" /><Run Text="  ·  " /><Run Text="{Binding AreaDesc}" />
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Headline}" FontWeight="SemiBold" TextWrapping="Wrap"
+                                                   IsVisible="{Binding Headline, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        <TextBlock Text="{Binding Description}" FontSize="12" Opacity="0.85" TextWrapping="Wrap"
+                                                   IsVisible="{Binding Description, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        <TextBlock Text="{Binding Instruction}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"
+                                                   IsVisible="{Binding Instruction, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        <TextBlock Text="{Binding Expires, StringFormat='Expires: {0}'}" FontSize="11" Opacity="0.6"
+                                                   IsVisible="{Binding Expires, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+    </Border>
+    </Grid>
 </Window>
