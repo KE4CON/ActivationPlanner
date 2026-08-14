@@ -8,6 +8,7 @@ using ActivationPlanner.PropagationModel.Antennas;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.Services.Pota;
+using ActivationPlanner.Services.SpaceWeather;
 using ActivationPlanner.UI.ViewModels.Wizard;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +33,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly ChecklistService _checklist;
     private readonly PotaClient _pota;
     private readonly PotaSelfSpotter _selfSpotter;
+    private readonly SpaceWeatherClient _spaceWeather;
     private readonly PdfExportService _pdf;
     private readonly IAntennaPatternSource _patternSource;
     private readonly bool _patternIsSample;
@@ -41,8 +43,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         GearInventoryService inventory, PlanningService planning, LocationService location,
         MissionTypeService missions, ChecklistService checklist, PotaClient pota,
-        PotaSelfSpotter selfSpotter, PdfExportService pdf, IAntennaPatternSource patternSource,
-        bool patternIsSample, SessionState session, bool isSampleData)
+        PotaSelfSpotter selfSpotter, SpaceWeatherClient spaceWeather, PdfExportService pdf,
+        IAntennaPatternSource patternSource, bool patternIsSample, SessionState session, bool isSampleData)
     {
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(planning);
@@ -51,6 +53,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(pota);
         ArgumentNullException.ThrowIfNull(selfSpotter);
+        ArgumentNullException.ThrowIfNull(spaceWeather);
         ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(patternSource);
         ArgumentNullException.ThrowIfNull(session);
@@ -61,6 +64,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _checklist = checklist;
         _pota = pota;
         _selfSpotter = selfSpotter;
+        _spaceWeather = spaceWeather;
         _pdf = pdf;
         _patternSource = patternSource;
         _patternIsSample = patternIsSample;
@@ -117,7 +121,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void ShowPlanning()
     {
         CurrentPage = new PlanningViewModel(
-            _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData);
+            _planning, _inventory, _location, _checklist, _pdf, _spaceWeather, _session, _isSampleData);
         ActivePage = NavPage.Planning;
     }
 
@@ -126,7 +130,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void ShowQuickPlan()
     {
         CurrentPage = new PlanningViewModel(
-            _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData, quickStart: true);
+            _planning, _inventory, _location, _checklist, _pdf, _spaceWeather, _session, _isSampleData, quickStart: true);
         ActivePage = NavPage.QuickPlan;
     }
 

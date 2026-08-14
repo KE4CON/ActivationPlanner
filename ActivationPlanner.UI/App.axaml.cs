@@ -10,6 +10,7 @@ using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Missions;
 using ActivationPlanner.Services.Planning;
 using ActivationPlanner.Services.Pota;
+using ActivationPlanner.Services.SpaceWeather;
 using ActivationPlanner.UI.Sample;
 using ActivationPlanner.UI.ViewModels;
 using Avalonia;
@@ -96,13 +97,17 @@ public partial class App : Application
             const bool selfSpottingEnabled = true;
             var potaSelfSpotter = new PotaSelfSpotter(httpClient, enabled: selfSpottingEnabled);
 
+            // Live solar/space-weather (SSN/SFI/K) from the public N0NBH feed, to auto-fill the
+            // VOACAP sunspot input with real conditions instead of a typed guess.
+            var spaceWeatherClient = new SpaceWeatherClient(httpClient);
+
             // Shared session selections carried between screens (e.g. mission -> planning framing).
             var sessionState = new SessionState();
 
             var mainViewModel = new MainWindowViewModel(
                 inventoryService, planningService, locationService, missionService, checklistService,
-                potaClient, potaSelfSpotter, pdfExportService, patternSource, patternIsSample: patternIsSample,
-                sessionState, isSampleData: isSampleData);
+                potaClient, potaSelfSpotter, spaceWeatherClient, pdfExportService, patternSource,
+                patternIsSample: patternIsSample, sessionState, isSampleData: isSampleData);
 
             desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
 

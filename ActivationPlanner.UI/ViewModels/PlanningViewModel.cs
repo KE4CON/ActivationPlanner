@@ -13,6 +13,7 @@ using ActivationPlanner.Services.Export;
 using ActivationPlanner.Services.GearInventory;
 using ActivationPlanner.Services.Location;
 using ActivationPlanner.Services.Planning;
+using ActivationPlanner.Services.SpaceWeather;
 using ActivationPlanner.UI.ViewModels.Planning;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -32,12 +33,13 @@ public sealed partial class PlanningViewModel : ViewModelBase
     private readonly LocationService _location;
     private readonly ChecklistService _checklist;
     private readonly PdfExportService _pdf;
+    private readonly SpaceWeatherClient _spaceWeather;
     private readonly SessionState _session;
     private SessionPlan? _lastPlan;
 
     public PlanningViewModel(
         PlanningService planning, GearInventoryService inventory, LocationService location,
-        ChecklistService checklist, PdfExportService pdf,
+        ChecklistService checklist, PdfExportService pdf, SpaceWeatherClient spaceWeather,
         SessionState session, bool isSampleData, bool quickStart = false)
     {
         ArgumentNullException.ThrowIfNull(planning);
@@ -45,12 +47,14 @@ public sealed partial class PlanningViewModel : ViewModelBase
         ArgumentNullException.ThrowIfNull(location);
         ArgumentNullException.ThrowIfNull(checklist);
         ArgumentNullException.ThrowIfNull(pdf);
+        ArgumentNullException.ThrowIfNull(spaceWeather);
         ArgumentNullException.ThrowIfNull(session);
         _planning = planning;
         _inventory = inventory;
         _location = location;
         _checklist = checklist;
         _pdf = pdf;
+        _spaceWeather = spaceWeather;
         _session = session;
         IsSampleData = isSampleData;
 
@@ -63,15 +67,53 @@ public sealed partial class PlanningViewModel : ViewModelBase
         _framing = mission.Framing;
         MissionContext = $"Mission: {mission.DisplayName}";
 
-        // Quick Mode: locate and generate immediately so the operator lands on live recommendations.
         if (quickStart)
+            // Quick Mode: fetch live solar, locate, and generate so the operator lands on live recs.
             _ = QuickStartAsync();
+        else
+            // Otherwise prefill the sunspot number from live space weather in the background.
+            _ = FetchSolarAsync();
     }
 
     private async Task QuickStartAsync()
     {
+        await FetchSolarAsync();     // use real solar numbers for the auto-generated plan
         await UseMyLocationAsync();  // best-effort; reports its own status/errors
         await GeneratePlanAsync();
+    }
+
+    private bool CanFetchSolar => !IsFetchingSolar;
+
+    /// <summary>Pull current solar indices from the public feed and prefill the sunspot number.</summary>
+    [RelayCommand(CanExecute = nameof(CanFetchSolar))]
+    private async Task FetchSolarAsync()
+    {
+        IsFetchingSolar = true;
+        try
+        {
+            SolarConditions sw = await _spaceWeather.GetCurrentAsync();
+            if (sw.HasSunspotNumber)
+                SunspotNumber = sw.SunspotNumber!.Value;
+            SolarSummary = BuildSolarSummary(sw);
+        }
+        catch (Exception ex) when (ex is SpaceWeatherUnavailableException or SpaceWeatherFormatException)
+        {
+            SolarSummary = "Live solar data unavailable — using the value shown (type your own if needed).";
+        }
+        finally
+        {
+            IsFetchingSolar = false;
+        }
+    }
+
+    private static string BuildSolarSummary(SolarConditions sw)
+    {
+        var parts = new List<string>();
+        if (sw.SolarFluxIndex is { } sfi) parts.Add($"SFI {sfi}");
+        if (sw.SunspotNumber is { } ssn) parts.Add($"SSN {ssn}");
+        if (sw.KIndex is { } k) parts.Add($"K {k}");
+        string metrics = parts.Count > 0 ? string.Join(" · ", parts) : "no data";
+        return sw.UpdatedText is { } updated ? $"Live: {metrics} · {updated}" : $"Live: {metrics}";
     }
 
     /// <summary>True when predictions come from the offline sample stand-in, not a real VOACAP run.</summary>
@@ -91,6 +133,10 @@ public sealed partial class PlanningViewModel : ViewModelBase
     [ObservableProperty] private double _targetLatitude = 40.0;
     [ObservableProperty] private double _targetLongitude = -105.0;
     [ObservableProperty] private double _sunspotNumber = 70;
+    [ObservableProperty] private string? _solarSummary;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(FetchSolarCommand))]
+    private bool _isFetchingSolar;
     [ObservableProperty] private int _month;
     [ObservableProperty] private int _year;
     [ObservableProperty] private double _transmitPowerWatts = 100;
