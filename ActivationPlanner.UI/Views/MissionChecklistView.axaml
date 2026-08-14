@@ -18,10 +18,10 @@
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
     </UserControl.Styles>
-    <Grid ColumnDefinitions="320,*" Margin="20">
+    <Grid ColumnDefinitions="348,*" Margin="20">
         <!-- ============ Mission + framing + progress ============ -->
         <Border Grid.Column="0" Classes="card" Padding="16" Margin="0,0,16,0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,10,0">
             <StackPanel Spacing="10">
                 <TextBlock Text="Operation &amp; gear list" FontSize="20" FontWeight="SemiBold" />
 
