@@ -86,6 +86,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShowNavigation))]
     private ViewModelBase? _currentPage;
 
+    /// <summary>Which nav destination is active — drives the highlighted (accent) nav button.</summary>
+    [ObservableProperty] private NavPage _activePage = NavPage.Planning;
+
     // Dispose a page as we leave it, so any background work it owns (e.g. the trend sampler) stops.
     partial void OnCurrentPageChanging(ViewModelBase? oldValue, ViewModelBase? newValue)
     {
@@ -108,43 +111,80 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowPlanning() =>
+    private void ShowPlanning()
+    {
         CurrentPage = new PlanningViewModel(
             _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData);
+        ActivePage = NavPage.Planning;
+    }
 
     /// <summary>Quick Mode: jump straight to the recommendation view and auto-generate a plan.</summary>
     [RelayCommand]
-    private void ShowQuickPlan() =>
+    private void ShowQuickPlan()
+    {
         CurrentPage = new PlanningViewModel(
             _planning, _inventory, _location, _checklist, _pdf, _session, _isSampleData, quickStart: true);
+        ActivePage = NavPage.QuickPlan;
+    }
 
     [RelayCommand]
-    private void ShowMissionChecklist() =>
+    private void ShowMissionChecklist()
+    {
         CurrentPage = new MissionChecklistViewModel(_missions, _checklist, _inventory, _pdf, _session);
+        ActivePage = NavPage.Mission;
+    }
 
     [RelayCommand]
-    private void ShowTrend() =>
+    private void ShowTrend()
+    {
         CurrentPage = new TrendViewModel(_planning, _location, _inventory, _session);
+        ActivePage = NavPage.Trend;
+    }
 
     [RelayCommand]
-    private void ShowGreyLine() =>
+    private void ShowGreyLine()
+    {
         CurrentPage = new GreyLineViewModel(_planning, _location, _inventory);
+        ActivePage = NavPage.GreyLine;
+    }
 
     [RelayCommand]
-    private void ShowPotaSpots() =>
+    private void ShowPotaSpots()
+    {
         CurrentPage = new PotaSpotsViewModel(_pota);
+        ActivePage = NavPage.Pota;
+    }
 
     [RelayCommand]
-    private void ShowAntennaPattern() =>
+    private void ShowAntennaPattern()
+    {
         CurrentPage = new AntennaPatternViewModel(_patternSource, _inventory, _patternIsSample);
+        ActivePage = NavPage.Antenna;
+    }
 
     [RelayCommand]
-    private void ShowInventory() =>
+    private void ShowInventory()
+    {
         CurrentPage = new InventoryEditViewModel(_inventory);
+        ActivePage = NavPage.Inventory;
+    }
 
     private async Task OnWizardCompletedAsync(Inventory inventory)
     {
         await _inventory.ReplaceAsync(inventory);
         ShowPlanning();
     }
+}
+
+/// <summary>The top-nav destinations, used to highlight the active button.</summary>
+public enum NavPage
+{
+    QuickPlan,
+    Planning,
+    Trend,
+    GreyLine,
+    Mission,
+    Pota,
+    Antenna,
+    Inventory,
 }
