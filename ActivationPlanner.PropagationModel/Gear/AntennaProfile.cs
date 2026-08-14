@@ -41,6 +41,15 @@ public sealed record AntennaProfile
     /// <summary>Radial length in feet — verticals only. Null when not applicable.</summary>
     public double? RadialLengthFeet { get; init; }
 
+    /// <summary>
+    /// Height of the radials above ground, in feet — verticals only. Null (or 0) means the radials
+    /// lie on the ground (the classic ground-mounted vertical). A positive value models an
+    /// <b>elevated radial</b> / raised-counterpoise vertical: the radials — and the feed point where
+    /// they meet the radiator — sit at this height, which lowers the take-off angle and cuts ground
+    /// loss (why a few elevated radials rival dozens of on-ground ones). A few feet is typical.
+    /// </summary>
+    public double? RadialHeightFeet { get; init; }
+
     /// <summary>Optional free-text notes.</summary>
     public string? Notes { get; init; }
 

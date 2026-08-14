@@ -113,7 +113,17 @@ public sealed class NecGeometryBuilder
         // present and the base is at/near ground, lift the whole assembly (base + radials) by the
         // ground clearance so they clear the plane and stay electrically connected at the feed.
         bool hasRadials = antenna.RadialCount is > 0 && antenna.RadialLengthFeet is > 0;
-        double baseZ = hasRadials ? Math.Max(heightM, GroundClearanceMetres) : heightM;
+
+        // Elevated radials (a raised counterpoise): the radials and the feed point sit at a stated
+        // height above ground, and the radiator rises from there. This is a distinct, common
+        // portable configuration — it lowers the take-off angle and cuts ground loss versus
+        // on-ground radials. When set, it drives the assembly base height (feed == radial ring).
+        double? elevatedRadialM = hasRadials && antenna.RadialHeightFeet is { } rhFt && rhFt > 0
+            ? Wavelength.FeetToMetres(rhFt)
+            : null;
+        double baseZ = elevatedRadialM is { } erM
+            ? Math.Max(erM, GroundClearanceMetres)
+            : hasRadials ? Math.Max(heightM, GroundClearanceMetres) : heightM;
 
         var wires = new List<NecWire>
         {

@@ -17,7 +17,8 @@ All lengths and heights are in **feet**.
 |---|---|
 | **Length** | The size of the radiating wire/element. *What exactly* depends on the antenna type — see below. |
 | **Height** | How high the **feed point** is above the ground. |
-| **Radials** | (Verticals only) The on-ground wires spread out under the antenna. |
+| **Radials** | (Verticals only) The wires spread out under the antenna as its "ground": **count**, **length**, and **height**. |
+| **Radial height** | (Verticals only) How high the radials sit above ground. **0 = on the ground.** A positive value models **elevated radials** (a raised counterpoise): the feed and radials sit at that height, lowering the take-off angle and cutting ground loss — a few elevated radials rival dozens on the ground. |
 
 The **Length** label changes with the antenna type so you always know what's being asked.
 
@@ -40,11 +41,31 @@ The **Length** label changes with the antenna type so you always know what's bei
   antenna where you don't know the electrical length — a Chameleon MPAS, a screwdriver, a Wolf River
   coil — **leave it 0** and the planner estimates a resonant quarter-wave.
 - **Height:** height of the **base (feed point)** above ground. Sitting on the ground? Enter **0**.
-- **Radials:** how many on-ground wires, and how long each is. No radials? Leave both 0.
+- **Radials:** how many wires, and how long each is. No radials? Leave both 0.
+- **Radial height:** `0` for on-ground radials. If you raise them on stakes (a few feet up), enter that
+  height — the planner then models the lower take-off angle and reduced ground loss of **elevated
+  radials**. Even 2–4 elevated radials perform like a large on-ground field.
+
+> **Worked example — vertical with elevated radials:** a Chelegance MC-750 (or similar) with 4 radials
+> raised ~3 ft: Category = *Vertical*, Element length = `0` (loaded/telescoping → estimate), Radial
+> count = `4`, Radial height = `3`. Expect a lower take-off angle than the same antenna on-ground.
+
+### NVIS — usually just a low dipole, not a special antenna
+**NVIS** (Near Vertical Incidence Skywave) is a *technique*, not an antenna: fire the signal nearly
+straight up so it rains back down over a region a few hundred miles across (40/60/80 m regional & EMCOMM).
+The **most common NVIS antenna is an ordinary dipole (or end-fed) strung low** — ~0.1–0.25 λ up, about
+**10–20 ft** on 40/80 m. Enter it as a **Dipole** or **End-Fed Half-Wave** with a **low Height**; the
+planner models the high take-off angle automatically. No special type is required.
+
+> **Worked example — 40 m NVIS dipole:** Category = *Dipole*, Length ≈ `66` (or 0 to estimate),
+> Height = `15`. The pattern peaks near straight-up. The same wire at 40 ft favors distance instead —
+> **Height is the whole story.**
 
 ### NVIS crossed dipole (e.g. Chameleon 4-wire NVIS / U.S. Army AS-2259)
-This is **two dipoles crossed at 90°**, fed at the center on top of a short mast, with the four legs
-sloping down to ground stakes. It radiates **straight up** for short-range regional / EMCOMM work.
+A **purpose-built** NVIS antenna (use this type only if you own one): **two dipoles crossed at 90°**,
+fed at the center on top of a short mast, with the four legs sloping down to ground stakes. It radiates
+**straight up** for short-range regional / EMCOMM work, with more even coverage in all directions than a
+single low dipole.
 
 - **Leg length:** the length of **ONE of the four wires**, measured from the center feed out to its
   far (staked) end — **not** all four added together. The Chameleon 4-wire NVIS uses **~45 ft** legs.

@@ -80,6 +80,9 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
     [ObservableProperty]
     private double? _radialLengthFeet;
 
+    [ObservableProperty]
+    private double? _radialHeightFeet;
+
     /// <summary>Radial fields only make sense for verticals/whips.</summary>
     public bool ShowRadials =>
         SelectedCategory is AntennaCategory.Vertical or AntennaCategory.Whip;
@@ -113,7 +116,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
     public string HeightHint => SelectedCategory switch
     {
         AntennaCategory.Vertical or AntennaCategory.Whip =>
-            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height — the radials sit at this height too.",
+            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height. (For elevated radials, use the separate Radial height box below.)",
         AntennaCategory.NvisCrossedDipole =>
             "Height of the center feed at the top of the mast (the apex) — the four legs slope down from here toward the ground. A typical NVIS mast is ~15 ft.",
         _ =>
@@ -122,7 +125,8 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
 
     /// <summary>Plain-language help for the radial boxes.</summary>
     public string RadialHint =>
-        "Wires spread out under a vertical — they sit at the feed height set above (on the ground, or elevated with the feed). No radials, or a self-contained antenna? Leave both at 0.";
+        "Wires spread out under a vertical as its 'ground'. No radials, or a self-contained antenna? Leave count and length at 0. " +
+        "Radial height: leave 0 if they lie on the ground; raised on stakes (a few feet up)? Enter that height — elevated radials lower the take-off angle and need far fewer wires.";
 
     /// <summary>Add vs. Save Changes label for the form's primary button.</summary>
     public string SaveButtonText => _editingId is null ? "Add to list" : "Save changes";
@@ -143,6 +147,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
         HeightFeet = p.HeightFeet;
         RadialCount = p.RadialCount;
         RadialLengthFeet = p.RadialLengthFeet;
+        RadialHeightFeet = p.RadialHeightFeet;
 
         PresetNote = p.ModelingConfidence == ModelingConfidence.Approximate
             ? $"Approximate model — {p.Note} You can edit any field to match your actual antenna."
@@ -165,6 +170,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
             HeightFeet = HeightFeet,
             RadialCount = usesRadials ? RadialCount : null,
             RadialLengthFeet = usesRadials ? RadialLengthFeet : null,
+            RadialHeightFeet = usesRadials ? RadialHeightFeet : null,
         };
 
         if (_editingId is { } editing)
@@ -200,6 +206,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
         HeightFeet = antenna.HeightFeet;
         RadialCount = antenna.RadialCount;
         RadialLengthFeet = antenna.RadialLengthFeet;
+        RadialHeightFeet = antenna.RadialHeightFeet;
         OnPropertyChanged(nameof(SaveButtonText));
     }
 
@@ -228,6 +235,7 @@ public sealed partial class AntennaStepViewModel : WizardStepViewModel
         HeightFeet = 0;
         RadialCount = null;
         RadialLengthFeet = null;
+        RadialHeightFeet = null;
         OnPropertyChanged(nameof(SaveButtonText));
     }
 }

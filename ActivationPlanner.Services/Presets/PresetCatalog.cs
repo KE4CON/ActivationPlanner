@@ -36,7 +36,8 @@ public sealed record AntennaPreset(
     double? RadialLengthFeet,
     ModelingConfidence ModelingConfidence,
     string? Note,
-    string? Source)
+    string? Source,
+    double? RadialHeightFeet = null)
 {
     /// <summary>Manufacturer + model, for the picker.</summary>
     public string DisplayName => $"{Manufacturer} {Model}";

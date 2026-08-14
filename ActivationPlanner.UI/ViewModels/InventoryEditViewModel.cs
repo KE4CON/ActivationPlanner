@@ -182,6 +182,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     [ObservableProperty] private double _heightFeet;
     [ObservableProperty] private int? _radialCount;
     [ObservableProperty] private double? _radialLengthFeet;
+    [ObservableProperty] private double? _radialHeightFeet;
 
     public bool ShowRadials => AntennaCategory is AntennaCategory.Vertical or AntennaCategory.Whip;
 
@@ -214,7 +215,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
     public string HeightHint => AntennaCategory switch
     {
         AntennaCategory.Vertical or AntennaCategory.Whip =>
-            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height — the radials sit at this height too.",
+            "Height of the feed point (base) above ground. On the ground? Enter 0. Elevated vertical (e.g. POTA PERformer, ~5 ft)? Enter that height. (For elevated radials, use the separate Radial height box below.)",
         AntennaCategory.NvisCrossedDipole =>
             "Height of the center feed at the top of the mast (the apex) — the four legs slope down from here toward the ground. A typical NVIS mast is ~15 ft.",
         _ =>
@@ -223,7 +224,8 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
 
     /// <summary>Plain-language help for the radial boxes.</summary>
     public string RadialHint =>
-        "On-ground wires spread out under a vertical. No radials (or a self-contained antenna)? Leave both at 0.";
+        "Wires spread out under a vertical as its 'ground'. No radials (or a self-contained antenna)? Leave count and length at 0. " +
+        "Radial height: leave 0 if they lie on the ground; if you raise them on stakes (a few feet up), enter that height — elevated radials lower the take-off angle and need far fewer wires.";
 
     public string AntennaButtonText => _editingAntennaId is null ? "Add antenna" : "Save antenna";
 
@@ -243,6 +245,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
             HeightFeet = HeightFeet,
             RadialCount = usesRadials ? RadialCount : null,
             RadialLengthFeet = usesRadials ? RadialLengthFeet : null,
+            RadialHeightFeet = usesRadials ? RadialHeightFeet : null,
         };
 
         if (_editingAntennaId is null)
@@ -266,6 +269,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
         HeightFeet = antenna.HeightFeet;
         RadialCount = antenna.RadialCount;
         RadialLengthFeet = antenna.RadialLengthFeet;
+        RadialHeightFeet = antenna.RadialHeightFeet;
         OnPropertyChanged(nameof(AntennaButtonText));
     }
 
@@ -294,6 +298,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
         HeightFeet = p.HeightFeet;
         RadialCount = p.RadialCount;
         RadialLengthFeet = p.RadialLengthFeet;
+        RadialHeightFeet = p.RadialHeightFeet;
 
         AntennaPresetNote = p.ModelingConfidence == ModelingConfidence.Approximate
             ? $"Approximate model — {p.Note} You can edit any field to match your actual antenna."
@@ -314,6 +319,7 @@ public sealed partial class InventoryEditViewModel : ViewModelBase
         HeightFeet = 0;
         RadialCount = null;
         RadialLengthFeet = null;
+        RadialHeightFeet = null;
         OnPropertyChanged(nameof(AntennaButtonText));
     }
 

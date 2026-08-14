@@ -12,7 +12,7 @@ public sealed class NecGeometryBuilderTests
 
     private static AntennaProfile Antenna(
         AntennaCategory category, FeedPointType feed, double lengthFeet, double heightFeet,
-        int? radialCount = null, double? radialFeet = null) => new()
+        int? radialCount = null, double? radialFeet = null, double? radialHeightFeet = null) => new()
         {
             Name = $"{category}",
             Category = category,
@@ -21,6 +21,7 @@ public sealed class NecGeometryBuilderTests
             HeightFeet = heightFeet,
             RadialCount = radialCount,
             RadialLengthFeet = radialFeet,
+            RadialHeightFeet = radialHeightFeet,
         };
 
     [Fact]
@@ -86,6 +87,41 @@ public sealed class NecGeometryBuilderTests
         Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, deck.Wires[0].Z1, precision: 6);
         Assert.All(deck.Wires.Skip(1), r =>
             Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, r.Z1, precision: 6));
+    }
+
+    [Fact]
+    public void Elevated_radials_lift_the_feed_and_radials_to_the_stated_height()
+    {
+        const double f = 14.1;
+        // A ground-spiked whip is entered with a 0 base height, but the radials are raised ~3 ft on
+        // stakes. The radial height should drive the assembly: the feed and every radial sit at that
+        // height (electrically connected there), not on the ground.
+        const double radialHeightFt = 3.0;
+        var vertical = Antenna(AntennaCategory.Vertical, FeedPointType.BaseFed, Feet(0.25, f), heightFeet: 0,
+            radialCount: 4, radialFeet: Feet(0.25, f), radialHeightFeet: radialHeightFt);
+
+        var deck = _builder.Build(vertical, f);
+
+        double expectedZ = Wavelength.FeetToMetres(radialHeightFt);
+        Assert.Equal(1 + 4, deck.Wires.Count);              // radiator + 4 radials
+        Assert.Equal(expectedZ, deck.Wires[0].Z1, precision: 6); // radiator base at the radial height
+        Assert.True(deck.Wires[0].Z2 > deck.Wires[0].Z1);        // radiator still rises from the feed
+        Assert.All(deck.Wires.Skip(1), r => Assert.Equal(expectedZ, r.Z1, precision: 6)); // radials at that height
+    }
+
+    [Fact]
+    public void On_ground_radials_ignore_a_zero_radial_height()
+    {
+        const double f = 14.1;
+        // Radial height 0 (or null) keeps today's behavior: the assembly is only nudged to the
+        // ground clearance so the horizontal radials clear the ground plane.
+        var vertical = Antenna(AntennaCategory.Vertical, FeedPointType.BaseFed, Feet(0.25, f), heightFeet: 0,
+            radialCount: 4, radialFeet: Feet(0.25, f), radialHeightFeet: 0);
+
+        var deck = _builder.Build(vertical, f);
+
+        Assert.All(deck.Wires, w =>
+            Assert.Equal(NecGeometryBuilder.GroundClearanceMetres, w.Z1, precision: 6));
     }
 
     [Fact]
