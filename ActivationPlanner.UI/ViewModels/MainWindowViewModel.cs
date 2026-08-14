@@ -176,6 +176,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ActivePage = NavPage.Inventory;
     }
 
+    [RelayCommand]
+    private void ShowBatteryCalculator()
+    {
+        CurrentPage = new BatteryCalculatorViewModel(_inventory);
+        ActivePage = NavPage.Battery;
+    }
+
     private async Task OnWizardCompletedAsync(Inventory inventory)
     {
         await _inventory.ReplaceAsync(inventory);
@@ -194,4 +201,5 @@ public enum NavPage
     Pota,
     Antenna,
     Inventory,
+    Battery,
 }

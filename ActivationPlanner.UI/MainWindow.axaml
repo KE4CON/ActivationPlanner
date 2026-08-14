@@ -37,6 +37,8 @@
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Antenna}" />
                     <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" Classes="nav" Margin="0,2,4,2"
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Inventory}" />
+                    <Button Content="Battery" Command="{Binding ShowBatteryCalculatorCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Battery}" />
                 </WrapPanel>
 
                 <!-- Persistent clock: local above UTC, in an elevated pill so it stands out -->
