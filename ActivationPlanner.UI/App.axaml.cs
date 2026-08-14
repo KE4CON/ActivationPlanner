@@ -87,11 +87,13 @@ public partial class App : Application
             // POTA public read-only data (Phase 7).
             var potaClient = new PotaClient(httpClient);
 
-            // Self-spotting is fully wired (service + UI), but kept OFF behind this single flag until
-            // POTA confirms third-party automated self-spotting is acceptable (email sent 2026-08-13).
-            // Flipping this to true both enables sending AND reveals the self-spot panel on the POTA
-            // tab. Keep false until POTA replies. See docs/POTA_self_spot_permission_request.txt.
-            const bool selfSpottingEnabled = false;
+            // Self-spotting is fully wired (service + UI). ENABLED 2026-08-14 after POTA's helpdesk
+            // (Shep, WY8N) confirmed the spot API is undocumented-but-widely-used and tolerated for
+            // third parties (with the caveat it can change without notice). Our use is a good citizen:
+            // manual only (one press = one spot), self-spot only (spotter == activator), and identified
+            // via source="Activation Planner" + a descriptive User-Agent. Flip to false to disable
+            // (hides the panel and refuses to send). See docs/POTA_self_spot_permission_request.txt.
+            const bool selfSpottingEnabled = true;
             var potaSelfSpotter = new PotaSelfSpotter(httpClient, enabled: selfSpottingEnabled);
 
             // Shared session selections carried between screens (e.g. mission -> planning framing).

@@ -68,7 +68,7 @@ Phase 3: Antenna category-mapping + Option A/B trigger logic (community library 
 Phase 4: Avalonia UI — core planning screen (band/antenna recommendations, combined list + chart/graphical view)
 Phase 5: Checklist/Template engine + Mission Type selection
 Phase 6: GPS/location integration (refresh-on-demand, not continuous tracking)
-Phase 7: POTA integration — read-only spots/park data and self-spotting (both are plain unauthenticated HTTP calls; no login flow needed) — but **do not ship self-spotting without direct confirmation from POTA** that third-party automated use is acceptable
+Phase 7: POTA integration — read-only spots/park data and self-spotting (both are plain unauthenticated HTTP calls; no login flow needed). **Self-spotting is now ENABLED (2026-08-14).** POTA's helpdesk (Shep, WY8N) confirmed the spot API is undocumented-but-widely-used and tolerated for third parties, with the caveat that it can change without notice. Our use is deliberately good-citizen: manual only (one press = one spot), self-spot only (spotter == activator), identified via `source="Activation Planner"` + descriptive User-Agent. Controlled by the `selfSpottingEnabled` flag in `App.axaml.cs`.
 Phase 8: NEC2++ shell-out (Option B custom antenna modeling)
 
 ## Key Domain Rules
@@ -95,7 +95,7 @@ Phase 8: NEC2++ shell-out (Option B custom antenna modeling)
 - Do not use `Thread.Sleep` — use `Task.Delay` with `CancellationToken`
 - Do not swallow exceptions silently
 - Shell out to VOACAP and NEC2++ via `Process.Start` — never link or embed them in-process (this is what keeps GPLv2 NEC2++ from reaching the planner's own AGPLv3/GPLv3 code). Do not modify either tool's source. Redistribution/bundling **is** allowed (Item #19) — follow the obligations in "Third-Party Tool Licensing & Redistribution" below **to the letter**.
-- Do not ship self-spotting before POTA has been contacted directly for confirmation (their sanctioning of third-party automated use is still unconfirmed, even though the endpoint itself is technically open)
+- Self-spotting was gated pending POTA contact; **POTA was contacted and replied (2026-08-14) that third-party API use is tolerated (undocumented, may change without notice), so it is now ENABLED** with good-citizen constraints (manual-only, self-spot only, identified via source/User-Agent). Keep those constraints — do not add background/automated/bulk spotting or spot anyone but the operator.
 
 ## Third-Party Tool Licensing & Redistribution (Item #19 — follow to the letter)
 The installer bundles VOACAP and NEC2++. Obligations below were verified against the actual license files; full detail and quoted texts live in `docs/THIRD_PARTY_LICENSES.md`. **Not legal advice — a license review before public/commercial distribution is recommended.**
