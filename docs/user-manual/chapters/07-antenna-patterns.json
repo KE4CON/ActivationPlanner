@@ -1,0 +1,95 @@
+{
+  "order": 7,
+  "title": "Antenna Patterns — Seeing How Your Antenna Radiates",
+  "subtitle": "The pattern tab turns your antenna measurements into pictures — where your signal goes, at what angle, and how strongly — and this chapter explains every line and number in plain language.",
+  "in_this_chapter": [
+    "What a radiation pattern is, in plain terms",
+    "Where the pattern comes from (the NEC2++ modeling engine)",
+    "Opening the pattern tab and choosing a band",
+    "The two plots: the azimuth (top-down) cut and the elevation (side-on) cut",
+    "Take-off angle — the single most useful number, and why",
+    "Gain, front-to-back, and the other figures explained",
+    "The Measured vs Approximate confidence flag",
+    "How the pattern connects to your band recommendations",
+    "Why there's no 3D view yet",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Open the **Antenna Patterns** tab, pick one of your antennas and a band, and you'll see two pictures: a **top-down** view (which compass directions your signal favors) and a **side-on** view (at what **angle** above the horizon your signal leaves). The most useful thing to read is the **take-off angle** — low angles (roughly under 20°) are what you want for long distance; high angles are for short regional coverage. If an antenna is marked **Approximate**, treat its pattern as a good guide rather than an exact measurement."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "Every antenna sends your signal out more strongly in some directions than others. A picture of that — where the energy goes and how much — is called a **radiation pattern.** This tab draws your own antennas' patterns from the measurements you entered, so you can *see* whether an antenna is throwing your signal out low toward the horizon (good for distance) or up high (good for nearby coverage), and in which compass directions it's strongest."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**Radiation pattern:** a map of an antenna's \"loudness\" in every direction. Picture the antenna at the center and the signal puffing outward in a shape — fat where it's strong, pinched where it's weak. That shape is the pattern."}},
+
+    {"h1": "Where the Pattern Comes From"},
+    {"p": "The pictures aren't guesses or stock images — they're calculated for **your** antenna by the **NEC2++** antenna-modeling engine (one of the two helper programs from Chapter 2). NEC2++ takes the physical details you entered — type, feed point, lengths, height, radials — and computes how such an antenna actually radiates. Activation Planner then draws the result. This is why Chapter 3 stresses entering accurate measurements: the pattern is only as good as the numbers behind it."},
+    {"callout": {"kind": "important", "label": "GARBAGE IN, GARBAGE OUT",
+      "text": "If a pattern looks wrong, the first thing to check is the antenna's measurements on the **Inventory** screen. NEC2++ faithfully models whatever you told it — so a wrong height or length produces a wrong-but-confident-looking pattern. Get the input right (Chapter 3) and the picture follows."}},
+
+    {"h1": "Opening the Tab and Choosing a Band"},
+    {"steps": [
+      "Click **Antenna Patterns** in the navigation bar.",
+      "Choose which of your antennas to view.",
+      "Choose a **band**. An antenna radiates differently on different bands, so the pattern changes as you switch bands — this is normal and important to check for the band you plan to use."
+    ]},
+
+    {"h1": "The Two Plots"},
+    {"p": "You'll see two circular \"polar\" plots. Together they give you the full picture from two viewpoints. Reading a polar plot is simple: the antenna is at the center, and the farther the line is from the center in a given direction, the stronger the signal that way."},
+    {"h2": "The azimuth cut (the top-down view)"},
+    {"p": "The **azimuth** plot is the bird's-eye view — as if you were looking straight down on your antenna from above. It shows **which compass directions** your signal favors. A directional antenna shows a clear bulge toward its favored heading; a vertical or a simple wire is more of an even circle (it radiates fairly equally all around). Use this to see whether you need to aim the antenna at your target."},
+    {"h2": "The elevation cut (the side-on view)"},
+    {"p": "The **elevation** plot is the side view — as if you were standing beside your antenna looking at it edge-on. It shows **at what angle above the horizon** your signal leaves. This is the more important of the two for deciding *distance*, and it's where the take-off angle (next) is read."},
+
+    {"h1": "Take-Off Angle — the Number That Matters Most"},
+    {"p": "The **take-off angle** is the angle above the horizon where your antenna radiates most strongly, read off the elevation plot. It is the single most useful figure on this tab because it largely decides **how far your signal reaches**:"},
+    {"bullets": [
+      "**Low take-off angle (roughly under 20°)** — your signal leaves nearly parallel to the ground and takes long, shallow hops off the ionosphere. This is what you want for **DX / long distance.**",
+      "**High take-off angle (roughly 60° and up, toward straight up)** — your signal goes up steeply and rains back down over a nearby region. This is exactly what **NVIS / regional and emergency** coverage needs.",
+      "**In between** — a general-purpose compromise good for medium distances."
+    ]},
+    {"callout": {"kind": "note", "label": "WHY HEIGHT CHANGES EVERYTHING FOR A DIPOLE",
+      "text": "For a horizontal wire like a dipole, height above ground is what sets the take-off angle. Low to the ground = high angle (great for regional/NVIS); higher up = lower angle (better for distance). This is why Chapter 3 asks for the antenna's height so carefully — it's not a detail, it's what decides where your signal goes."}},
+
+    {"h1": "The Other Figures Explained"},
+    {"table": {
+      "headers": ["Figure", "What it means, plainly"],
+      "rows": [
+        ["Gain", "How much the antenna concentrates your signal in its best direction, compared with a plain reference antenna. Higher gain means a stronger signal that way — but usually at the cost of being weaker in other directions. Measured in dBi (decibels over an ideal reference)."],
+        ["Take-off angle", "The elevation angle of strongest radiation — see the section above. The key number for distance vs. regional coverage."],
+        ["Front-to-back", "For a directional antenna, how much stronger it is forward than backward. A big front-to-back number means it strongly favors the way it's aimed (and rejects noise/signals from behind)."],
+        ["Beamwidth", "How wide the antenna's main \"beam\" is. A narrow beamwidth is very focused (aim carefully); a wide one is more forgiving."]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**dBi** is just a way of scoring signal strength on a scale, compared to a perfect imaginary antenna. You don't need the math — bigger dBi in a direction means \"louder that way.\" A few dB is a noticeable difference; 6 dB is roughly double the perceived strength."}},
+
+    {"h1": "Measured vs Approximate — the Confidence Flag"},
+    {"p": "Each antenna carries a small flag telling you how much to trust its modeled pattern:"},
+    {"bullets": [
+      "**Measured** — the antenna is a straightforward wire-and-dimensions design (a dipole, an end-fed wire, a vertical with radials) that NEC2++ can model accurately from your measurements. Trust the pattern.",
+      "**Approximate** — the antenna has built-in loading coils, traps, or broadband matching (common in compact and \"screwdriver\" style antennas) that a simple wire model can't capture exactly. The pattern is a **representative guide** to its general behavior — the right shape and take-off angle in spirit — not an exact measurement."
+    ]},
+    {"callout": {"kind": "note", "label": "WHY SOME ANTENNAS ARE ONLY APPROXIMATE",
+      "text": "NEC2++ models antennas as wires in space. A plain dipole *is* essentially wires, so the model is faithful. But a loaded or broadband antenna does clever electrical things inside its coils and matching network that aren't just wire — so we flag its pattern as approximate rather than pretend a wire model captures it perfectly. It's still a useful picture; just don't read it to the last degree."}},
+
+    {"h1": "How the Pattern Connects to Your Plan"},
+    {"p": "The pattern tab and the planning screen work together. When you know a target is far away, the elevation plot tells you whether an antenna's take-off angle is low enough to reach it; when you're doing regional/EMCOMM work, it tells you whether the antenna gets your signal up high enough for good NVIS coverage. In short: the planning screen tells you *which band and when*; the pattern tab helps you understand *why a given antenna does or doesn't suit the job* — and which of your antennas to reach for."},
+
+    {"h1": "Why There's No 3D View (Yet)"},
+    {"p": "You may have seen antenna patterns drawn as a rotatable 3D shape elsewhere. Activation Planner shows **2D** cuts (the top-down and side-on plots) instead. That's a deliberate, temporary limitation: the 3D drawing engine we'd use is only available for an older version of the app's underlying framework, and we've chosen to stay on the current version. **The 2D plots are drawn from the exact same antenna data a 3D view would use** — you're seeing all the same information, just as two clear slices rather than one rotatable shape. A 3D view is on the roadmap for when a compatible engine ships."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The pattern looks obviously wrong", "Check the antenna's measurements on the **Inventory** screen (Chapter 3) — a wrong height or length is the usual cause. NEC2++ models exactly what you entered."],
+        ["The pattern is flagged Approximate", "That's expected for loaded/broadband antennas (coils, traps, screwdrivers). Read the shape and take-off angle as a guide, not an exact figure."],
+        ["The pattern changes when I switch bands", "That's correct — antennas radiate differently on different bands. Always view the pattern for the band you actually plan to use."],
+        ["No pattern appears", "Make sure the antenna has its dimensions entered (Chapter 3), and that NEC2++ is installed (see the Installation Guide). Without the engine, patterns can't be computed."],
+        ["I expected a 3D view", "Activation Planner uses 2D polar cuts for now (see \"Why There's No 3D View\" above). They contain the same information."]
+      ]
+    }}
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "order": 5,
+  "title": "Quick Mode — Recommendations in One Click",
+  "subtitle": "The fast path: skip the setup and planning screens and land straight on a full band-and-antenna recommendation for right here, right now.",
+  "in_this_chapter": [
+    "What Quick Mode is and when to use it",
+    "The two ways to reach it",
+    "What it fills in for you automatically",
+    "What you get — and that it's the full view, not a cut-down one",
+    "Turning a quick look into a detailed plan",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "**Quick plan** gets you a full set of band and antenna recommendations for your current location and the current conditions with **no setup and no form-filling.** Click **Quick plan**, and you're looking at ranked bands in seconds. It's the same recommendation view as the main planning screen — just with the inputs chosen for you automatically."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "Quick Mode is for the moments when you just want an answer **now** — you've arrived at a park or a summit, conditions are what they are, and you want to know which band to try first without stopping to fill anything in. It reuses the exact same prediction engine and the exact same recommendation view as the full **Plan session** screen (Chapter 4); it simply makes all the input choices for you using sensible defaults and your current situation."},
+    {"callout": {"kind": "note", "label": "IT'S THE FULL VIEW, NOT A STRIPPED-DOWN ONE",
+      "text": "Quick Mode does **not** give you a shortened or \"lite\" set of results. You get the complete band list — reliability, best hour, the 24-hour heatmap, calling frequencies, and matched antennas — identical to what the main planning screen produces. The only thing that's \"quick\" is getting there."}},
+
+    {"h1": "Two Ways to Reach Quick Mode"},
+    {"p": "You can get into Quick Mode two ways:"},
+    {"bullets": [
+      "**From the first-run setup wizard:** press **Skip** on any wizard step (Chapter 2). This is handy the very first time you open the program if you don't want to enter gear yet.",
+      "**From the navigation bar, any time:** click **Quick plan**. Use this whenever you want fast recommendations later on."
+    ]},
+
+    {"h1": "What Quick Mode Fills In For You"},
+    {"p": "So you don't have to, Quick Mode makes these choices automatically:"},
+    {"bullets": [
+      "**Your location** — taken automatically from your current position (the same as pressing *Use my location* on the main screen).",
+      "**The conditions** — the current live **sunspot number** and solar data, fetched for you.",
+      "**The date and time** — right now.",
+      "**Sensible defaults** — a reasonable power level and a general-operating framing, so the prediction is realistic out of the box."
+    ]},
+    {"p": "Everything is chosen to give you an honest, useful answer for your current situation with zero input. If any of it isn't quite right — say your location came out wrong on a hotspot, or you're running QRP power — you can refine it, as described below."},
+
+    {"h1": "What You Get"},
+    {"p": "Quick Mode lands you on the full recommendation view: a list of bands ranked best-first, each on its own card showing the reliability score and bar, the best hour, the 24-hour heatmap, the common calling frequencies, and which of your antennas suits that band. Every one of those is explained in detail in Chapter 4 — Quick Mode just gets you looking at them faster."},
+    {"callout": {"kind": "note", "label": "ANTENNA MATCHES NEED GEAR",
+      "text": "The band recommendations work even with an empty inventory, but the program can only suggest antennas you've told it you own. If you reached Quick Mode by skipping setup, the band advice is still solid — add your antennas later on the **Inventory** screen (Chapter 3) to get antenna matches too."}},
+
+    {"h1": "Turning a Quick Look into a Full Plan"},
+    {"p": "Quick Mode and the main planning screen are the same engine, so moving between them is seamless. When you want more control — a specific DX target, a different power level, an NVIS/regional framing, or a PDF export — just switch to **Plan session** in the navigation bar. Your location and the live conditions carry the same values, and you can adjust any input and press **Generate plan** to refine the result."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["My location looks wrong (especially on a phone hotspot)", "Automatic location over a cellular hotspot can be off by a lot. Switch to **Plan session** and type your latitude/longitude, or enter your **grid square** (Chapter 13)."],
+        ["No antennas are suggested", "Your inventory is empty (common if you skipped setup). Add antennas on the **Inventory** screen (Chapter 3); the band advice is still valid without them."],
+        ["The power seems too high/low for my radio", "Quick Mode uses a default. For an accurate weak-signal picture, switch to **Plan session** and set your real transmit power."],
+        ["It says \"sample data\"", "The propagation engine (VOACAP) isn't installed yet, so the numbers are placeholders. See the Installation Guide to set it up."],
+        ["I wanted to enter gear after all", "Open the **Inventory** screen any time to add gear — you don't have to re-run the setup wizard."]
+      ]
+    }}
+  ]
+}

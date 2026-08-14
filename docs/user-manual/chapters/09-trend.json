@@ -1,0 +1,48 @@
+{
+  "order": 9,
+  "title": "The Propagation Trend — Are Conditions Improving or Fading?",
+  "subtitle": "A rolling few-hour view that samples conditions in the background so you can see, at a glance, whether a band is getting better or worse over time — not just how it looks this second.",
+  "in_this_chapter": [
+    "What the trend view is and why a moving picture beats a single snapshot",
+    "How it samples conditions automatically in the background",
+    "Reading the trend",
+    "That it's session-only and not saved (and why)",
+    "How it works with the main plan",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "The **Trend** view watches conditions over the last few hours and shows whether bands are **improving or fading**. It refreshes itself in the background every 15–30 minutes — you don't press anything. Leave the program open during your session and glance at the trend to decide whether to keep working a band or move on. The trend resets each time you start the program; it isn't saved."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "The planning screen gives you a **snapshot** — how the bands look right now. But conditions move: a band can be climbing toward a peak or sliding into a slump, and the snapshot alone can't tell you which. The **Trend** view fills that gap by keeping a **rolling few-hour history** of the predictions, so you can see the *direction* things are heading."},
+    {"p": "Knowing the direction changes your decisions. A band that's mediocre right now but clearly **improving** is worth waiting on; a band that looks fine but is **fading** is one to work now before it's gone. That's the value of a moving picture over a single frame."},
+
+    {"h1": "It Samples Automatically in the Background"},
+    {"p": "You don't have to do anything to build the trend. While the program is open, it quietly re-runs the propagation prediction every **15 to 30 minutes** and adds each result to the rolling history. Over a session, that builds up into a picture of how conditions are changing. Because it's automatic and in the background, the trend is simply *there* whenever you switch to the tab."},
+    {"callout": {"kind": "note", "label": "IT NEEDS THE PROGRAM LEFT OPEN",
+      "text": "The trend builds only while Activation Planner is running. If you just opened the program, the trend will be sparse until a few sampling intervals have passed. For a useful trend, leave the program open through your session."}},
+
+    {"h1": "Reading the Trend"},
+    {"p": "The trend plots recent prediction samples over the last few hours so you can read the **slope**: a line climbing to the right means conditions are improving; a line sloping down means they're fading; a flat line means steady. Use it to answer the practical question — *is this band on the way up or on the way down?* — rather than to read exact numbers, which the planning screen already gives you precisely."},
+
+    {"h1": "It's Session-Only — and Why"},
+    {"p": "The trend is **not saved.** When you close the program, the rolling history is cleared, and it starts fresh next time. This is deliberate and matches how the whole program works: Activation Planner is **stateless** — it doesn't keep a history of your sessions. Every plan is based on the current time and the current solar data, so a stale trend from days ago would be misleading. Keeping the trend session-local means what you see always reflects the here and now."},
+    {"callout": {"kind": "note", "label": "CONSISTENT WITH STATELESS REPLANNING",
+      "text": "The program never tracks past sessions or activations. Each replan uses the current time and current conditions. The trend follows the same rule — it lives only for the current session — so you're never fooled by old data."}},
+
+    {"h1": "How It Works With the Main Plan"},
+    {"p": "Use the two together. The **planning screen** tells you which band is best *right now* and how good it is; the **Trend** view tells you whether that's likely to *hold, improve, or fade* over the next while. A common pattern: pick the best band from the plan, then check the trend to decide whether to jump on it immediately (fading) or set up other things first (still improving)."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The trend is empty or nearly flat with few points", "You just opened the program. The trend builds every 15–30 minutes — leave the program open and check back after a couple of intervals."],
+        ["The trend disappeared after I restarted", "That's expected — the trend is session-only and isn't saved, in keeping with the program's stateless design. It rebuilds as the new session runs."],
+        ["The trend isn't updating", "Background sampling needs the propagation engine (VOACAP) working and, for live solar data, an internet connection. Check the planning screen isn't showing \"sample data,\" and that you're online."],
+        ["I want exact numbers", "The trend shows direction; for precise figures use the planning screen (Chapter 4), which you can regenerate any time."]
+      ]
+    }}
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "order": 3,
+  "title": "Your Gear Inventory — Radios and Antennas",
+  "subtitle": "Adding, editing, and removing your equipment — and, most importantly, exactly what to enter for each antenna so the program can model it correctly.",
+  "in_this_chapter": [
+    "Opening the Inventory screen and its two tabs",
+    "Adding, editing, and removing ordinary gear (radios, power, and the rest)",
+    "The one golden rule for antennas: if you don't know a number, leave it 0",
+    "What every antenna field means, in plain words",
+    "Exactly what to measure and enter for each antenna type",
+    "Why the numbers matter — how the program models your antenna",
+    "\"Measured\" vs \"Approximate\", and what the estimate note means",
+    "Using the model picker to fill everything in for you",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Click **Inventory** in the top bar. It has two tabs: **Gear** (radios, power, and everything else) and **Antennas**. On each, fill in the form on the left and press **Add** — items appear in the list on the right, and everything saves automatically. For antennas, the easiest path is to pick your model from the **Start from a model** list, which fills in the measurements for you. Entering a custom antenna? The one rule to remember: **if you don't know a measurement, leave it 0** — the program fills in a sensible estimate and says so."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "The **Inventory** screen is where the program keeps the list of equipment you own. It matters more than it might sound, because everything Activation Planner recommends is built from this list: which antenna to use on a band, what to pack for an operation, how long your battery will last. The better your inventory, the better the advice."},
+    {"p": "You reach it any time by clicking **Inventory** in the navigation bar. Unlike the first-run wizard (Chapter 2), this screen is always available, and any change you make is **saved the moment you make it** — there's no separate \"save\" button to remember."},
+
+    {"h1": "The Two Tabs: Gear and Antennas"},
+    {"p": "The Inventory screen is split into two tabs near the top:"},
+    {"bullets": [
+      "**Gear** — everything that isn't an antenna: radios, batteries and power, digital interfaces, computers, and miscellaneous items.",
+      "**Antennas** — kept separate because antennas carry extra measurements the program needs to model how they perform."
+    ]},
+    {"p": "Both tabs work the same way: a **form on the left** to add or edit an item, and a **list on the right** of what you've already entered, each row with **Edit** and **Remove** buttons."},
+
+    {"h1": "Adding Ordinary Gear"},
+    {"p": "On the **Gear** tab, adding an item takes just a moment:"},
+    {"steps": [
+      "Choose the **Category** that fits the item (see the table below).",
+      "If a **Start from a model** list appears for that category (radios have one), pick your model to fill in the name.",
+      "Type or adjust the **Name** (for example, **IC-705**).",
+      "Optionally add a **Note** — a band range, power level, capacity, anything useful.",
+      "Press the **Add** (or **Save**) button. The item joins the list on the right and is saved."
+    ]},
+    {"p": "Here's what each gear category means, and why the program cares which one you pick:"},
+    {"table": {
+      "headers": ["Category", "What goes here", "Why it matters"],
+      "rows": [
+        ["Radio", "Your transceivers.", "Sets the transmit power used in planning and the battery calculator."],
+        ["Power", "Batteries, power stations, solar panels.", "Feeds the Battery runtime calculator; suggested for every operation."],
+        ["Digital Interface", "Sound-card / CAT devices for digital modes (Digirig, SignaLink).", "Suggested for Field Day and EMCOMM packing lists."],
+        ["Computer", "A laptop or tablet you take to the field.", "Suggested for Field Day and EMCOMM."],
+        ["EMCOMM", "Gear specific to emergency communications.", "Suggested for EMCOMM operations."],
+        ["Other", "Anything else you want tracked.", "Kept on your list; packed as a general item."]
+      ]
+    }},
+    {"p": "To change an item later, press **Edit** on its row, adjust the form, and save. To delete one, press **Remove**. Both take effect immediately."},
+
+    {"h1": "Adding an Antenna — and Why the Details Matter"},
+    {"p": "Antennas are the part of your inventory that most affects the program's advice, because Activation Planner **models** each antenna to work out how it radiates — where its signal goes, and therefore which bands and which kind of operating it suits. Modeling is done by a proven engineering tool (called NEC2++) that the program runs for you behind the scenes. You never see that tool directly; you just give it good measurements and it does the math."},
+    {"p": "And that's the key idea: **the model is only as good as the numbers you type in.** Good measurements give a trustworthy pattern; wrong measurements give a wrong one. This section explains exactly what to enter so the model is right. It's more detail than the other gear — on purpose."},
+    {"callout": {"kind": "important", "label": "THE GOLDEN RULE — DON'T KNOW A NUMBER? LEAVE IT 0",
+      "text": "If you don't know a measurement, **leave that field at 0.** The program does not silently guess — it fills in a sensible standard estimate for that band and clearly labels the result as an estimate on the pattern plot. Entering a wrong number is worse than leaving it 0, so when in doubt, use 0."}},
+    {"callout": {"kind": "note", "label": "ALL LENGTHS AND HEIGHTS ARE IN FEET",
+      "text": "Every measurement on the antenna form is in **feet**. If you know a length in meters, multiply by about 3.28 to get feet (for example, 20 m ≈ 66 ft)."}},
+
+    {"h1": "The Antenna Fields, in Plain Words"},
+    {"p": "The antenna form has a handful of fields. Here's what each one means before we go type by type. Don't worry about the jargon — each term is explained plainly."},
+    {"h2": "Name"},
+    {"p": "Whatever you'll recognize it by — \"40m EFHW\", \"Chameleon MPAS\", \"my dipole\". It's just a label."},
+    {"h2": "Category (the antenna type)"},
+    {"p": "The physical family the antenna belongs to. This is important because it changes what the other fields mean and how the program models the antenna. The choices, in plain terms:"},
+    {"table": {
+      "headers": ["Category", "In plain words"],
+      "rows": [
+        ["Vertical", "A rod or wire that stands up vertically, usually needing wires (radials) on the ground under it."],
+        ["Whip", "A short telescoping or loaded vertical rod, like a mobile whip — treated like a small vertical."],
+        ["End-Fed Half-Wave", "A long single wire fed (connected) at one end — very popular for portable use. Strung low, it does NVIS; strung high, it favors distance."],
+        ["Dipole", "A wire with two equal legs fed in the middle — the classic \"T\" shape. Strung low it's an NVIS/regional antenna; strung high it favors distance."],
+        ["Magnetic Loop", "A small tuned loop of tubing. Specialized; needs a hand-built model (see below)."],
+        ["NVIS Crossed Dipole", "A purpose-built NVIS antenna: two low dipoles crossed in an X for even regional coverage. Not required for NVIS — a single low dipole also works (see below)."],
+        ["Other", "Anything that doesn't fit the above — needs a hand-built model."]
+      ]
+    }},
+    {"h2": "Feed point"},
+    {"p": "\"Feed point\" simply means **the spot where your coax (feedline) connects to the antenna.** Where that is affects the pattern, so the program asks. In plain terms:"},
+    {"table": {
+      "headers": ["Feed point", "In plain words"],
+      "rows": [
+        ["Center-fed", "Connected in the middle — normal for a dipole."],
+        ["End-fed half-wave", "Connected at one end of a half-wavelength wire."],
+        ["End-fed random wire", "Connected at the end of a wire that isn't a specific resonant length (used with a tuner)."],
+        ["Off-center-fed", "Connected off to one side of center, not the middle."],
+        ["Base-fed", "Connected at the bottom — normal for a vertical."],
+        ["Other", "Anything else."]
+      ]
+    }},
+    {"p": "If you pick your antenna from the model list, the feed point is already set correctly — you don't have to think about it."},
+    {"h2": "Length"},
+    {"p": "The size of the radiating part of the antenna. **What exactly \"length\" means depends on the antenna type**, so the form's label changes to tell you (for example, it may say \"Length — tip to tip\" for a dipole, or \"Element length\" for a vertical). The next section spells out each case."},
+    {"h2": "Height"},
+    {"p": "How high the **feed point** is above the ground, in feet. Height changes an antenna's pattern a lot — the same dipole strung low behaves very differently from one strung high — so this number matters. If the antenna sits right on the ground, enter **0**."},
+    {"h2": "Radials"},
+    {"p": "\"Radials\" are the wires you spread out under a vertical antenna — they act as the other half of the antenna (its electrical \"ground\"). These fields appear **only for Vertical and Whip types.** There are **three** radial boxes:"},
+    {"table": {
+      "headers": ["Box", "What to enter"],
+      "rows": [
+        ["Radial count", "How many radial wires you lay out. None (or a self-contained antenna)? Enter 0."],
+        ["Radial length (ft)", "How long each radial wire is. Don't know? Leave 0 and the program estimates a resonant length."],
+        ["Radial height (ft)", "How high the radials sit above the ground. **On the ground? Leave it 0.** Raised up on stakes a few feet? Enter that height (see \"On-ground vs elevated radials\" below)."]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "ON-GROUND VS ELEVATED RADIALS",
+      "text": "Radials laid on the dirt and radials raised a few feet on stakes behave very differently, so the program asks their height. **On-ground radials** (height 0) are the classic setup and usually want many wires (a dozen or more) to work well. **Elevated radials** — even just 2 to 4 wires raised 3 or so feet — work as well as a large on-ground field, lower the take-off angle (better for distance), and cut ground loss. If you elevate your radials, enter their height so the program models that benefit; leave it 0 for on-ground radials."}},
+
+    {"h1": "Exactly What to Enter, by Antenna Type"},
+    {"p": "This is the heart of the chapter. Find your antenna type and enter its measurements as described. A quick word first on two terms you'll see: a **half-wave** and a **quarter-wave** are just antenna lengths that are naturally \"in tune\" on a band — you don't need the math; the program handles resonance when you leave a length at 0."},
+
+    {"h2": "Dipole"},
+    {"bullets": [
+      "**Length — tip to tip:** the whole dipole end to end, **both legs together** (a 40 m dipole is about 66 ft total, not 33).",
+      "**Height:** how high the **center** (where the coax connects) is above ground.",
+      "**Leave Length at 0** and the program models a properly-tuned dipole for whatever band it's checking."
+    ]},
+
+    {"h2": "End-Fed Half-Wave (EFHW)"},
+    {"bullets": [
+      "**Wire length:** the total length of the wire (a 40 m EFHW is about 66 ft).",
+      "**Height:** how high the **fed end** is above ground. If you hang it as a sloper (one end high, one end low), use the height of the **high** end.",
+      "**Leave Length at 0** to have it modeled as a tuned half-wave for the band."
+    ]},
+
+    {"h2": "Vertical / Whip"},
+    {"bullets": [
+      "**Element length:** just the **vertical part** — not the radials. If it's a loaded or modular antenna whose true electrical length you don't know (a Chameleon MPAS, a screwdriver antenna, a Wolf River coil), **leave it 0** and the program estimates a tuned quarter-wave.",
+      "**Height:** how high the **base (feed point)** is above ground. Sitting on the ground? Enter **0**. Mounted a few feet up on a tripod? Enter that height.",
+      "**Radial count** and **Radial length:** how many radial wires you lay out, and how long each is. None? Leave both 0.",
+      "**Radial height:** **0** if your radials lie on the ground. If you raise them on stakes (a common trick — even 2 to 4 wires a few feet up), enter that height. The program then models the lower take-off angle and reduced ground loss that elevated radials give you."
+    ]},
+    {"callout": {"kind": "tip", "label": "WORKED EXAMPLE — VERTICAL WITH ELEVATED RADIALS",
+      "text": "A Chelegance MC-750 (or similar) with four radials raised about 3 ft on stakes: Category = **Vertical**, Element length = **0** (loaded/telescoping — let the program estimate), Radial count = **4**, Radial length = whatever you deploy (or 0 to estimate), **Radial height = 3**. The pattern should show a lower take-off angle than the same antenna with on-ground radials — better for reaching distance."}},
+
+    {"h2": "NVIS — a Note Before the Antenna Types"},
+    {"p": "**NVIS** stands for Near Vertical Incidence Skywave — sending your signal nearly **straight up** so it reflects back down over a wide region a few hundred miles across. It's the go-to for regional and emergency nets on the low bands (40, 60, and 80 meters). Here's the key point many people miss: **NVIS is a technique, not a special antenna.** You don't need a dedicated \"NVIS antenna\" to do it."},
+    {"callout": {"kind": "important", "label": "THE MOST COMMON NVIS ANTENNA IS JUST A LOW DIPOLE",
+      "text": "By far the most common NVIS antenna is an ordinary **dipole (or end-fed wire) strung low to the ground** — roughly one-tenth to one-quarter of a wavelength up (about **10 to 20 feet** on 40 and 80 meters). Hung that low, a plain wire naturally fires its energy almost straight up, which is exactly what NVIS needs. You do **not** enter it as a special type — enter it as a **Dipole** (or **End-Fed Half-Wave**) with a **low Height**, and the program models the high, NVIS-style take-off angle for you."}},
+    {"h2": "A Single Low Dipole (or Low End-Fed) for NVIS"},
+    {"p": "This is the simplest and most popular way to do NVIS, so it's worth spelling out. It's just your normal wire antenna hung low:"},
+    {"bullets": [
+      "**Category:** choose **Dipole** (for a center-fed wire) or **End-Fed Half-Wave** (for an end-fed wire) — whichever you actually have. There's no separate box to tick for NVIS.",
+      "**Length:** enter it exactly as you would for any dipole or end-fed (tip to tip for a dipole; total wire length for an end-fed), or leave **0** to have the program model a tuned length.",
+      "**Height:** this is the important one — enter your **low** height, typically **10 to 20 ft** for 40/80 m NVIS. The lower you go (down to about a tenth of a wavelength), the more the energy goes straight up."
+    ]},
+    {"callout": {"kind": "tip", "label": "WORKED EXAMPLE — 40 m NVIS DIPOLE",
+      "text": "A 40-meter dipole strung about 15 ft off the ground for regional coverage: Category = **Dipole**, Length — tip to tip = about **66** (or 0 to estimate), Height = **15**. View its pattern (Chapter 7) and you'll see a big lobe pointing nearly straight up — a **high take-off angle** — which is exactly what fills in a region a few hundred miles around you. The same wire hung at 40 ft instead would lower that angle and favor distance rather than regional coverage. Height is the whole story."}},
+    {"p": "In short: **the app already calculates NVIS for a single low wire** — it's the low **Height** on a normal Dipole or End-Fed that does it. The crossed-dipole type below is a purpose-built NVIS antenna some operators own, but it is not required to work NVIS."},
+    {"h2": "NVIS Crossed Dipole (e.g. Chameleon 4-wire NVIS)"},
+    {"p": "This is a purpose-built NVIS antenna: two dipoles crossed in an X, fed at the center on top of a short mast, with the four legs sloping down to stakes in the ground. Like a low dipole, it's designed to send signals nearly **straight up** — the crossed pair just gives more even coverage in all compass directions. Use this type **only if you actually own a crossed-dipole antenna**; for a plain low wire, use Dipole or End-Fed Half-Wave as described just above."},
+    {"bullets": [
+      "**Leg length:** the length of **ONE of the four wires**, measured from the center out to its far (staked) end — **not** all four added together. The Chameleon 4-wire NVIS uses legs of about **45 ft**.",
+      "**Height:** the height of the **center feed at the top of the mast** (the peak of the X). The legs slope down from there. A typical NVIS mast is about **15 ft**.",
+      "**Leave Leg length at 0** to model a tuned leg automatically."
+    ]},
+    {"callout": {"kind": "tip", "label": "WORKED EXAMPLE — CHAMELEON 4-WIRE NVIS",
+      "text": "Category = **NVIS Crossed Dipole**, Leg length = **45**, Height = **15**. With those numbers the pattern should peak nearly straight up (a high \"take-off angle\") — exactly what you want for regional NVIS coverage on 40, 60, and 80 meters."}},
+
+    {"h2": "Magnetic Loop / Other"},
+    {"p": "These don't have a simple automatic model yet. Enter them if you like, but the program will tell you a hand-built model is required rather than guess at a pattern. You can still keep them in your inventory and pack them; they just won't produce an automatic radiation-pattern plot."},
+
+    {"h1": "Why the Numbers Matter — and \"Measured\" vs \"Approximate\""},
+    {"p": "When you view an antenna's pattern (Chapter 7), the program shows how confident it is in the model, based on what you gave it:"},
+    {"bullets": [
+      "**Measured** — you (or the chosen model preset) supplied real dimensions for a simple wire antenna, so the pattern is an accurate model of your actual antenna.",
+      "**Approximate** — the antenna is a loaded or broadband design whose exact electrical length isn't published, so the shape is representative but not exact. The program says so plainly rather than pretending."
+    ]},
+    {"p": "Likewise, if you leave a length at 0, the antenna's pattern shows a small blue note such as *\"Length not set — modeled as a resonant quarter-wave.\"* The **shape** of the pattern is still useful; only the exact size was assumed. Type in the real length and that note disappears."},
+    {"callout": {"kind": "note", "label": "WHY THE SHAPE OF THE PATTERN MATTERS",
+      "text": "The whole point of modeling is the **take-off angle** — the direction the antenna sends most of its energy. **Energy aimed high** (straight up) is for short-range, regional, and NVIS work. **Energy aimed low** (toward the horizon) is for long-distance (DX). The program combines your antenna's pattern with the propagation forecast to recommend bands, so getting the antenna right makes the whole plan better."}},
+
+    {"h1": "The Easy Path: Start From a Model"},
+    {"p": "Above the antenna form is a **Start from a model** list of many popular portable antennas. Picking yours **fills in the type, feed point, and measurements for you** — no measuring required. You can still adjust any field afterward."},
+    {"p": "If your exact model isn't listed but a similar one is, you can pick the similar one as a starting point and edit the numbers. If it's truly one-of-a-kind, choose **Custom / Home-brew** and enter the fields yourself using this chapter. When a preset is a loaded or broadband design, the app shows a short note that its pattern will be **Approximate** — that's the honest label described above, not a problem."},
+
+    {"h1": "Editing and Removing Antennas Later"},
+    {"p": "Just like ordinary gear, each antenna row has **Edit** and **Remove** buttons. Press **Edit** to load it back into the form, change anything, and save; press **Remove** to delete it. Changes are saved immediately and are reflected the next time you generate a plan or view a pattern."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The Radials boxes don't show up", "They appear only for **Vertical** and **Whip** types. If your antenna isn't one of those, it doesn't use radials in the model."],
+        ["How do I model elevated radials?", "Enter their height in the **Radial height (ft)** box (verticals/whips only). Leave it 0 for on-ground radials. Even 2–4 radials a few feet up perform like a big on-ground field and lower the take-off angle."],
+        ["How do I set up an NVIS antenna?", "For the common case — a single low wire — just enter a **Dipole** or **End-Fed Half-Wave** with a **low Height** (about 10–20 ft on 40/80 m). The program models the high, straight-up take-off angle automatically. Use the **NVIS Crossed Dipole** type only if you own an actual crossed-dipole antenna."],
+        ["The antenna's pattern says \"estimate\" / \"approximate\"", "That's expected if you left a length at 0 or picked a loaded/broadband model. Enter the real length to remove the estimate note; the \"Approximate\" label is normal for loaded antennas."],
+        ["I don't know my antenna's length", "Leave **Length** at 0 — the program models a tuned length for the band and labels it an estimate. Don't guess a wrong number."],
+        ["I entered a dipole as 33 ft and it seems off", "Length is **tip to tip (both legs)** — a 40 m dipole is about **66 ft**, not 33. Re-enter the full end-to-end length."],
+        ["My antenna type isn't listed", "Use the closest match, or **Other**. Magnetic Loop and Other won't auto-model a pattern but can still live in your inventory."],
+        ["I edited an antenna but the pattern didn't change", "Re-open the **Antenna** tab (Chapter 7) and reselect the antenna/band so it re-models with the new numbers."]
+      ]
+    }}
+  ]
+}

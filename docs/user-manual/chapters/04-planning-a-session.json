@@ -1,0 +1,126 @@
+{
+  "order": 4,
+  "title": "Planning a Session — The Main Screen",
+  "subtitle": "The heart of the program: enter where you are and the current conditions, generate a plan, and understand every number it gives back — including what the solar figures really mean.",
+  "in_this_chapter": [
+    "Opening Plan session and how the screen is laid out",
+    "Every input, one at a time: framing, location, target, conditions, and more",
+    "The solar numbers explained in plain language — sunspot number, solar flux, and the A and K indices",
+    "Generating the plan",
+    "Reading the band cards: reliability, best hour, the 24-hour heatmap, calling frequencies, and your antennas",
+    "What the derived outputs mean — reliability, best hour, and MUF",
+    "Exporting your plan as a PDF",
+    "The \"sample data\" banner",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Click **Plan session**. Set **your location** (or press **Use my location**), set the **target** you're trying to reach, and leave the **conditions** as they are — the sunspot number is filled in from live solar data for you. Press **Generate plan**. You get a list of bands ranked best-first, each showing how reliable it is, when it peaks, where to call, and which of your antennas fits. In a real hurry, use **Quick plan** instead (Chapter 5), which does all of this automatically."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "**Plan session** is the main screen of the program and where the real work happens. You describe your situation — where you are, who you're trying to reach, and the current conditions — and the program predicts, band by band, how well you'll get through, hour by hour across the day. It then matches each band to the antennas you own."},
+    {"p": "The screen has two parts: a **column of inputs on the left**, and the **results on the right** once you generate a plan. We'll go through the inputs first (top to bottom), then the results."},
+
+    {"h1": "The Inputs — Top to Bottom"},
+    {"p": "You don't have to touch every field. The defaults are sensible, the solar numbers fill themselves in, and **Use my location** handles your position. But here's what each one is and does, so nothing is a mystery. Every field also has a short plain-language hint right beneath it in the program."},
+
+    {"h2": "Operation framing"},
+    {"p": "\"Framing\" tells the program **what kind of contact you're planning for**, because that changes the question it asks. There are two choices:"},
+    {"bullets": [
+      "**DX / point-to-point** — you're trying to reach a specific distant place. This is the normal choice for chasing distance.",
+      "**Regional / NVIS** — you're trying to cover a nearby area a few hundred miles across (common for emergency nets). NVIS stands for Near Vertical Incidence Skywave — sending signals nearly straight up so they rain back down over a region."
+    ]},
+    {"p": "The framing is set automatically from the operation type you picked on the Mission screen, but you can change it here. When **Regional / NVIS** is selected, the program reminds you to set a **near-in** target and focuses on the low bands that do NVIS well."},
+
+    {"h2": "Your location"},
+    {"p": "Where you'll be operating from. You can fill it three ways, whichever is easiest:"},
+    {"bullets": [
+      "Type your **Latitude** and **Longitude** in decimal degrees (for example, 39.83 and -98.58). West longitude and south latitude are negative.",
+      "Press **Use my location** to have the program find you automatically.",
+      "Type a **grid square** (like EM29) and press **Set from grid** — handy in the field. The grid box and the latitude/longitude stay in sync both ways."
+    ]},
+    {"p": "Location and the grid square are covered in full in their own chapter, including why the grid box is so useful in the field. For planning, just get your position in by any of the three methods above."},
+
+    {"h2": "Target location"},
+    {"p": "Where you're trying to **reach**. For DX, that's the far-off place you want to work. For Regional / NVIS, set it to a nearby point that represents your coverage area (a town in the region, say). Enter it as **Latitude** and **Longitude**, the same way as your own location."},
+    {"callout": {"kind": "note", "label": "WHY THE PROGRAM NEEDS A TARGET",
+      "text": "Propagation isn't the same in every direction or over every distance — a band that's wide open to a station 500 miles away may be dead to one 5,000 miles away. Telling the program where you're aiming is what lets it predict honestly for **your** path, not a generic one."}},
+
+    {"h2": "Conditions — the solar numbers and power"},
+    {"p": "This is the most important group to understand, so it gets its own deep section below. In short: the **Sunspot number** is filled in for you from live solar data (with a \"Live: …\" line showing the current figures and a **↻ Solar** button to refresh), and **Power** is your transmit power in watts (for example, 5 for a QRP radio, 100 for a typical HF radio). Read *A Deeper Look at the Solar Numbers* below to understand what these figures mean."},
+
+    {"h2": "Month and year"},
+    {"p": "The month and year you'll operate. Propagation is **seasonal** — the same band behaves differently in summer and winter — so this matters, and it defaults to right now. Change it only if you're planning ahead for a different date."},
+
+    {"h2": "Noise environment"},
+    {"p": "How electrically **noisy** your operating site is. Everything from power lines to chargers to computer gear adds background hiss that buries weak signals. Pick the option that fits where you'll be — roughly, a quiet rural spot, a normal residential area, or a noisy industrial/city location. Not sure? A residential setting is a safe middle. A quieter site lets you hear weaker stations, so the program factors this into how reliable a contact will be."},
+
+    {"h2": "Long path"},
+    {"p": "Radio signals can travel the short way between two points, or the **long way** around the globe. Leave this **off** for normal operating. Tick it only if you intend to work the long path (aiming away from the direct bearing) — the program will then predict for that longer route instead."},
+
+    {"h1": "A Deeper Look at the Solar Numbers"},
+    {"p": "The sun controls shortwave propagation, so a handful of solar numbers tell you a lot about how the bands will behave. Activation Planner pulls the current figures from a public space-weather feed and shows them on the **Live: …** line under the Conditions heading. Here's what each one means — no background required."},
+    {"h2": "Sunspot number (SSN)"},
+    {"p": "A **sunspot** is a dark, magnetically active patch on the sun. The **sunspot number** is, roughly, a count of how many are visible — a simple stand-in for \"how active is the sun right now.\" It's the single figure the propagation engine uses, which is why it's the box that gets filled in."},
+    {"p": "**Why you care:** more solar activity charges up the layer of the atmosphere that bends your signals back to Earth, and it especially helps the **higher bands** (like 10, 12, and 15 meters). A high sunspot number means the high bands are more likely to be open for long distances; a low number means you'll lean on the lower bands. Values range from near 0 (very quiet sun) to well over 200 (very active). If the live figure ever looks wrong or you're planning for a different day, you can type your own number over it."},
+    {"h2": "Solar flux index (SFI)"},
+    {"p": "The **solar flux index** measures the sun's radio energy at a specific wavelength (10.7 cm). It moves up and down together with the sunspot number and tells basically the same story in a different way: **higher SFI means better high-band conditions.** As a rough feel, an SFI around 70 is quiet, and 150+ is very good for the high bands. The program shows it on the Live line for context; the sunspot number is what actually drives the prediction."},
+    {"h2": "The A and K indices (how \"stormy\" the Earth's magnetic field is)"},
+    {"p": "Where the sunspot number and flux describe how *charged up* the bands are, the **A and K indices** describe how *disturbed* the Earth's magnetic field is — in other words, whether there's a geomagnetic \"storm\" that can wreck propagation even when the sunspot number is high."},
+    {"bullets": [
+      "**K-index** — a near-real-time reading on a 0-to-9 scale. **0-2 is calm** (good), **4 is unsettled**, and **5 and up means a geomagnetic storm** that degrades the bands, especially on paths that cross far-northern (polar) regions.",
+      "**A-index** — a longer-term, once-a-day summary on a bigger scale (0 into the hundreds). It's the daily companion to the K-index; **low is good, high means disturbed.**"
+    ]},
+    {"p": "**How to act on them:** if the K-index is high (say 5+), don't be surprised by poor conditions and lean toward lower bands and shorter paths — a storm can quiet the bands no matter how high the sunspot number is. When A and K are low, the bands are stable and the sunspot number tells the fuller story."},
+    {"callout": {"kind": "note", "label": "WHERE THESE NUMBERS COME FROM",
+      "text": "Activation Planner fetches the current SSN, SFI, and K figures live from a public space-weather source the moment you open the planning screen, and again whenever you press **↻ Solar**. They need an internet connection (a phone hotspot is fine). If the program can't reach the feed, it keeps the last value shown and says so — you can always type a number in by hand."}},
+
+    {"h1": "Generating the Plan"},
+    {"p": "Once your inputs look right, press **Generate plan**. The program runs the propagation engine for every band across all 24 hours and lays out the results on the right. It takes a moment; a \"Generating…\" note shows while it works. You can change any input and press **Generate plan** again as often as you like — re-planning is encouraged as conditions change."},
+
+    {"h1": "Reading the Results — the Band Cards"},
+    {"p": "Each band comes back as its own card, ordered best-first. Here's every part of a card and what it's telling you."},
+    {"h2": "The header: band, frequency, and best hour"},
+    {"p": "The top line shows the **band name** (e.g. \"20m\"), the representative **frequency** the prediction used, and the **best hour** — the single time of day this band is predicted to be at its best, in UTC, with that peak reliability in parentheses (or \"no opening\" if the band isn't expected to work to your target)."},
+    {"h2": "Reliability — the headline number"},
+    {"p": "**Reliability** is the program's headline score for a band: roughly, **the chance that a contact will succeed** under the conditions you entered, shown as a percentage with a colored bar. Higher is better and greener; lower is redder. It's an average across the day; the heatmap below breaks it down hour by hour. Think of it like a chance-of-rain figure, but for \"chance this band gets through.\""},
+    {"h2": "The 24-hour heatmap"},
+    {"p": "Beneath the reliability bar is a strip of 24 little colored squares, one per hour of the day (in UTC). Each square is colored by that hour's reliability — green for good, fading to red for poor — so you can see **at a glance when the band opens and closes.** Hovering over a square shows the exact figures for that hour, including the MUF (explained next)."},
+    {"h2": "Calling frequencies"},
+    {"p": "A blue line shows the **common calling frequencies** for that band — the SSB, CW, and FT8 spots portable operators typically gather on — so a recommendation is immediately actionable. (Always operate within your license privileges; see the Band Plan chapter.)"},
+    {"h2": "Your antennas for this band"},
+    {"p": "Finally, the card lists which of **your** antennas suits this band, drawn from your inventory. Each is tagged so you know whether it's a straightforward match the program modeled from a standard library, or one that needed (or would benefit from) custom modeling. If you own nothing suited to the band, the card says so plainly rather than inventing a suggestion."},
+
+    {"h1": "Understanding the Derived Outputs"},
+    {"p": "A few of the results are worth a second, plain-language pass so the numbers mean something:"},
+    {"bullets": [
+      "**Reliability (%)** — the chance of a successful contact at that time. It already blends everything you entered: the solar level, your power, the noise at your site, the distance to your target, and the time of day. You don't add anything to it; it's the bottom line.",
+      "**Best hour** — simply the hour that scored highest. Great for deciding *when* to operate, not just *what band*.",
+      "**MUF (Maximum Usable Frequency)** — shown when you hover a heatmap square. It's the highest frequency the atmosphere is bending back to Earth on your path at that moment. Bands **below** the MUF tend to work; bands **above** it usually don't. It's a useful sanity check: if a band's frequency is comfortably under the MUF, that's a good sign."
+    ]},
+
+    {"h1": "Exporting Your Plan as a PDF"},
+    {"p": "Once you have results, an **Export** bar appears. It lets you save your plan to a PDF (Portable Document Format) file to print or carry on a phone:"},
+    {"steps": [
+      "Tick which sections to include — **Bands**, **Antennas**, and/or **Checklist** — in any combination.",
+      "Press **Export PDF…**.",
+      "Choose where to save the file. Open or print it like any other PDF."
+    ]},
+
+    {"h1": "The \"Sample Data\" Banner"},
+    {"p": "If you ever see an orange banner saying the predictions are **sample data**, it means the propagation engine (VOACAP) isn't set up yet, so the numbers shown are illustrative placeholders, not a real forecast. Everything on the screen still works so you can learn your way around — but for real predictions, make sure VOACAP is installed (see the Installation Guide). Once it is, the banner disappears and the numbers are the real thing."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The Sunspot number is blank or looks wrong", "Press **↻ Solar** to refetch. No internet (or on a hotspot with no signal)? Type a number by hand — around 70 is a fair average if you have nothing better."],
+        ["Every band shows low reliability / \"no opening\"", "Check your **target** — a very long path in poor conditions can genuinely be dead. Also check the **K-index** on the Live line; a geomagnetic storm quiets the bands. Try a nearer target or a different time."],
+        ["A band I expected is missing or last", "The list is ranked by predicted reliability for your path and conditions. A band that's poor right now sinks to the bottom; check its heatmap for a better hour."],
+        ["It says \"sample data\"", "VOACAP isn't configured. The numbers are placeholders until you install it — see the Installation Guide."],
+        ["\"Use my location\" is off, especially on a hotspot", "Automatic location over a cellular hotspot can be far off. Type your latitude/longitude, or better, enter your **grid square** (see the Location chapter)."],
+        ["No antennas listed on any band", "Your inventory has no antennas yet, or none suit these bands. Add antennas on the **Inventory** screen (Chapter 3)."]
+      ]
+    }}
+  ]
+}

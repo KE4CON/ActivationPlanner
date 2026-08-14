@@ -1,0 +1,65 @@
+{
+  "order": 11,
+  "title": "The Band Plan — Where You're Allowed to Operate",
+  "subtitle": "A built-in, plain-language reference to the U.S. amateur band plan (FCC Part 97) so you can confirm a frequency is legal for your license and mode before you transmit — right beside your recommendations.",
+  "in_this_chapter": [
+    "What the band plan is and why it's in the program",
+    "Opening the Band Plan tab",
+    "Reading a band: sub-bands by license class and mode",
+    "License classes at a glance",
+    "How it works with your recommendations and calling frequencies",
+    "An important note on staying legal and current",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "The **Band Plan** tab is a quick reference to which frequencies you're allowed to use, broken down by license class (Technician, General, Amateur Extra) and mode (voice, Morse code, digital). Before you transmit on a frequency the planner suggested, glance here to confirm it's inside your privileges. It covers the U.S. HF bands through 70 centimeters."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "In the United States, the Federal Communications Commission (FCC) — the government agency that regulates radio — sets rules (called **Part 97**) for exactly which frequencies each class of amateur license may use, and for which modes. Operating outside your privileges is against the rules. The **Band Plan** tab puts those rules right in the program, in plain language, so you can check a frequency without digging out a chart. It's a reference, not something you configure."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**Band plan:** the agreed-and-regulated map of a band — which slices are for voice, which for Morse code (CW), which for digital modes, and which license classes may use each slice. **Part 97:** the section of U.S. federal rules that governs amateur radio."}},
+
+    {"h1": "Opening the Tab"},
+    {"p": "Click **Band Plan** in the navigation bar. You'll see the amateur bands laid out from the lowest frequency (160 meters) up through the higher HF bands and into VHF/UHF (up to 70 centimeters), each with its sub-bands."},
+
+    {"h1": "Reading a Band"},
+    {"p": "Each band is broken into **sub-bands** — segments set aside for particular modes and license classes. For each segment you'll see, in plain terms:"},
+    {"table": {
+      "headers": ["Column", "What it tells you"],
+      "rows": [
+        ["Frequency range", "The start and end of the segment, in megahertz (MHz)."],
+        ["Mode(s)", "What you may transmit there — for example CW (Morse code), phone (voice, such as SSB), or digital/data."],
+        ["License class", "Which license classes may use that segment (Technician, General, or Amateur Extra)."]
+      ]
+    }},
+    {"p": "So, for example, you can quickly confirm whether a voice frequency on 40 meters is open to a General-class operator, or whether a stretch of 20 meters is CW-only. The data reflects the current U.S. rules, including recent changes."},
+
+    {"h1": "License Classes at a Glance"},
+    {"p": "U.S. amateur licenses come in three active classes, each with more privileges than the last:"},
+    {"bullets": [
+      "**Technician** — the entry-level license. Full privileges on VHF/UHF and limited HF privileges (notably some CW, and voice on part of 10 meters).",
+      "**General** — substantial HF privileges across most bands, enough for worldwide operating.",
+      "**Amateur Extra** — the top class, adding the exclusive bottom segments of several HF bands."
+    ]},
+    {"p": "The tab shows which segments belong to which class so you can see, at a glance, what your license covers — and what upgrading would add."},
+
+    {"h1": "How It Works With Your Recommendations"},
+    {"p": "The Band Plan tab pairs naturally with the planning screen. When the planner recommends a band and shows its **calling frequencies** (Chapter 4), pop over here to confirm those frequencies are within your license privileges and set for the mode you intend. The planner tells you *which band is best*; the band plan confirms *where on it you may legally operate*."},
+
+    {"h1": "Staying Legal and Current"},
+    {"callout": {"kind": "important", "label": "YOU ARE RESPONSIBLE FOR OPERATING LEGALLY",
+      "text": "This tab is a helpful, good-faith reference built from the FCC Part 97 rules, but the **official FCC rules are the final authority.** Band plans can change, and this reference could lag a change. Always operate within your actual license privileges, and if in doubt, check the current official rules. The program never transmits for you — every transmission is your responsibility as the licensed operator."}},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["I'm not sure which class applies to me", "Use the class you hold (Technician, General, or Amateur Extra). If you're unsure, check your FCC license record."],
+        ["A calling frequency the planner showed isn't in my privileges", "Then don't use that exact frequency — find a segment for your class and mode within the same band, or operate a mode your class allows there."],
+        ["The band I want isn't shown", "The tab covers the U.S. amateur bands from 160 meters through 70 centimeters. Bands outside that range aren't listed."],
+        ["I think a segment is out of date", "Treat the official FCC Part 97 rules as authoritative and operate accordingly; the tab is a convenience reference, not a legal document."]
+      ]
+    }}
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "order": 14,
+  "title": "Location, GPS, and Grid Squares",
+  "subtitle": "Everything the program does with your position — how it finds you, how to enter your location by hand or by grid square, and why getting it right matters for every prediction.",
+  "in_this_chapter": [
+    "Why your location matters to everything else",
+    "The three ways to set your location",
+    "How the program finds you: hardware GPS first, then geo-IP",
+    "Refresh-on-demand, not constant tracking (and why)",
+    "Grid squares explained — and the two-way converter",
+    "Getting an accurate location in the field on a hotspot",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Your location drives the whole program — predictions, grey line, weather, sunrise/sunset. Set it three ways: press **Use my location** to find you automatically, type your **latitude/longitude**, or type a **grid square** (like EM29) and press **Set from grid**. If you have a USB GPS receiver plugged in, the program uses it automatically for the best accuracy. In the field on a phone hotspot, the automatic guess can be way off — type your grid square instead."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "Almost everything Activation Planner does depends on knowing **where you are**: the propagation predictions are computed for your exact path, the grey-line windows come from your sunrise and sunset, and the weather and alerts are for your area. Get the location right and everything downstream is right; get it wrong and every prediction is quietly off. This chapter covers every way to set it and how the program finds you."},
+
+    {"h1": "Three Ways to Set Your Location"},
+    {"p": "You can set your position whichever way is easiest at the moment:"},
+    {"table": {
+      "headers": ["Method", "How", "Best for"],
+      "rows": [
+        ["Automatic", "Press **Use my location**.", "Quick setup when your automatic position is trustworthy (a wired/known connection, or a GPS receiver attached)."],
+        ["By latitude/longitude", "Type the numbers in decimal degrees (e.g. 39.83, -98.58). South and West are negative.", "When you know your exact coordinates."],
+        ["By grid square", "Type a Maidenhead grid (e.g. EM29) and press **Set from grid**.", "The field — grids are short, easy to read off a map or memorize, and hard to mistype badly."]
+      ]
+    }},
+    {"p": "The grid box and the latitude/longitude fields are linked **both ways**: set one and the other updates automatically (see the converter section below)."},
+
+    {"h1": "How the Program Finds You"},
+    {"p": "When you ask for your location automatically, the program tries the most accurate source available, in this order:"},
+    {"bullets": [
+      "**A hardware GPS receiver first.** If you have a GPS receiver connected over USB (a serial/NMEA device), the program uses it — this is the most accurate option and works even with no internet. It takes priority whenever it's plugged in, on a desktop or a laptop.",
+      "**Geo-IP as a fallback.** With no GPS receiver, the program estimates your position from your internet connection. This is convenient but only roughly accurate — and it can be very wrong on a cellular hotspot (see below)."
+    ]},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**GPS receiver:** a small device (often USB) that listens to positioning satellites and reports exactly where it is. **NMEA:** the standard \"language\" GPS receivers speak. **Geo-IP:** guessing your location from your internet connection's address — handy, but only a rough guess, and it doesn't use satellites."}},
+    {"callout": {"kind": "note", "label": "NOT WI-FI/OS LOCATION SERVICES",
+      "text": "The automatic fallback uses geo-IP, not your operating system's Wi-Fi-based location service. For real accuracy in the field, a USB GPS receiver — or simply typing your grid square — beats the automatic guess every time."}},
+
+    {"h1": "Refresh-on-Demand, Not Constant Tracking"},
+    {"p": "The program checks your location **only when you ask it to** — when you press **Use my location** or refresh. It does **not** track you continuously in the background. This is deliberate: continuous tracking isn't needed for planning (you set up in one spot and operate), it would waste power, and refresh-on-demand respects your privacy. When you move to a new site, just refresh your location there."},
+
+    {"h1": "Grid Squares and the Two-Way Converter"},
+    {"p": "A **Maidenhead grid square** (or \"grid locator\") is hams' shorthand for a location — a short code like **EM29** or **EM29qb** that names a rectangle on the map. Shorter codes name bigger rectangles; longer codes pin you down more precisely. Hams use grids constantly because they're compact and easy to exchange, and because a small typo produces an obviously-wrong grid rather than a subtly-wrong coordinate."},
+    {"p": "Activation Planner converts **both directions** automatically:"},
+    {"bullets": [
+      "**Grid → coordinates:** type a grid square and press **Set from grid**; the latitude and longitude fill in.",
+      "**Coordinates → grid:** enter or update your latitude/longitude and the grid square updates to match."
+    ]},
+    {"p": "So you can work in whichever is handier and always have the other. In the field, entering your grid is often the fastest, most reliable way to set an accurate location."},
+    {"callout": {"kind": "tip", "label": "GRID IS YOUR FIELD FRIEND",
+      "text": "Off in a park or on a summit, you may not know your decimal coordinates, but your grid square is easy to get from a map, another app, or memory — and typing four or six characters is quick and hard to get badly wrong. When automatic location looks off, the grid box is the fix."}},
+
+    {"h1": "Getting an Accurate Location on a Hotspot"},
+    {"p": "In the field you'll often be online through your **phone's hotspot** — and this is exactly where automatic (geo-IP) location can be badly wrong, sometimes placing you in a different city, because it reflects the cellular network, not your true spot. Two good fixes:"},
+    {"bullets": [
+      "**Plug in a USB GPS receiver** — it uses satellites, ignores your internet entirely, and is accurate anywhere.",
+      "**Type your grid square** (or exact latitude/longitude) — the simplest fix with no extra hardware."
+    ]},
+    {"callout": {"kind": "important", "label": "ALWAYS SANITY-CHECK YOUR LOCATION IN THE FIELD",
+      "text": "Before trusting a plan in the field, glance at your location. If it looks wrong, fix it with your grid square — otherwise your predictions, grey-line times, and weather are all for the wrong place."}},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["My location is in the wrong city (on a hotspot)", "That's geo-IP guessing from your cellular connection. Type your **grid square** and press **Set from grid**, or plug in a USB GPS receiver."],
+        ["My USB GPS receiver isn't being used", "Make sure it's plugged in and recognized by your computer before pressing Use my location. When present, it takes priority automatically."],
+        ["The grid square looks wrong", "Re-check the coordinates you entered; the grid is computed from them. Conversely, a mistyped grid gives wrong coordinates — retype it and press Set from grid."],
+        ["The program isn't updating my position as I move", "By design it only refreshes when you ask. Press **Use my location** (or re-enter your grid) each time you set up somewhere new."],
+        ["I don't know my grid square", "Get it from a paper map, another ham app, or by entering your latitude/longitude — the grid then fills in automatically."]
+      ]
+    }}
+  ]
+}

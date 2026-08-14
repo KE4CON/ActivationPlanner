@@ -1,0 +1,78 @@
+{
+  "order": 15,
+  "title": "Navigation and Interface Reference",
+  "subtitle": "A map of the whole program: every tab in the navigation bar, the always-on clock, the light/dark theme switch, and the visual cues that tell you where you are.",
+  "in_this_chapter": [
+    "The navigation bar and how the active tab is highlighted",
+    "Every tab, at a glance, with where it's covered",
+    "The always-on clock — local time over UTC",
+    "The light/dark theme switch",
+    "The look and feel — floating cards and depth",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Move around the program using the **navigation bar**. The tab you're on is highlighted in **blue**; the others are gray. A **clock** is always visible showing your **local time above UTC**. A **theme button** cycles the app between automatic, light, and dark. That's the whole interface — pick a tab and go."}},
+
+    {"h1": "The Navigation Bar"},
+    {"p": "The navigation bar is your main way around Activation Planner. Each button opens one screen. The button for the screen you're currently on is **highlighted in blue** so you always know where you are; the rest are a quieter gray until you hover or click them. Click any button to switch screens instantly — the program keeps your work as you move between tabs."},
+
+    {"h1": "Every Tab at a Glance"},
+    {"p": "Here is every destination in the navigation bar and where to read about it in full:"},
+    {"table": {
+      "headers": ["Tab", "What it's for", "Chapter"],
+      "rows": [
+        ["Quick plan", "Instant recommendations for right now, no setup.", "Chapter 5"],
+        ["Plan session", "The main planning screen — full inputs and results.", "Chapter 4"],
+        ["Inventory", "Your gear: radios, antennas, power, and the rest.", "Chapter 3"],
+        ["Mission", "Operation type and your packing checklist.", "Chapter 6"],
+        ["Antenna Patterns", "Radiation-pattern plots for your antennas.", "Chapter 7"],
+        ["Grey Line", "Sunrise/sunset windows for long-distance low-band work.", "Chapter 8"],
+        ["Trend", "Whether conditions are improving or fading.", "Chapter 9"],
+        ["Weather", "Local forecast and safety alerts.", "Chapter 10"],
+        ["Band Plan", "Which frequencies your license allows.", "Chapter 11"],
+        ["Battery", "How long your power will last.", "Chapter 12"],
+        ["POTA", "Live spots and self-spotting.", "Chapter 13"]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "YOUR TABS MAY DIFFER SLIGHTLY",
+      "text": "The exact set of tabs can grow as the program gains features. If you see a tab not listed here, it was added after this manual edition — its own on-screen hints will describe it, and a later edition will document it fully."}},
+
+    {"h1": "The Always-On Clock"},
+    {"p": "At the top of the window, a clock is **always visible**, no matter which tab you're on. It shows two times stacked:"},
+    {"bullets": [
+      "**Your local time**, on top — the time on your wrist.",
+      "**UTC**, below it — Coordinated Universal Time, the worldwide standard time zone that ham radio and the propagation predictions use."
+    ]},
+    {"p": "Both update live. Having UTC always in view matters because the planning screen's best-hour and heatmap times are in UTC — so you can match a predicted opening to your own local time at a glance."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**UTC (Coordinated Universal Time):** a single time zone the whole world's radio operators share, so everyone means the same instant regardless of where they are. It doesn't change for daylight saving. When a prediction says a band peaks at \"18:00 UTC,\" the clock lets you see what that is in your local time."}},
+
+    {"h1": "The Light/Dark Theme Switch"},
+    {"p": "A **theme button** near the clock changes the program's color scheme. Pressing it cycles through three settings:"},
+    {"table": {
+      "headers": ["Setting", "What it does"],
+      "rows": [
+        ["Auto", "Follows your computer's own light-or-dark setting automatically."],
+        ["Light", "Forces the light (bright background) theme."],
+        ["Dark", "Forces the dark (dim background) theme — easier on the eyes at night and in the field after sunset."]
+      ]
+    }},
+    {"p": "The button shows which setting is active. Dark mode is especially handy for evening and nighttime operating, when a bright screen ruins your night vision. Your choice is remembered."},
+
+    {"h1": "The Look and Feel"},
+    {"p": "You'll notice the program uses **floating cards** — panels that sit slightly raised off the background with soft shadows — a strong blue accent color, and gentle animations when you hover or press buttons. This isn't just decoration: the layering groups related things together and helps your eye find what matters. It's the same clean style throughout, so once you learn one screen, the rest feel familiar."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["I can't tell which tab I'm on", "The active tab is highlighted **blue**; the others are gray. If they all look similar, try the theme switch — one theme may show the contrast more clearly on your screen."],
+        ["The best-hour times don't match my clock", "Prediction times are in **UTC**. Use the UTC line of the on-screen clock (or the local line beside it) to convert — the two are shown together for exactly this reason."],
+        ["The screen is too bright/dark", "Press the **theme button** near the clock to switch between Auto, Light, and Dark."],
+        ["A screen's content runs off the edge", "Every screen scrolls; scroll down (and the content clears the scrollbar). If something still looks clipped, try maximizing the window."],
+        ["A tab I read about isn't there / one I don't recognize is", "Tabs can change between versions. Use each tab's on-screen hints; features added after this edition will be documented in a later one."]
+      ]
+    }}
+  ]
+}

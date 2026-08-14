@@ -1,0 +1,54 @@
+{
+  "order": 8,
+  "title": "The Grey Line — Working the Sunrise/Sunset Edge",
+  "subtitle": "For a short window around your sunrise and sunset, the low bands can reach much farther than usual. This tab tells you plainly whether you're in that window right now, when the next one is, and what to do about it.",
+  "in_this_chapter": [
+    "What the grey line is, in plain terms, and why it helps",
+    "Opening the tab and reading the floating status box",
+    "The window times — today's sunrise and sunset edges",
+    "The \"what to do\" guidance",
+    "How the grey line relates to your band plan (and why it isn't a score boost)",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Open the **Grey Line** tab. A floating box tells you in plain words whether the grey line is **active right now** or **not** — and if not, when the next window opens. During a grey-line window (around your local sunrise and sunset), the low bands (like 40, 80, and 160 meters) can reach unusually far, so it's a great time to try for distance on them."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "The **grey line** is the moving line of twilight that circles the Earth — the boundary between day and night — passing over you at **sunrise** and **sunset**. For a short time while that line is over you, the atmosphere is in a special in-between state that lets the **low bands** carry signals much farther than they do in full daylight or full darkness. Operators call chasing this effect \"working the grey line.\" This tab makes it easy to catch."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**Grey line:** the twilight zone between day and night sweeping around the globe. **Why it matters:** the daytime layer of the atmosphere that normally absorbs low-band signals fades out fast at twilight, while the reflecting layer is still there — so for a little while, signals on the low bands skip long distances with less loss than usual."}},
+
+    {"h1": "Reading the Floating Status Box"},
+    {"p": "Open the **Grey Line** tab from the navigation bar. The first thing you'll see is a **floating status box** that answers the only question that matters in the moment, in plain language:"},
+    {"bullets": [
+      "**\"Grey line is ACTIVE now\"** — you're in a window right now. Good time to try the low bands for distance.",
+      "**\"Grey line is not active\"** — you're outside a window, along with **when the next one begins** so you can plan for it."
+    ]},
+    {"p": "The box floats above the rest of the tab so the answer is always right in front of you, no matter how far you scroll. The whole tab scrolls, so nothing gets cut off on smaller screens."},
+
+    {"h1": "The Window Times"},
+    {"p": "Below the status, the tab lists **today's grey-line windows** — the times around your **sunrise** and your **sunset**, calculated from your latitude, longitude, and today's date. These are real astronomical times for your exact location, not rough estimates. Each window is a span (it begins a little before the exact sunrise/sunset moment and lasts a little after), because the helpful effect builds and fades rather than switching on and off instantly."},
+    {"callout": {"kind": "note", "label": "TIMES FOLLOW YOUR LOCATION",
+      "text": "Because the windows come from your position, make sure your location is set correctly (Chapter 13) — especially in the field on a hotspot, where automatic location can be off. Wrong location means wrong sunrise/sunset times."}},
+
+    {"h1": "The \"What To Do\" Guidance"},
+    {"p": "Times alone don't tell a newer operator what to *do*, so the tab includes plain-language guidance: which bands to reach for during the window (the low bands), that it's aimed at **distance** work, and a reminder that the effect is strongest right around the sunrise/sunset moment. The idea is that you can act on the tab without needing outside knowledge — see you're in a window, switch to a low band, and try for some distance."},
+
+    {"h1": "Why It Isn't a Score Boost"},
+    {"p": "You might expect the grey line to bump a band's reliability score on the planning screen. It deliberately does **not.** The propagation engine (VOACAP) already models time-of-day effects, so the sunrise/sunset benefit is largely baked into the normal predictions. Adding a separate \"grey-line bonus\" on top would **count the same effect twice** and mislead you. So the grey line lives here as its own clear indicator — a *\"now's a good moment for the low bands\"* nudge — while the band scores stay honest on the planning screen."},
+    {"callout": {"kind": "important", "label": "USE BOTH TOGETHER",
+      "text": "Read the grey-line tab alongside the planning screen: if a low band already scores decently on the plan **and** you're in a grey-line window, that's a strong signal to try it for distance right then. The tab tells you *when*; the plan tells you *how good*."}},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The window times look wrong", "Check your location (Chapter 13). Grey-line times are computed from your latitude/longitude and date — a wrong location (common on a hotspot) gives wrong sunrise/sunset times."],
+        ["It says not active but I expected a window", "The windows are around **your** sunrise and sunset only. If it's midday or the middle of the night for you, there's no window now — check the \"next window\" time."],
+        ["Part of the tab is cut off", "The whole tab scrolls; scroll down to see the window times and guidance. The status box stays floating in view."],
+        ["Grey line doesn't change my band scores", "That's intended — VOACAP already includes time-of-day effects, so the grey line is shown separately rather than double-counted. Use it as a timing nudge alongside the plan."]
+      ]
+    }}
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "order": 12,
+  "title": "The Battery Runtime Calculator — Will Your Power Last?",
+  "subtitle": "Enter your battery and how you operate, and the program estimates how many hours you can run — so you don't get cut short in the field or haul more battery than you need.",
+  "in_this_chapter": [
+    "What the calculator does and why it matters in the field",
+    "Opening the Battery tab",
+    "The inputs, one at a time, in plain language",
+    "How receive vs. transmit and your duty cycle change the answer",
+    "Reading the estimated runtime",
+    "Practical tips for making power last",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Open the **Battery** tab, enter your **battery size** (in amp-hours), your radio's **receive** and **transmit** current draw, and roughly **how much of the time you'll be transmitting**. The program estimates **how many hours** you can operate. Use it to pick the right battery for the length of activation you're planning."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "In the field there's no wall outlet — your battery is all the power you have. Bring too little and your activation ends early; bring too much and you're carrying dead weight up a summit. The **Battery Runtime Calculator** does the arithmetic for you: given your battery and how you operate, it estimates how long you can keep going, so you can plan power with confidence."},
+
+    {"h1": "Opening the Tab"},
+    {"p": "Click **Battery** in the navigation bar. You'll see a small set of input fields and an estimated runtime that updates as you fill them in."},
+
+    {"h1": "The Inputs, One at a Time"},
+    {"p": "Each field has a plain-language hint in the program; here's what each one means and where to find the number."},
+    {"table": {
+      "headers": ["Field", "What it means", "Where to get the number"],
+      "rows": [
+        ["Battery capacity (amp-hours, Ah)", "How much energy your battery holds. A bigger number lasts longer.", "Printed on the battery (e.g. \"12 Ah\"). It's often in the item's name if you entered power gear in your inventory."],
+        ["Receive current (amps)", "How much power the radio uses while just listening. This runs the whole time.", "From the radio's manual/specs — often around 0.5–1 amp for a portable HF radio."],
+        ["Transmit current (amps)", "How much power the radio uses while transmitting. Much higher than receive.", "From the radio's manual/specs at your operating power — e.g. a 100-watt radio can draw ~20 amps on transmit; a 5-watt QRP radio, ~1–2 amps."],
+        ["Transmit duty cycle (%)", "The share of your on-air time actually spent transmitting, versus listening.", "An estimate — see the next section for realistic figures."]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**Amp-hour (Ah):** roughly, how many amps a battery can supply for one hour. A 12 Ah battery can give 12 amps for 1 hour, or 1 amp for about 12 hours. **Current draw (amps):** how fast a device drinks from the battery right now. **Duty cycle:** what fraction of the time you're transmitting."}},
+
+    {"h1": "Why Receive, Transmit, and Duty Cycle All Matter"},
+    {"p": "A radio sips power while listening and gulps it while transmitting, so how long your battery lasts depends heavily on **how much of the time you transmit** — the duty cycle. Ragchewing or casual operating might be 10–25% transmit; a fast activation pileup or a contest can be higher; some digital modes transmit steadily and run a high duty cycle. The calculator blends the low receive draw and the high transmit draw according to your duty cycle to get a realistic average — which is why a modest change in duty cycle can noticeably change the runtime."},
+    {"callout": {"kind": "tip", "label": "WHEN IN DOUBT, BE PESSIMISTIC",
+      "text": "If you're not sure of your duty cycle, estimate a bit high. It's better to be pleasantly surprised by leftover power than to lose the last contacts of an activation. The same goes for transmit current — use the figure at the power level you'll actually run."}},
+
+    {"h1": "Reading the Estimated Runtime"},
+    {"p": "The program shows an **estimated number of hours** you can operate with the inputs you gave. Treat it as a solid planning estimate, not a guarantee — real batteries deliver a little less than their rated capacity, cold weather reduces capacity, and you generally shouldn't drain a battery all the way down. Build in a margin: if the estimate is 4 hours and you need 4, bring a bigger battery or plan a shorter session."},
+
+    {"h1": "Practical Tips for Making Power Last"},
+    {"bullets": [
+      "**Run less power.** Dropping from 100 watts to QRP (5–10 watts) dramatically cuts transmit draw — often the single biggest saving.",
+      "**Listen more, call efficiently.** A lower duty cycle stretches the battery directly.",
+      "**Keep batteries warm.** Cold cuts capacity; a cold battery on a winter summit won't deliver its full rating.",
+      "**Don't fully drain it.** For battery health and a safety margin, plan to use most — not all — of the capacity.",
+      "**Bring your power gear into the inventory.** If you entered your battery with its capacity, you'll have the number handy here."
+    ]},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The runtime seems far too long", "Check your **duty cycle** — leaving it very low, or entering transmit current as if it were receive, inflates the estimate. Use realistic figures."],
+        ["The runtime seems far too short", "Make sure battery capacity is in **amp-hours** and that you didn't enter transmit current where receive goes. Double-check the units."],
+        ["I don't know my radio's current draw", "Check the radio's manual or manufacturer specs (look for \"current consumption\" at receive and at transmit). As rough defaults: ~0.7 A receive, and transmit current scaling with power."],
+        ["My battery is rated in watt-hours, not amp-hours", "Divide watt-hours by the battery voltage (usually about 12) to get amp-hours — e.g. 120 Wh ÷ 12 V ≈ 10 Ah."],
+        ["It lasted less than the estimate in real life", "That's common — cold, aging batteries, and not fully draining all reduce usable capacity. Always plan with a margin."]
+      ]
+    }}
+  ]
+}

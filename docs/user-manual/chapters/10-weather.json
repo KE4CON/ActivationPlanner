@@ -1,0 +1,65 @@
+{
+  "order": 10,
+  "title": "Weather Forecast and Safety Alerts",
+  "subtitle": "A local forecast for your operating site, plus automatic weather watch and warning alerts that reach you anywhere in the program — because a summit or a park in bad weather is a safety matter, not just a comfort one.",
+  "in_this_chapter": [
+    "Where the forecast comes from and why it's location-based",
+    "Reading the forecast",
+    "The app-wide alert system: watches and warnings",
+    "The two alert levels: a full-screen alert vs. a banner",
+    "Clearing an alert (and why serious ones make you click)",
+    "Staying safe in the field",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "The **Weather** tab shows a local forecast for wherever you're operating. Separately, the program watches for official weather **watches and warnings** for your area the whole time it's running — no matter which screen you're on. A serious alert (a warning) pops up a **full-screen notice you must click to clear**; a minor one shows a **banner**. This runs app-wide so you can't miss dangerous weather while heads-down planning."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "Portable operating happens outdoors — on summits, in parks, in fields — where weather is a real safety factor, not a footnote. Activation Planner therefore does two weather things: it shows you a **forecast** for your operating location, and it **actively watches for official alerts** (watches and warnings) and interrupts you if something dangerous is issued for your area. The second part is the important one: it's designed so you find out about a severe thunderstorm or tornado warning even if you're buried in the planning screen."},
+
+    {"h1": "Where the Forecast Comes From"},
+    {"p": "The forecast is pulled from the official government weather service for **your location** (from your latitude and longitude). Because it's tied to your position, it describes the weather where you'll actually be, not a nearby city. It needs an internet connection — a phone hotspot in the field is fine."},
+    {"callout": {"kind": "note", "label": "GET YOUR LOCATION RIGHT",
+      "text": "As with the grey line, the forecast and alerts follow your set location. On a hotspot, automatic location can be off — set your position or grid square accurately (Chapter 13) so you get the forecast and alerts for where you really are."}},
+
+    {"h1": "Reading the Forecast"},
+    {"p": "Open the **Weather** tab. It shows a series of upcoming periods (like \"This Afternoon,\" \"Tonight,\" \"Tomorrow\") with the expected conditions for each — temperature, sky, wind, and a short plain-language description. Use it to decide whether it's a good day to be out, what to pack, and how long you can safely operate."},
+
+    {"h1": "The App-Wide Alert System"},
+    {"p": "This is the part that runs everywhere. While the program is open, it checks for **active weather alerts** for your area on a regular schedule (about every 10 minutes) in the background. If an official watch or warning is in effect, the program shows it to you **no matter which tab you're on** — you don't have to be looking at the Weather tab. This is intentional: alerts are a safety feature, so they follow you across the whole app."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "A **watch** means dangerous weather is *possible* — be prepared. A **warning** means it's *happening or imminent* — act now. The program treats warnings as more urgent than watches, and shows them more forcefully."}},
+
+    {"h1": "The Two Alert Levels"},
+    {"p": "How forcefully the program interrupts you depends on how serious the alert is:"},
+    {"table": {
+      "headers": ["Severity", "How it appears", "What to do"],
+      "rows": [
+        ["Serious (a warning / moderate-or-worse alert)", "A **full-screen notice** that blocks the rest of the program until you clear it, showing the alert headline.", "Read it and take it seriously. This is designed to stop you and make you look."],
+        ["Minor (a lesser advisory)", "A **banner** across the top of the window, without blocking your work.", "Note it and carry on; keep an eye on developing conditions."]
+      ]
+    }},
+    {"p": "The severity gate means routine minor advisories don't nag you with a full-screen block, while genuinely dangerous warnings are impossible to overlook."},
+
+    {"h1": "Clearing an Alert"},
+    {"p": "A serious alert's full-screen notice **must be clicked to clear** — it won't dismiss itself. That's on purpose: it forces you to actually acknowledge the danger rather than let it flash by while you're typing. Once you've cleared a specific alert, the program remembers you've seen it and won't keep re-popping the same one at you; a **new** or changed alert will show again."},
+    {"callout": {"kind": "important", "label": "CLEARING THE NOTICE DOESN'T CLEAR THE WEATHER",
+      "text": "Dismissing the on-screen alert only acknowledges that you've read it. The actual weather danger is still out there. Use the alert as your prompt to check the sky, secure your gear, and — if it's a warning — get to safety. Radio can wait."}},
+
+    {"h1": "Staying Safe in the Field"},
+    {"p": "A few plain reminders the alert system is there to support: an antenna and mast are tall metal objects — get them down and get to shelter well before lightning arrives, not after. A summit is the worst place to be in a thunderstorm. When a warning fires, **pack up and leave**; the activation isn't worth it. The program surfaces the alert so you have as much lead time as possible to make that call."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["No forecast appears", "Check your internet connection (a hotspot is fine) and that your location is set (Chapter 13). The forecast comes from an online weather service for your coordinates."],
+        ["The forecast is for the wrong place", "Your location is off — common on a cellular hotspot. Set your latitude/longitude or grid square accurately (Chapter 13)."],
+        ["A full-screen alert won't go away", "Click it to acknowledge — serious alerts require a click by design. Then act on the weather itself, not just the notice."],
+        ["I keep seeing the same alert", "You should only be re-shown an alert if it's new or changed. If it persists, it's likely still active and being re-issued; treat it as ongoing."],
+        ["I'm not getting alerts I expected", "Alerts need an internet connection and a correct location, and are checked periodically (about every 10 minutes). Confirm you're online and your position is right; don't rely on the app as your only warning source."]
+      ]
+    }}
+  ]
+}

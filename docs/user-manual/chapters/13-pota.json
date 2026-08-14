@@ -1,0 +1,61 @@
+{
+  "order": 13,
+  "title": "POTA — Live Spots and Self-Spotting",
+  "subtitle": "See who's on the air right now for Parks on the Air, look up park information, and — when you're activating — post your own spot so chasers can find you, all with one manual press.",
+  "in_this_chapter": [
+    "What POTA is and what this feature does",
+    "Viewing live spots and park information",
+    "Self-spotting: putting yourself on the map",
+    "The good-citizen rules the program follows",
+    "That no login is needed (and what is separate)",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "The **POTA** tab shows a live list of activators on the air right now. When you're the one activating, fill in your park and frequency and press **Spot me** to post yourself so chasers can find you. One press posts one spot — nothing happens in the background, and you never need to log in."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "**Parks on the Air (POTA)** is a popular program where operators (\"activators\") set up in a public park and make contacts, while \"chasers\" try to work them. A live **spotting** website shows who's on the air, where, and on what frequency. Activation Planner connects to POTA so you can both **see the spots** and, when you're activating, **spot yourself** so chasers know you're there."},
+    {"callout": {"kind": "note", "label": "JARGON, IN PLAIN WORDS",
+      "text": "**Spot:** a short public post saying \"this operator is on the air at this park, on this frequency, right now.\" **Self-spot:** posting a spot for *yourself* when you're the activator, so chasers can find and work you."}},
+
+    {"h1": "Viewing Live Spots and Park Info"},
+    {"p": "Open the **POTA** tab to see the current spots — activators on the air now, with their callsign, park, frequency, and mode. You can also look up park information. This part is purely read-only: you're just viewing public information that POTA already publishes, which is handy for finding someone to contact or checking whether a park is already being activated."},
+
+    {"h1": "Self-Spotting — Putting Yourself on the Map"},
+    {"p": "When **you** are the activator, self-spotting posts you to the live list so chasers can find you — especially valuable in a quiet park or on a band where nobody would stumble across you otherwise."},
+    {"steps": [
+      "Enter the **park** you're activating and the **frequency** and **mode** you're on.",
+      "Press **Spot me**.",
+      "Your spot appears on the public POTA list. Press it again later (for example, when you change bands) to post an updated spot."
+    ]},
+    {"callout": {"kind": "note", "label": "ONE PRESS = ONE SPOT",
+      "text": "Self-spotting is always a deliberate, manual action. The program never spots you automatically or in the background — it posts exactly once, each time you press the button, and only for you."}},
+
+    {"h1": "The Good-Citizen Rules the Program Follows"},
+    {"p": "POTA's spotting service is shared by the whole community, so Activation Planner is deliberately built to be a considerate guest on it. The program:"},
+    {"bullets": [
+      "**Only spots you** — it will never spot another operator. (The person spotting and the person being spotted are always the same: you.)",
+      "**Only spots when you press the button** — no automatic, scheduled, or bulk spotting.",
+      "**Identifies itself honestly** — each spot is tagged as coming from \"Activation Planner\" so POTA can see where it originated."
+    ]},
+    {"p": "These constraints keep the feature useful to you without putting extra load on, or misusing, a community service."},
+
+    {"h1": "No Login Needed"},
+    {"p": "Both viewing spots and self-spotting work **without any account or password** — they use POTA's open spotting service, so there's nothing to sign into. The only POTA activity that requires a login is **uploading your logs for award credit**, which is a completely separate task and is **not** something Activation Planner does. This program is a *planning and spotting* tool, not a logger."},
+    {"callout": {"kind": "note", "label": "LOGGING STAYS ELSEWHERE",
+      "text": "Activation Planner intentionally doesn't log your contacts — keep using your normal logging program for that. This tool helps you plan the activation and spot yourself; recording and submitting QSOs is a job for a dedicated logger."}},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["No spots are showing", "Check your internet connection (a hotspot is fine). The spot list comes from POTA's online service."],
+        ["My self-spot didn't appear", "Confirm you're online, that the park and frequency are filled in, and press **Spot me** again. Each press posts one spot."],
+        ["It asked me to log in", "It shouldn't — spotting needs no login. If you hit a login prompt, that's for a separate service (like log upload), which this program doesn't do."],
+        ["I changed bands and my spot is stale", "Post a fresh spot with your new frequency by pressing **Spot me** again."],
+        ["Can I spot a friend?", "No — the program only ever spots you (self-spot only), by design. Your friend can spot themselves from their own setup."]
+      ]
+    }}
+  ]
+}

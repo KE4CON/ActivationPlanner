@@ -44,8 +44,22 @@ Sequencing note: this pairs naturally with any other feature that wants a server
 - **Multi-park / route planning (v2.0)** — sequencing band/antenna plans across several stops
   in one day with inter-stop timing; needs a route-based planning unit, not an extension of the
   single-session model.
-- **3D far-field antenna surface view** — deferred until an Avalonia-12-compatible 3D engine
-  exists (the intended `Ab4d.SharpEngine.AvaloniaUI` is Avalonia-11 only). The v1.0 2D polar
-  plots render the same data.
+- **3D far-field antenna surface view** — the v1.0 2D polar plots render the same data.
+  **Status update (2026-08-14):** ab4d has since shipped a changelog fix — *"Fixed
+  Ab4d.SharpEngine.AvaloniaUI to work with Avalonia v12."* The current stable NuGet package
+  (`Ab4d.SharpEngine.AvaloniaUI` 4.1.x) still declares `Avalonia >= 11.1.0`, but that range
+  *permits* 12.x, so this looks viable now. Moved from "blocked" to **spike-to-validate**:
+  drop the package on a throwaway branch, render one antenna's far-field surface, confirm it
+  builds/runs on Avalonia 12 across Windows/macOS/Linux without forcing an Avalonia-11
+  downgrade. Two gates before adopting: (1) SharpEngine is a **commercial** library — confirm
+  its license fits this project's distribution model; (2) add it to the approved-NuGet list in
+  CLAUDE.md per our own rule.
+
+- **Raspberry Pi / ARM support (advise-on-request).** The app (Avalonia + .NET) runs on Raspberry Pi
+  OS desktop, so a Pi-in-a-laptop/netbook config (pi-top, CrowPi, DIY) can run it. The only extra work
+  is **ARM builds of the helper programs**: VOACAP (voacapl) and NEC2++ compile from source on the Pi,
+  and the app needs the .NET ARM runtime (or a self-contained ARM build). Not officially packaged —
+  the audience is small — but if someone asks, advise: Pi 4 (4 GB+)/Pi 5, Pi OS desktop, and build the
+  two helpers for ARM. Could be turned into prebuilt ARM binaries later if demand appears.
 
 _(add more here as they come up)_

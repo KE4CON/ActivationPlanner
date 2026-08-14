@@ -1,0 +1,63 @@
+{
+  "order": 16,
+  "title": "Troubleshooting and Frequently Asked Questions",
+  "subtitle": "The problems people hit most often, with plain fixes, plus straight answers to the questions new users ask about what the program does and doesn't do.",
+  "in_this_chapter": [
+    "The most common problems and their fixes",
+    "Questions about predictions and accuracy",
+    "Questions about location and the field",
+    "Questions about gear and antennas",
+    "Questions about what the program does and doesn't do",
+    "Where to look next"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "START HERE",
+      "text": "Most trouble comes down to one of three things: the propagation engine (VOACAP) isn't installed (you'll see a \"sample data\" banner), your location is wrong (common on a phone hotspot), or the program can't reach the internet for live data. Check those three first — they fix the majority of issues."}},
+
+    {"h1": "Common Problems and Fixes"},
+    {"table": {
+      "headers": ["Problem", "Fix"],
+      "rows": [
+        ["An orange \"sample data\" banner shows on the plan", "The propagation engine (VOACAP) isn't set up, so the numbers are placeholders. Follow the Installation Guide to install it; the banner then disappears and predictions become real."],
+        ["My location is wrong (often a different city)", "Automatic (geo-IP) location is only a rough guess and is often way off on a cellular hotspot. Type your **grid square** and press **Set from grid**, or plug in a USB GPS receiver (Chapter 14)."],
+        ["No live solar / weather / spot data", "These need an internet connection (a phone hotspot is fine). Check you're online; for solar you can also type the sunspot number by hand."],
+        ["Every band shows poor reliability", "This may be genuine — a very long path in disturbed conditions can be dead. Check the K-index on the plan's Live line (a geomagnetic storm quiets the bands), and try a nearer target or a different hour."],
+        ["Antenna patterns look wrong", "Almost always the antenna's measurements. Re-check its dimensions on the Inventory screen (Chapter 3) — the model faithfully draws whatever you entered."],
+        ["A printed checklist came out empty", "You ticked the **packed** boxes, not the **🖨 printer** boxes. Only printer-ticked items print (Chapter 6)."],
+        ["Content runs off the right edge of a screen", "Every screen scrolls; scroll to see it all. Maximizing the window also helps."],
+        ["The setup wizard never came back", "It only appears the first time you run the program. Change gear any time on the Inventory screen (Chapter 3)."]
+      ]
+    }},
+
+    {"h1": "Questions About Predictions and Accuracy"},
+    {"p": "**How accurate are the band recommendations?** They come from VOACAP, a respected propagation-prediction engine, using real solar data and your actual path. Like any forecast, it's a strong guide, not a guarantee — the ionosphere has a mind of its own. Use it to know where to *start*, then trust your ears."},
+    {"p": "**Why is a band ranked low when I've worked it before?** The ranking is for *your path and the current conditions right now.* A band that's great at one hour or in one part of the solar cycle can be poor at another. Check its 24-hour heatmap for a better hour."},
+    {"p": "**What is UTC and why are the times in it?** UTC is the single worldwide time zone radio operators share so everyone means the same instant. The on-screen clock shows your local time above UTC so you can convert at a glance (Chapter 15)."},
+    {"p": "**Do I need to understand the solar numbers?** No — the sunspot number is filled in for you and the plan already accounts for it. But Chapter 4 explains every solar figure in plain language if you're curious or want to interpret conditions yourself."},
+
+    {"h1": "Questions About Location and the Field"},
+    {"p": "**Does the program track where I am?** No. It checks your location only when you ask (refresh-on-demand) and never tracks you in the background (Chapter 14)."},
+    {"p": "**What's the best way to set location in the field?** A USB GPS receiver is most accurate; otherwise type your grid square. Don't rely on automatic location over a hotspot — it's often wrong (Chapter 14)."},
+    {"p": "**Will it work with no internet?** Core planning works offline once the engines are installed and you set your location by hand (or via a GPS receiver). Live solar data, weather, and POTA spots need a connection."},
+
+    {"h1": "Questions About Gear and Antennas"},
+    {"p": "**Do I have to enter my gear perfectly?** No — you can edit everything later on the Inventory screen. But antenna measurements do matter for accurate patterns and matching, so take care there (Chapter 3)."},
+    {"p": "**What if my exact antenna isn't in the model list?** Pick the closest model as a starting point and adjust the numbers, or choose Custom / Home-brew and enter it yourself (Chapters 2 and 3)."},
+    {"p": "**Why is my antenna's pattern marked \"Approximate\"?** It has coils, traps, or broadband matching that a simple wire model can't capture exactly. The pattern is a good guide to its general behavior, not an exact measurement (Chapter 7)."},
+
+    {"h1": "Questions About What the Program Does and Doesn't Do"},
+    {"p": "**Does it log my contacts?** No. Activation Planner is a planning and spotting tool; keep using your normal logging program for QSOs (Chapter 13)."},
+    {"p": "**Does it control my radio?** No — it doesn't connect to or operate your transceiver. It plans; you operate."},
+    {"p": "**Can it spot my friend on POTA?** No — it only ever spots you (self-spot only), by design (Chapter 13)."},
+    {"p": "**Does it keep a history of my past sessions?** No. It's stateless — every plan uses the current time and current conditions, with no saved session history."},
+    {"p": "**Can I run it on a phone or tablet?** The desktop app runs on Windows, macOS, and Linux (including Windows tablets). A dedicated phone/tablet version is a future project — see the Introduction and the roadmap."},
+
+    {"h1": "Where to Look Next"},
+    {"bullets": [
+      "**Installation problems** — the separate Installation Guide covers setup of the program and the two helper engines.",
+      "**A specific feature** — each feature has its own chapter with its own Troubleshooting table at the end.",
+      "**Unfamiliar terms** — see the Glossary (next chapter).",
+      "**Licensing and credits** — see the Licenses & Credits chapter."
+    ]}
+  ]
+}

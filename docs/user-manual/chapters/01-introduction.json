@@ -1,0 +1,124 @@
+{
+  "order": 1,
+  "title": "Introduction — What Activation Planner Is",
+  "subtitle": "What the program does, who it's for, and how the pieces fit together — so the rest of this manual makes sense.",
+  "in_this_chapter": [
+    "What Activation Planner is, in one paragraph",
+    "Who it's for, and what it deliberately does not do",
+    "The big idea: plan from real propagation data, not guesswork",
+    "Using it in the field, and the computers it runs on (and won't)",
+    "The planning workflow, start to finish",
+    "Getting around: every button on the navigation bar",
+    "A short list of ham-radio words and acronyms you'll meet",
+    "How to read this manual"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Activation Planner helps you plan a radio operating session. You tell it your gear and where you're going; it tells you which **bands** will actually work (using real propagation predictions, not a guess), which of **your** antennas suits each band, and builds you a **packing checklist**. Plan at home the night before — then take it to the field on a laptop to re-check propagation, watch **POTA spots**, spot yourself, and check the weather. Everything lives on the buttons across the top of the window. Start on **Inventory** to enter your gear once, then use **Plan session** (or **Quick plan**) every time you operate."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "**Activation Planner** is a desktop program that helps a single amateur-radio operator plan an operating session **before** it happens. Think of it as the step you do at the kitchen table (or the trailhead) the night before, or an hour before: deciding what to bring, which bands to try, and when — so that when you actually key up, you're set up for success instead of guessing."},
+    {"p": "It is built around one honest promise: the recommendations are **grounded in real propagation science, not rules of thumb.** Under the hood it runs the same professional prediction engine that serious HF planning relies on, feeds it the current space-weather conditions, and turns the results into plain-English advice about which bands are worth your time."},
+    {"p": "There is no account to create and no subscription; your gear list stays on your own computer."},
+    {"callout": {"kind": "note", "label": "REAL DATA, NOT GUESSWORK",
+      "text": "Where most planning is \"20 meters is usually good in the afternoon,\" Activation Planner asks a propagation model what the bands should actually do for **your** location, **today**, under **today's** solar conditions — and ranks them for you. It's the difference between a weather forecast and a hunch."}},
+
+    {"h1": "Plan at Home — and Take It to the Field"},
+    {"p": "Activation Planner earns its keep twice. At the kitchen table the night before, it's a planning tool. On site, running on a laptop, it's a companion you keep open while you operate — because several of its screens are **live**:"},
+    {"bullets": [
+      "**Re-check propagation as the day changes.** Bands open and close through the day; re-run a plan or watch the **Trend** screen to catch it.",
+      "**See who's on the air.** The **POTA spots** screen shows current Parks on the Air activity, and (when enabled) lets you post your own **self-spot** so hunters can find and call you.",
+      "**Check the weather** for your exact location — and get can't-miss watch/warning alerts if severe weather is headed your way.",
+      "**Catch the grey line** — the **Grey line** screen tells you when the low bands are about to come alive at your location."
+    ]},
+    {"callout": {"kind": "note", "label": "THE LIVE FEATURES NEED INTERNET — A PHONE HOTSPOT IS FINE",
+      "text": "The live screens — current solar data, POTA spots and self-spotting, and weather — need an internet connection. In the field that's usually your **phone's mobile hotspot**. The core band planning (the VOACAP propagation predictions) runs right on your computer and works even with **no signal at all**, so you're never stranded without a plan."}},
+
+    {"h1": "What You Can Run It On"},
+    {"p": "Activation Planner is a **cross-platform computer application** — the same program on every system. It runs on:"},
+    {"bullets": [
+      "**Windows** laptops and desktops (Windows 10 or 11).",
+      "**macOS** — MacBooks and desktop Macs.",
+      "**Linux** laptops and desktops.",
+      "A **Windows tablet** such as a Microsoft Surface works too, because it runs full Windows."
+    ]},
+    {"p": "For the field, any lightweight laptop is ideal — a small Windows laptop, a MacBook Air, or a Linux netbook all do the job. Bring whatever you already carry; there's nothing special to buy."},
+    {"callout": {"kind": "important", "label": "WHAT IT WILL NOT RUN ON",
+      "text": "Activation Planner is **not** a phone or tablet app. It will **not** run on an Apple **iPhone or iPad**, or on an **Android** phone or tablet — there is no mobile version (yet). You need a real computer running **Windows, macOS, or Linux**. If you connect to the internet through your phone in the field, that's perfect — just run the planner on a laptop and let the phone provide the hotspot."}},
+
+    {"h1": "Who This Manual — and This Program — Is For"},
+    {"p": "This program is for the individual operator planning their own outing. It's aimed squarely at portable and field operating, and it understands the common activity types you'll choose from:"},
+    {"bullets": [
+      "**POTA (Parks on the Air)** — portable operating from a park, facing a stream of hunters calling you.",
+      "**SOTA (Summits on the Air)** — weight-critical operating from a summit, where every ounce matters.",
+      "**Field Day** — a longer, higher-power multi-band event with more support gear.",
+      "**EMCOMM (Emergency Communications)** — regional nets and a load-bearing go-kit, where reliability beats distance.",
+      "**General operating** — casual sessions with no special emphasis."
+    ]},
+    {"p": "You do not need to be technical to use it, and you do not need to understand propagation math — the program does that part. If you can tell it what radios and antennas you own and where you'll be, it does the rest."},
+    {"callout": {"kind": "note", "label": "WHAT IT DELIBERATELY DOES NOT DO",
+      "text": "Activation Planner is a **planning** tool only. It does not log your contacts (that's a job for a logging program), and it does not manage teams, incidents, or resources. Keeping it focused on planning is what keeps it simple."}},
+
+    {"h1": "The Big Idea: Plan From Real Data"},
+    {"p": "Three ideas run through the whole program. Understanding them makes every screen easier to follow."},
+    {"p": "**1. Real propagation, per band.** The program predicts how well each HF band should carry your signal to where you're trying to reach, hour by hour, using the current sunspot/solar numbers pulled live from the internet. You get a ranked list of bands with a reliability score and a 24-hour heat strip, not a generic chart."},
+    {"p": "**2. Your gear comes first.** Recommendations are built from the equipment you actually own. When the program suggests an antenna for a band, it's suggesting **your** antenna — and it clearly separates \"you own this\" from \"you might consider acquiring this,\" so the two never blur together."},
+    {"p": "**3. A plan you can carry.** The end product isn't just a screen of numbers — it's a tailored **packing checklist** for the operation you chose, which you can check off, print, or export to a PDF (Portable Document Format) file to take with you."},
+
+    {"h1": "The Planning Workflow, Start to Finish"},
+    {"p": "Here is the whole program in five steps. Each step is a chapter later in this manual, so this is just the map."},
+    {"steps": [
+      "**Set up your gear once.** On first launch a guided setup wizard walks you through entering your radios and antennas. This is the only \"setup\" step, and you only do it once (you can edit it any time afterward on the **Inventory** screen).",
+      "**Start a plan.** Use **Plan session** to enter where you are, where you're trying to reach, and let it pull current solar conditions — or use **Quick plan** to jump straight to recommendations using your location.",
+      "**Read the recommendations.** The program ranks the bands, shows a 24-hour reliability strip and the common calling frequencies for each, and lists which of your antennas fits each band.",
+      "**Build your checklist.** On **Mission & checklist**, pick the operation type (POTA, SOTA, and so on) and the program tailors a packing list from your inventory, with suggestions highlighted.",
+      "**Take it with you.** Print the checklist, or export the whole plan to a PDF."
+    ]},
+    {"callout": {"kind": "tip", "label": "YOU CAN RE-PLAN ANY TIME",
+      "text": "Conditions change through the day, so planning isn't a one-time thing. Re-run a plan whenever you like — it always uses the current time and the latest solar data. The program doesn't keep a history; each plan is a fresh look at right now."}},
+
+    {"h1": "Getting Around: The Navigation Bar"},
+    {"p": "Everything is reached from the row of buttons across the **top** of the window. The button for the screen you're on is highlighted in blue. Here's what each one does — every screen has its own chapter later."},
+    {"table": {
+      "headers": ["Button", "What it's for"],
+      "rows": [
+        ["Quick plan", "Jump straight to band/antenna recommendations for your current location, with the plan generated for you."],
+        ["Plan session", "The full planning screen: enter your location, target, and conditions, then generate a detailed plan."],
+        ["Trend", "How each band's reliability has moved over the last few hours this session."],
+        ["Grey line", "The twilight band where the low bands open up — a live world map plus when your grey-line window is."],
+        ["Weather", "The forecast for your operating location, and can't-miss weather watch/warning alerts."],
+        ["Band plan", "A plain-language reference of US amateur privileges — where each license class may operate, and in what mode."],
+        ["Mission & checklist", "Pick your operation type and get a tailored, printable packing list from your gear."],
+        ["POTA spots", "Live Parks on the Air activator spots, and (when enabled) posting your own self-spot."],
+        ["Antenna", "The radiation-pattern plots for your antennas."],
+        ["Inventory", "Add, edit, or remove your radios and antennas at any time."],
+        ["Battery", "Estimate how long a battery will run your radio in the field."]
+      ]
+    }},
+    {"callout": {"kind": "tip", "label": "THE CLOCK AND THE THEME BUTTON",
+      "text": "At the top-right you'll always see a live clock showing your **local time above UTC** (Coordinated Universal Time — the worldwide reference hams use). Next to it, a small theme button cycles the app's look between **Auto** (match your system), **Light**, and **Dark**."}},
+
+    {"h1": "A Few Words You'll Meet"},
+    {"p": "This manual defines terms as they come up, but here are the ones you'll see most often, in plain language:"},
+    {"bullets": [
+      "**Band** — a range of frequencies, named by wavelength (e.g. \"20 meters\"). Different bands behave very differently and at different times of day.",
+      "**Propagation** — how (and whether) your radio signal travels from you to where you want it to go. It changes with the time of day, the season, and the sun.",
+      "**VOACAP (Voice of America Coverage Analysis Program)** — the professional propagation-prediction engine the program uses to rank bands.",
+      "**Grey line** — the moving line of twilight between day and night, along which low-band signals can travel unusually far.",
+      "**NVIS (Near Vertical Incidence Skywave)** — sending signals nearly straight up so they rain back down for short-to-medium regional coverage; common in EMCOMM.",
+      "**Reliability** — the program's headline score for a band: roughly, the chance a contact will succeed at that time. Higher is better.",
+      "**Self-spot** — posting a note to a spotting website that you're on the air at a certain frequency, so others can find and call you."
+    ]},
+
+    {"h1": "How to Read This Manual"},
+    {"p": "Every chapter covers one screen or feature and is built the same way, so you can skim or read deeply as you like:"},
+    {"bullets": [
+      "Each chapter opens with a **Quick Version** box — read just that and you'll get the gist.",
+      "Steps are numbered; **buttons and fields are shown in bold** exactly as they appear on screen.",
+      "Colored callout boxes flag **Tips**, **Notes**, **Important** points, and **Warnings**.",
+      "Feature chapters end with a **Troubleshooting** section — symptom, then fix."
+    ]},
+    {"callout": {"kind": "important", "label": "A PLANNING AID, NOT THE LAST WORD",
+      "text": "Activation Planner helps you plan, but you are always the operator in charge. Follow the current FCC rules and your license privileges, use good judgment about safety and the weather, and treat the program's predictions as well-informed guidance, not a guarantee."}}
+  ]
+}

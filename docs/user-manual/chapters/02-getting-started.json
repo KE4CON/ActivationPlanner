@@ -1,0 +1,129 @@
+{
+  "order": 2,
+  "title": "Getting Started — First Launch and the Setup Wizard",
+  "subtitle": "Opening the program for the first time and walking through the one-time guided setup that teaches it what gear you own.",
+  "in_this_chapter": [
+    "Starting the program on Windows, macOS, and Linux",
+    "The two helper programs (VOACAP and NEC2++) and why they're separate",
+    "Why the very first thing you see is a setup wizard",
+    "How the wizard works: Back, Next, progress, and Skip",
+    "Every step, one at a time: Radios, Antennas, Power, Digital Interfaces, Computers, EMCOMM Gear",
+    "The Summary step and pressing Finish",
+    "Skipping setup to jump straight to Quick Mode",
+    "Where your gear is saved, and how to change it later",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "The first time you open Activation Planner, a **setup wizard** appears and walks you through entering your gear — radios, antennas, power, and so on — one screen at a time. Use **Next** and **Back** to move through it, add each item to the running list, and press **Finish** on the last screen. That's the only setup there is, and you only do it once. In a hurry? Press **Skip** to jump straight to recommendations and add gear later."}},
+
+    {"h1": "Installing and Starting the Program"},
+    {"p": "This chapter assumes Activation Planner is already installed. If it isn't, follow the separate **Installation Guide**, which spells out the download-and-install steps for each operating system. Installation is a one-time thing and is the same idea on every system: get the program onto your computer, then open it."},
+    {"p": "Starting Activation Planner is exactly like starting any other program on your computer:"},
+    {"bullets": [
+      "**Windows:** open it from the **Start menu** (or double-click its icon on the desktop).",
+      "**macOS:** open it from **Launchpad** or the **Applications** folder (or double-click its icon).",
+      "**Linux:** launch it from your applications menu, or run it the way your distribution starts installed apps."
+    ]},
+    {"p": "The program looks and works the same on all three systems, so the rest of this manual applies no matter which one you use."},
+
+    {"h1": "Two Helper Programs — VOACAP and NEC2++"},
+    {"p": "When you install Activation Planner, you'll notice it also sets up two small **helper programs** alongside it: **VOACAP** and **NEC2++**. This is normal and intended. Here's what they are, in plain terms:"},
+    {"bullets": [
+      "**VOACAP** is the **propagation-prediction engine** — the proven tool (originally created for the Voice of America) that works out which bands will actually carry your signal, and when. It's the brains behind the band recommendations.",
+      "**NEC2++** is the **antenna-modeling engine** — it calculates your antenna's radiation pattern from the measurements you enter (Chapter 3)."
+    ]},
+    {"p": "Activation Planner **runs these as separate programs** rather than building their code inside itself. That's a deliberate design choice, and it's worth understanding because you'll see them installed:"},
+    {"bullets": [
+      "**Accuracy and trust.** VOACAP and NEC2++ are respected, independently-maintained engineering tools. Running them exactly as their authors made them — unmodified — means you get the same trustworthy results a professional would, not a home-grown imitation.",
+      "**Honest, clean licensing.** These tools come under their own separate software licenses. The correct, above-board way to include someone else's licensed program is to **run it as its own program** rather than copying its code into ours. Keeping them separate honors those licenses and keeps everyone's rights clear — NEC2++ in particular is shared under terms that are respected precisely by keeping it a standalone program the planner simply calls.",
+      "**Independent updates.** Each helper can be updated on its own, without disturbing the planner."
+    ]},
+    {"callout": {"kind": "note", "label": "YOU DON'T USE THEM DIRECTLY",
+      "text": "You never open VOACAP or NEC2++ yourself — Activation Planner drives them for you behind the scenes and turns their output into plain-English advice. Just know that seeing them during installation is expected and correct. The **Installation Guide** covers setting them up, and the **Licenses & Credits** chapter lists their full license notices and credits."}},
+
+    {"h1": "Why You See a Setup Wizard First"},
+    {"p": "The first time you ever run Activation Planner, it has an empty gear list — it doesn't yet know what radios or antennas you own. Since **every recommendation it makes is built from your gear**, it needs that information before it can be useful. So instead of dropping you onto a blank planning screen, it opens a friendly, step-by-step **setup wizard** to collect it."},
+    {"p": "This happens **only once.** After you finish (or skip) the wizard, the program remembers your gear and goes straight to the planning screen every time you open it from then on. You never have to repeat setup, and you can change your gear whenever you like."},
+    {"callout": {"kind": "note", "label": "NOTHING HERE IS PERMANENT",
+      "text": "Don't worry about getting every detail perfect right now. Everything you enter in the wizard can be edited, added to, or removed later on the **Inventory** screen (Chapter 3). The goal of the wizard is just to get your main gear in so you can start planning."}},
+
+    {"h1": "How the Wizard Works"},
+    {"p": "The wizard shows one category of gear per screen. A few controls are always available:"},
+    {"table": {
+      "headers": ["Control", "What it does"],
+      "rows": [
+        ["Next", "Move forward to the next step. Your entries so far are kept."],
+        ["Back", "Return to the previous step to review or change what you entered."],
+        ["Progress indicator", "Shows how far along you are and how many steps remain."],
+        ["Skip", "Leave setup entirely and jump straight to Quick Mode (see the end of this chapter)."],
+        ["Finish", "Appears on the final Summary step; saves everything and opens the planner."]
+      ]
+    }},
+    {"p": "The steps come in this order: **Radios → Antennas → Power → Digital Interfaces → Computers → EMCOMM Gear → Summary.** You can move through them at your own pace, and any step you have nothing for can simply be left empty and passed with **Next**."},
+    {"callout": {"kind": "note", "label": "EVERY CATEGORY IS OPTIONAL",
+      "text": "Only enter what you actually own. If you have no digital interface or no dedicated EMCOMM gear, leave that step empty and press **Next**. The planner works fine with just a radio and an antenna — everything else is a bonus that makes the packing lists smarter."}},
+
+    {"h1": "Step 1 — Radios"},
+    {"p": "This step collects your transceivers. It offers a **\"Start from a model\"** picker listing common radios; choosing yours fills in the name for you. If your radio isn't listed, just type its name."},
+    {"steps": [
+      "If your radio is in the **Start from a model** list, pick it — the name fills in automatically.",
+      "Otherwise, type the radio's name (for example, **IC-705** or **FT-891**) in the name box.",
+      "Optionally add a note (a band range, power level, anything you want to remember).",
+      "Press **Add** to put it on the running list. Repeat for each radio you own.",
+      "When your radios are all listed, press **Next**."
+    ]},
+    {"callout": {"kind": "tip", "label": "PICKING A MODEL FILLS IN DETAILS",
+      "text": "Choosing your radio from the model list is worth it — it carries over useful details (like the radio's power) that help the planner tailor suggestions later. You can still edit the name afterward."}},
+
+    {"h1": "Step 2 — Antennas"},
+    {"p": "Antennas get their own step because they carry the most detail — the program uses their physical dimensions to model how they radiate. As with radios, there's a **\"Start from a model\"** picker (many popular portable antennas are listed); picking one **prefills the measurements for you**, which you can then adjust."},
+    {"p": "You add antennas one at a time to a running list. For each antenna you'll set its **type**, **feed point**, and **dimensions**."},
+    {"callout": {"kind": "important", "label": "ANTENNA DETAILS MATTER — SEE CHAPTER 3",
+      "text": "Getting the antenna numbers right is what lets the program model your pattern correctly. Because it's so important, the full, field-by-field explanation of what to measure and enter for each antenna type lives in **Chapter 3 (Your Gear Inventory)**. If you pick a model from the list, the numbers are filled in for you and you can move on; if you're entering a custom antenna, read Chapter 3 first."}},
+    {"steps": [
+      "Pick your antenna from **Start from a model** if it's listed — its measurements prefill.",
+      "Otherwise choose **Custom / Home-brew** and enter the type, feed point, and dimensions (Chapter 3 explains each).",
+      "Press **Add** to add it to your antenna list. Repeat for each antenna.",
+      "Press **Next** when done."
+    ]},
+
+    {"h1": "Steps 3–6 — Power, Digital Interfaces, Computers, EMCOMM Gear"},
+    {"p": "The remaining steps all work the same simple way as the Radios step — a name box, an optional note, and an **Add** button, with a model picker where one is available. Enter what you own, or leave a step empty if it doesn't apply:"},
+    {"bullets": [
+      "**Power** — batteries, power stations, solar panels, and the like (e.g. a **Bioenno 12 Ah**). Including the capacity in the name helps the Battery calculator later.",
+      "**Digital Interfaces** — sound-card/CAT devices for digital modes (e.g. a **Digirig** or **SignaLink**).",
+      "**Computers** — a laptop or tablet you take to the field for logging or digital modes.",
+      "**EMCOMM Gear** — anything specific to emergency communications (go-kit items, forms, and so on)."
+    ]},
+    {"p": "These categories aren't just a list — the program uses them to tailor your packing checklists. A computer or digital interface, for instance, will be suggested for a Field Day or EMCOMM operation but left off a lightweight summit hike."},
+
+    {"h1": "The Summary Step and Finishing"},
+    {"p": "The last step shows a **Summary** of everything you've entered so you can look it over before committing."},
+    {"steps": [
+      "Review the summary. If something's wrong, press **Back** to the right step and fix it.",
+      "When it looks right, press **Finish**.",
+      "Your gear is saved, and the program opens to the planning screen — you're ready to plan."
+    ]},
+    {"callout": {"kind": "note", "label": "WHERE YOUR GEAR IS SAVED",
+      "text": "Your inventory is saved on your own computer and reloaded automatically every time you open the program. It is not uploaded anywhere. To back it up or move it to another computer, see the Installation Guide."}},
+
+    {"h1": "Skipping Setup — Straight to Quick Mode"},
+    {"p": "If you'd rather not do setup right now, press **Skip**. This takes you directly to **Quick Mode**, which generates band recommendations for your location immediately (Chapter 5). You can add your gear later on the **Inventory** screen, and the recommendations get more useful once you do — the program can only match antennas you've told it about."},
+
+    {"h1": "Changing Your Gear Later"},
+    {"p": "You are never locked into what you entered in the wizard. At any time, click **Inventory** in the navigation bar to add new gear, edit an existing item, or remove something you sold. Chapter 3 covers the Inventory screen in full."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The wizard didn't appear — I went straight to the planner", "That's normal on later launches; the wizard only appears the first time. Use the **Inventory** screen to enter or change gear."],
+        ["I pressed Next past a step I meant to fill in", "Press **Back** to return to it — nothing is lost. You can also add that gear later in **Inventory**."],
+        ["My radio or antenna isn't in the model list", "That's fine — just type the name (radios) or choose **Custom / Home-brew** (antennas) and enter it yourself. The list is a convenience, not a limit."],
+        ["I finished the wizard but entered a radio wrong", "Open **Inventory**, find the item, and press **Edit** (or **Remove** and re-add it). Changes save automatically."],
+        ["I want to start over completely", "Remove the items you don't want in **Inventory**; there's no need to re-run the wizard. (To wipe everything, see the Installation Guide's note on the saved inventory file.)"]
+      ]
+    }}
+  ]
+}

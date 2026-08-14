@@ -1,0 +1,93 @@
+{
+  "order": 17,
+  "title": "Glossary — Plain-Language Definitions",
+  "subtitle": "Every term used in this manual and in the program, explained in one or two plain sentences. Radio jargon, propagation words, and the program's own labels are all here.",
+  "in_this_chapter": [
+    "Radio and operating terms",
+    "Propagation and solar terms",
+    "Antenna terms",
+    "Program and computer terms"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "HOW TO USE THIS",
+      "text": "Hit a word you don't know? Find it here. Terms are grouped by topic and defined in everyday language — no prior knowledge assumed. Each definition points you to the chapter where the term is used in depth."}},
+
+    {"h1": "Radio and Operating Terms"},
+    {"table": {
+      "headers": ["Term", "Plain-language meaning"],
+      "rows": [
+        ["Amateur radio (ham radio)", "A licensed hobby of two-way radio communication for personal, experimental, and emergency use."],
+        ["Band", "A range of frequencies set aside for amateur use, named by wavelength — e.g. \"20 meters,\" \"40 meters.\""],
+        ["CW", "Continuous Wave — Morse code. A very efficient mode that gets through when voice can't."],
+        ["Phone", "Voice modes, most commonly SSB (Single Sideband). \"Phone\" just means talking, as opposed to Morse or digital."],
+        ["Digital mode", "Sending data (like FT8) rather than voice or Morse; the computer does the sending and decoding."],
+        ["QRP", "Operating at low power — 5 to 10 watts. Popular for lightweight, battery-friendly field operating."],
+        ["QSO", "A two-way contact/conversation between two stations."],
+        ["Calling frequency", "A frequency where operators of a given mode gather to find each other."],
+        ["License class", "Your level of amateur license (Technician, General, or Amateur Extra), which sets what frequencies and modes you may use."],
+        ["Duty cycle", "The share of your on-air time actually spent transmitting versus listening — matters for battery life."]
+      ]
+    }},
+
+    {"h1": "Propagation and Solar Terms"},
+    {"table": {
+      "headers": ["Term", "Plain-language meaning"],
+      "rows": [
+        ["Propagation", "How radio signals travel from one place to another — which bands reach where, and when."],
+        ["Ionosphere", "A high layer of the atmosphere that bends shortwave signals back to Earth, letting them skip long distances."],
+        ["Reliability (%)", "The program's headline score for a band: roughly, the chance a contact will succeed. Higher and greener is better. (Chapter 4)"],
+        ["Best hour", "The single time of day a band is predicted to be at its best, shown in UTC. (Chapter 4)"],
+        ["MUF", "Maximum Usable Frequency — the highest frequency the ionosphere is bending back on your path right now. Bands below it tend to work; above it usually don't. (Chapter 4)"],
+        ["Sunspot number (SSN)", "A count of sunspots, used as a simple measure of solar activity. Higher generally means better high-band conditions. (Chapter 4)"],
+        ["Solar flux index (SFI)", "The sun's radio energy at 10.7 cm; moves with the sunspot number and tells the same story. Higher favors the high bands. (Chapter 4)"],
+        ["K-index", "A near-real-time 0–9 gauge of how disturbed Earth's magnetic field is. Low is calm and good; 5+ is a geomagnetic storm that degrades the bands. (Chapter 4)"],
+        ["A-index", "A once-a-day summary of geomagnetic disturbance, companion to the K-index. Low is good. (Chapter 4)"],
+        ["Grey line", "The twilight band circling the Earth at sunrise/sunset, when low bands can reach unusually far. (Chapter 8)"],
+        ["NVIS", "Near Vertical Incidence Skywave — sending signals nearly straight up so they rain back down over a nearby region; used for regional/emergency coverage. (Chapters 4, 6)"],
+        ["DX", "Distant stations / long-distance contacts."],
+        ["Long path", "Reaching a station the long way around the globe instead of the direct route. (Chapter 4)"],
+        ["UTC", "Coordinated Universal Time — the single worldwide time zone radio operators share. (Chapter 15)"]
+      ]
+    }},
+
+    {"h1": "Antenna Terms"},
+    {"table": {
+      "headers": ["Term", "Plain-language meaning"],
+      "rows": [
+        ["Radiation pattern", "A map of an antenna's \"loudness\" in every direction. (Chapter 7)"],
+        ["Take-off angle", "The angle above the horizon where an antenna radiates most strongly. Low = long distance; high = nearby/regional. (Chapter 7)"],
+        ["Gain", "How much an antenna concentrates the signal in its best direction, versus a reference antenna. Measured in dBi. (Chapter 7)"],
+        ["Front-to-back", "For a directional antenna, how much stronger it is forward than backward. (Chapter 7)"],
+        ["Azimuth plot", "The top-down view of a pattern — which compass directions the signal favors. (Chapter 7)"],
+        ["Elevation plot", "The side-on view of a pattern — at what angle above the horizon the signal leaves. (Chapter 7)"],
+        ["Dipole", "A basic antenna: a wire fed in the center. Its height sets its take-off angle. (Chapter 3)"],
+        ["Vertical", "An antenna that stands upright, often with radials; radiates low and all around — good for distance. (Chapter 3)"],
+        ["EFHW / end-fed", "An end-fed wire antenna (End-Fed Half-Wave and similar), fed at one end rather than the middle. (Chapter 3)"],
+        ["Radials", "Wires laid at the base of a vertical that act as its electrical \"ground.\" How many and how long affects performance. (Chapter 3)"],
+        ["Feed point", "Where the coax cable connects to the antenna (center, end, off-center, or base). A required detail for modeling. (Chapter 3)"],
+        ["Measured vs Approximate", "A flag on each antenna's pattern: Measured = trust it; Approximate = a good guide for loaded/broadband antennas a simple model can't capture exactly. (Chapter 7)"],
+        ["Wavelength (λ)", "The physical length of one radio wave; antenna dimensions are often described as fractions of it (e.g. quarter-wave)."]
+      ]
+    }},
+
+    {"h1": "Program and Computer Terms"},
+    {"table": {
+      "headers": ["Term", "Plain-language meaning"],
+      "rows": [
+        ["VOACAP", "The propagation-prediction engine the program runs behind the scenes to rank bands. (Chapters 2, 4)"],
+        ["NEC2++", "The antenna-modeling engine the program runs to compute radiation patterns. (Chapters 2, 7)"],
+        ["Setup wizard", "The one-time, step-by-step screen that collects your gear the first time you run the program. (Chapter 2)"],
+        ["Inventory", "Your saved list of owned gear, editable any time. (Chapter 3)"],
+        ["Mission type", "The kind of operation you're planning (POTA, SOTA, Field Day, EMCOMM, General), which tailors gear and framing. (Chapter 6)"],
+        ["Quick Mode / Quick plan", "The fast path that gives full recommendations with no setup. (Chapter 5)"],
+        ["Stateless / replanning", "The program keeps no session history; each plan uses the current time and conditions. (Chapters 4, 9)"],
+        ["Grid square (Maidenhead)", "A short code (like EM29) naming your location on the map; the program converts it to/from latitude and longitude. (Chapter 14)"],
+        ["Geo-IP", "Guessing your location from your internet connection — convenient but only rough, and often wrong on a hotspot. (Chapter 14)"],
+        ["NMEA / GPS receiver", "A device (often USB) that reports your exact position from satellites; the most accurate location source. (Chapter 14)"],
+        ["PDF", "Portable Document Format — the file type the program exports plans and checklists to for printing or carrying. (Chapters 4, 6)"],
+        ["Amp-hour (Ah)", "A measure of battery capacity — roughly, amps × hours it can supply. (Chapter 12)"],
+        ["Theme (light/dark)", "The program's color scheme, switchable between Auto, Light, and Dark. (Chapter 15)"]
+      ]
+    }}
+  ]
+}

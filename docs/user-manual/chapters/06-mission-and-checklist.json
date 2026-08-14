@@ -1,0 +1,94 @@
+{
+  "order": 6,
+  "title": "Mission Type and Your Packing Checklist",
+  "subtitle": "Tell the program what kind of operation you're planning, and it tailors your gear suggestions and builds a packing checklist you can check off and print.",
+  "in_this_chapter": [
+    "What the mission type does and why it matters",
+    "The mission types: POTA, SOTA, Field Day, EMCOMM, and General",
+    "How mission type changes both your gear list and your propagation plan",
+    "Reading the checklist: SUGGESTED and ESSENTIAL badges",
+    "Owned gear first, things to acquire second",
+    "The two kinds of checkbox: select-for-print and packed",
+    "Selecting everything or nothing at once",
+    "Printing your checklist as a PDF",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "QUICK VERSION",
+      "text": "Pick your **operation type** (POTA, SOTA, Field Day, EMCOMM, or General) at the top of the Mission screen. The program marks the gear it recommends with clear **SUGGESTED** and **ESSENTIAL** badges, listing gear you own first. Tick the **printer box** next to the items you want on your packing list, press **Print checklist…**, and you get a PDF of exactly those items. When you're actually packing, use the **packed** check-off to tick items into the bag."}},
+
+    {"h1": "What This Is / What It Is For"},
+    {"p": "Different operations need different gear. A lightweight summit hike (SOTA) rewards a tiny QRP radio and a wire antenna; a Field Day setup can run a bigger radio and a computer; an emergency deployment (EMCOMM) leans on batteries, regional antennas, and go-kit items. The **Mission** screen lets you tell the program which kind of operation you're planning so it can **tailor two things at once**: the gear it suggests, and the way it frames the propagation question on the planning screen."},
+
+    {"h1": "Choosing Your Operation Type"},
+    {"p": "At the top of the screen, pick the operation type that fits. Each is a common way hams operate:"},
+    {"table": {
+      "headers": ["Type", "What it means", "In full"],
+      "rows": [
+        ["POTA", "Parks on the Air", "Operating from a public park to activate it for others to contact."],
+        ["SOTA", "Summits on the Air", "Operating from a mountain summit — weight and low power matter most."],
+        ["Field Day", "The annual ARRL Field Day (and similar)", "A group or solo emergency-preparedness operating exercise; often bigger stations."],
+        ["EMCOMM", "Emergency Communications", "Real or practice emergency operating, usually covering a nearby region."],
+        ["General", "Everyday operating", "No special constraints — the all-purpose choice."]
+      ]
+    }},
+
+    {"h1": "How the Mission Type Changes Things"},
+    {"p": "Your choice affects the program in two distinct ways:"},
+    {"bullets": [
+      "**It tailors your gear suggestions.** The program flags gear that suits the operation. A SOTA choice favors low-power, lightweight gear; Field Day and EMCOMM bring computers, higher power, and go-kit items into the picture.",
+      "**It frames the propagation question** on the planning screen (Chapter 4). EMCOMM, for example, switches the framing toward **regional / NVIS** coverage — a few hundred miles around you — instead of chasing distance."
+    ]},
+    {"callout": {"kind": "important", "label": "IT CHANGES THE QUESTION, NEVER THE PHYSICS",
+      "text": "Selecting EMCOMM changes *what the program asks* the propagation engine — regional coverage instead of long-distance — but it never fudges the answer. The reliability numbers are always the honest, physics-based prediction for whatever path you've framed. Mission type steers the question; it doesn't put a thumb on the scale."}},
+
+    {"h1": "Reading the Checklist — SUGGESTED and ESSENTIAL"},
+    {"p": "Below the operation type, the program lists gear, with the items it recommends called out so you **can't miss them**:"},
+    {"bullets": [
+      "**★ ESSENTIAL** — a bold badge with a colored accent bar down the left edge. This is gear you really shouldn't leave without for the chosen operation.",
+      "**★ SUGGESTED** — a bold badge, also with a left accent bar, marking gear that fits the operation well and is worth bringing."
+    ]},
+    {"p": "Items without a badge are simply available in your inventory but not specifically called for by this operation type. Nothing is hidden — the badges and ordering guide you, but the whole list stays visible so you're always in control."},
+
+    {"h1": "Owned Gear First, Then Things to Consider"},
+    {"p": "The list always shows gear **you own** first. Where the program thinks a category would help but you don't own a suitable item, it may note that separately as something to consider acquiring — kept clearly apart from your owned gear, so \"you have this\" and \"you might want this\" are never mixed into one confusing list."},
+
+    {"h1": "The Two Kinds of Checkbox"},
+    {"p": "Each item has **two** independent checkboxes, and they do different jobs. This split is deliberate — choosing what to print is not the same as ticking things into your bag."},
+    {"table": {
+      "headers": ["Checkbox", "What it's for"],
+      "rows": [
+        ["🖨 (printer)", "**Select for print.** Tick this on the items you want to appear on your printed packing list. Only ticked items go into the PDF."],
+        ["Packed", "**The pack check-off.** Use this while you're actually loading the bag, to tick each item as it goes in. It's your live packing tracker, separate from what you chose to print."]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "WHY TWO CHECKBOXES",
+      "text": "You might want to print a full list but only pack part of it, or print a subset and still track everything as you load up. Keeping *what to print* and *what's packed* separate means one never overwrites the other."}},
+
+    {"h1": "Select All or None at Once"},
+    {"p": "To save clicking, the screen offers **Select all** and **Select none** buttons for the print selection. Press **Select all** to mark every item for printing (then untick the few you don't want), or **Select none** to clear the selection and start fresh."},
+
+    {"h1": "Printing Your Checklist as a PDF"},
+    {"p": "When your print selection looks right, save it as a PDF (Portable Document Format) file you can print on paper or carry on your phone:"},
+    {"steps": [
+      "Tick the **🖨 printer box** on each item you want on the list (or use **Select all** then untick a few).",
+      "Press **Print checklist…**.",
+      "Choose where to save the PDF file.",
+      "Open or print it like any other PDF. Only the items you selected appear on it."
+    ]},
+    {"callout": {"kind": "note", "label": "IT PRINTS ONLY WHAT YOU SELECTED",
+      "text": "The PDF contains exactly the items whose printer box is ticked — nothing more. If the list comes out empty or short, check that you ticked the printer boxes (not just the packed boxes)."}},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The gear list didn't change when I picked a different operation type", "The full inventory always stays visible; what changes is the **badges** and the **ordering**. Look for items gaining or losing a ★ SUGGESTED / ★ ESSENTIAL badge and moving up the list."],
+        ["My printed checklist is empty or missing items", "You likely ticked the **packed** boxes instead of the **🖨 printer** boxes. Only printer-ticked items are printed. Tick those and print again."],
+        ["A radio I expected to be suggested isn't", "Suggestions use the power level in the item's note. For example, SOTA favors low-power (QRP) radios. Add a wattage to the radio's note on the **Inventory** screen so the program can match it."],
+        ["An item I own isn't listed at all", "It isn't in your inventory yet. Add it on the **Inventory** screen (Chapter 3)."],
+        ["I want to print everything", "Press **Select all**, then **Print checklist…**."]
+      ]
+    }}
+  ]
+}

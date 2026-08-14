@@ -1,0 +1,37 @@
+{
+  "order": 18,
+  "title": "Licenses and Credits",
+  "subtitle": "The people and projects that make Activation Planner possible, and the license notices for the two helper programs it includes — reproduced here in full, as their licenses require.",
+  "in_this_chapter": [
+    "The two helper programs and why they're included",
+    "VOACAP — the propagation engine, and its notice",
+    "NEC2++ — the antenna engine, and its notice",
+    "Map data credit",
+    "Thanks"
+  ],
+  "blocks": [
+    {"p": "Activation Planner stands on the shoulders of two respected, freely-available engineering tools — **VOACAP** for propagation prediction and **NEC2++** for antenna modeling — plus public-domain map data. As explained in Chapter 2, the program **runs these as separate helper programs** rather than copying their code into itself. That keeps their results trustworthy and unmodified, and it honors their software licenses correctly. Those licenses require that we reproduce certain notices wherever the program is documented, so they appear in full below."},
+    {"callout": {"kind": "note", "label": "WHY THESE NOTICES ARE HERE",
+      "text": "Including someone else's licensed program the right way means passing along their license notice. These notices are not about Activation Planner's own terms — they credit and preserve the rights of the VOACAP and NEC2++ authors, exactly as those projects ask. You don't need to do anything with them; they're here for transparency and to meet the license terms."}},
+
+    {"h1": "VOACAP — the Propagation Engine"},
+    {"p": "The band recommendations are computed by **VOACAP** (Voice of America Coverage Analysis Program), specifically the `voacapl` port by J.A. Watson. The core VOACAP software was developed by a United States Government agency — the National Telecommunications and Information Administration's Institute for Telecommunication Sciences (NTIA/ITS) — and is not subject to U.S. copyright. J.A. Watson's port changes are dedicated to the public domain. Its required disclaimer, reproduced verbatim:"},
+    {"callout": {"kind": "important", "label": "NTIA/ITS DISCLAIMER (VERBATIM)",
+      "text": "The software contained within was developed by an agency of the U.S. Government. NTIA/ITS has no objection to the use of this software for any purpose since it is not subject to copyright protection in the U.S. No warranty, expressed or implied, is made by NTIA/ITS or the U.S. Government as to the accuracy, suitability and functioning of the program and related material, nor shall the fact of distribution constitute any endorsement by the U.S. Government."}},
+    {"p": "VOACAP source (voacapl port): https://github.com/jawatson/voacapl — VOACAP (NTIA/ITS): https://its.ntia.gov/"},
+
+    {"h1": "NEC2++ — the Antenna Engine"},
+    {"p": "The antenna radiation patterns are computed by **NEC2++** (the `necpp` implementation by Tim Molteno and contributors), a modern version of the Numerical Electromagnetics Code. NEC2++ is licensed under the **GNU General Public License, version 2 (GPLv2)**. Because Activation Planner runs it as a separate program and never builds its code in-process, including it is permitted and does not change Activation Planner's own terms. As GPLv2 requires, the full license text is included with the installation (in the `licenses/nec2++` folder), along with this offer of the corresponding source code:"},
+    {"callout": {"kind": "important", "label": "NEC2++ CORRESPONDING-SOURCE OFFER",
+      "text": "This product includes NEC2++ (necpp), licensed under the GNU General Public License, version 2. The complete corresponding source code for the bundled NEC2++ binary is available at https://github.com/tmolteno/necpp . A copy is also included in the \"licenses/nec2++\" folder of this installation. You may also obtain the source from the project contact for a period of three years from the date of distribution."}},
+    {"p": "With thanks to the necpp authors. NEC2++ source and GPLv2 text: https://github.com/tmolteno/necpp"},
+
+    {"h1": "Map Data"},
+    {"p": "The world map used on the grey-line view is drawn using **Natural Earth** public-domain map data. Natural Earth data is free to use with no permission or attribution required; we credit it here as a courtesy. Source: https://www.naturalearthdata.com/"},
+
+    {"h1": "Thanks"},
+    {"p": "Activation Planner is built for the amateur radio community — the POTA and SOTA activators, Field Day teams, and emergency communicators who take radio into the field. Thanks to the propagation and antenna-modeling projects above, to the amateur radio operators whose shared knowledge shaped this program, and to everyone who tests it and suggests improvements. If you find a problem or have an idea, that feedback is what makes the next version better."},
+    {"callout": {"kind": "note", "label": "NOT LEGAL ADVICE",
+      "text": "The licensing summaries here are provided in good faith for transparency. They are not legal advice. The authoritative license texts are those distributed with the respective tools and at the links above."}}
+  ]
+}
