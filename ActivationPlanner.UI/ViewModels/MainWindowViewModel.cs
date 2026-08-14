@@ -291,6 +291,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ActivePage = NavPage.Weather;
     }
 
+    [RelayCommand]
+    private void ShowBandPlan()
+    {
+        CurrentPage = new BandPlanViewModel();
+        ActivePage = NavPage.BandPlan;
+    }
+
     private async Task OnWizardCompletedAsync(Inventory inventory)
     {
         await _inventory.ReplaceAsync(inventory);
@@ -311,4 +318,5 @@ public enum NavPage
     Inventory,
     Battery,
     Weather,
+    BandPlan,
 }

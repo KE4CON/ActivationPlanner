@@ -33,6 +33,8 @@
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=GreyLine}" />
                     <Button Content="Weather" Command="{Binding ShowWeatherCommand}" Classes="nav" Margin="0,2,4,2"
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Weather}" />
+                    <Button Content="Band plan" Command="{Binding ShowBandPlanCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=BandPlan}" />
                     <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Classes="nav" Margin="0,2,4,2"
                             Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Mission}" />
                     <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Classes="nav" Margin="0,2,4,2"
