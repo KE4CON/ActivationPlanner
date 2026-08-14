@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Avalonia.Media;
+using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.Services.Planning;
 
 namespace ActivationPlanner.UI.ViewModels.Planning;
@@ -16,6 +17,7 @@ public sealed class BandRecommendationViewModel
     {
         BandName = band.BandName;
         FrequencyLabel = band.FrequencyMhz.ToString("0.0##", CultureInfo.InvariantCulture) + " MHz";
+        CallingFrequencyText = CallingFrequencies.Summary(band.Band);
 
         AverageReliability = band.AverageReliability;
         AverageReliabilityPercent = (int)System.Math.Round(band.AverageReliability * 100);
@@ -37,6 +39,9 @@ public sealed class BandRecommendationViewModel
 
     public string BandName { get; }
     public string FrequencyLabel { get; }
+
+    /// <summary>Common calling frequencies for this band, e.g. "SSB 14.285 · CW 14.060 · FT8 14.074".</summary>
+    public string CallingFrequencyText { get; }
 
     /// <summary>Mean reliability 0-1 (used for the bar width).</summary>
     public double AverageReliability { get; }

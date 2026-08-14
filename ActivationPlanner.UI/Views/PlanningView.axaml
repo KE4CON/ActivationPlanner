@@ -177,6 +177,11 @@
                                                    VerticalAlignment="Center" />
                                     </Grid>
 
+                                    <!-- Common calling frequencies for the band -->
+                                    <TextBlock Text="{Binding CallingFrequencyText, StringFormat='Calling  {0}'}"
+                                               FontSize="12" Foreground="{DynamicResource AccentText}" TextWrapping="Wrap"
+                                               IsVisible="{Binding CallingFrequencyText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
                                     <!-- Average reliability bar -->
                                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
                                         <TextBlock Grid.Column="0" Text="Reliability" Opacity="0.7"
