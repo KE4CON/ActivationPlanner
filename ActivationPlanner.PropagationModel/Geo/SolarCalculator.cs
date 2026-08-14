@@ -24,6 +24,27 @@ public static class SolarCalculator
     /// <summary>Sunrise/sunset (UTC) for <paramref name="location"/> on the given date.</summary>
     public static SolarEvents ForDate(GeoLocation location, int year, int month, int day)
     {
+        var solved = SolveDay(location, year, month, day);
+        return solved is { } s
+            ? new SolarEvents(ToUtcHour(s.JRise), ToUtcHour(s.JSet))
+            : new SolarEvents(null, null);
+    }
+
+    /// <summary>
+    /// Sunrise/sunset for <paramref name="location"/> on the given date as absolute UTC instants
+    /// (not just hour-of-day) — so callers can build real windows even when sunset falls after UTC
+    /// midnight. Null when the sun does not cross the horizon (polar day/night).
+    /// </summary>
+    public static (DateTime? SunriseUtc, DateTime? SunsetUtc) EventTimesUtc(GeoLocation location, int year, int month, int day)
+    {
+        var solved = SolveDay(location, year, month, day);
+        return solved is { } s ? (JulianToUtc(s.JRise), JulianToUtc(s.JSet)) : (null, null);
+    }
+
+    // Shared sunrise-equation core: returns the Julian dates of sunrise and sunset, or null for
+    // polar day/night. Both ForDate (hour-of-day) and EventTimesUtc (absolute instant) build on it.
+    private static (double JRise, double JSet)? SolveDay(GeoLocation location, int year, int month, int day)
+    {
         double lat = location.LatitudeDeg;
         double lonEast = location.LongitudeDeg;
 
@@ -48,13 +69,10 @@ public static class SolarCalculator
 
         // |cos| > 1: the sun never crosses the horizon (polar day or night) — no grey line.
         if (cosOmega is > 1 or < -1)
-            return new SolarEvents(null, null);
+            return null;
 
         double omega = Rad2Deg(Math.Acos(cosOmega));
-        double jRise = jTransit - omega / 360.0;
-        double jSet = jTransit + omega / 360.0;
-
-        return new SolarEvents(ToUtcHour(jRise), ToUtcHour(jSet));
+        return (jTransit - omega / 360.0, jTransit + omega / 360.0);
     }
 
     /// <summary>
@@ -118,6 +136,10 @@ public static class SolarCalculator
         double frac = julianDate - Math.Floor(julianDate);
         return Mod24(frac * 24.0 + 12.0);
     }
+
+    // Julian Date 2440587.5 == 1970-01-01 00:00 UTC (the Unix epoch).
+    private static DateTime JulianToUtc(double julianDate) =>
+        DateTime.UnixEpoch.AddDays(julianDate - 2440587.5);
 
     private static double Deg2Rad(double d) => d * Math.PI / 180.0;
     private static double Rad2Deg(double r) => r * 180.0 / Math.PI;

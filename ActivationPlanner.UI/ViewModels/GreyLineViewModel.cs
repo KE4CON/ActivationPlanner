@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.PropagationModel.Geo;
@@ -51,6 +53,13 @@ public sealed partial class GreyLineViewModel : ViewModelBase
     [ObservableProperty] private string? _sunsetLabel;
     [ObservableProperty] private string? _statusMessage;
 
+    // Live "grey line active now / next" cue + the actual window times.
+    [ObservableProperty] private bool _greyLineActiveNow;
+    [ObservableProperty] private string _greyLineHeadline = "";
+    [ObservableProperty] private string? _greyLineDetail;
+    [ObservableProperty] private string? _sunriseWindowLabel;
+    [ObservableProperty] private string? _sunsetWindowLabel;
+
     // Operator QTH for the map marker (NaN until resolved).
     [ObservableProperty] private double _qthLatitude = double.NaN;
     [ObservableProperty] private double _qthLongitude = double.NaN;
@@ -82,6 +91,8 @@ public sealed partial class GreyLineViewModel : ViewModelBase
 
             SunriseLabel = events.SunriseUtcHour is { } sr ? FormatEventTime(sr) : "—";
             SunsetLabel = events.SunsetUtcHour is { } ss ? FormatEventTime(ss) : "—";
+
+            UpdateGreyLineStatus(location, today);
 
             if (!events.HasGreyLine)
             {
@@ -154,5 +165,58 @@ public sealed partial class GreyLineViewModel : ViewModelBase
         var utc = DateTime.SpecifyKind(DateTime.UtcNow.Date.AddHours(utcHour), DateTimeKind.Utc);
         var local = utc.ToLocalTime();
         return $"{utc:HH:mm} UTC  ({local:HH:mm} local)";
+    }
+
+    // "Grey line active now / next in ..." cue + the upcoming window times for each event.
+    private void UpdateGreyLineStatus(GeoLocation location, DateTime nowUtc)
+    {
+        GreyLineStatus status = GreyLineTiming.StatusAt(location, nowUtc);
+        GreyLineActiveNow = status.IsActive;
+
+        if (status.IsActive && status.Current is { } cur)
+        {
+            GreyLineHeadline = "Grey line active now";
+            GreyLineDetail =
+                $"{EventName(cur.Kind)} window — ends {cur.EndUtc.ToLocalTime():HH:mm} local " +
+                $"({cur.EndUtc:HH:mm} UTC), about {Approx(status.UntilEnd!.Value)} left.";
+        }
+        else if (status.Next is { } next)
+        {
+            GreyLineHeadline = "Grey line not active right now";
+            GreyLineDetail =
+                $"Next: {EventName(next.Kind).ToLowerInvariant()} grey line at {next.StartUtc.ToLocalTime():HH:mm} local " +
+                $"({next.StartUtc:HH:mm} UTC), about {Approx(status.UntilStart!.Value)} from now.";
+        }
+        else
+        {
+            GreyLineHeadline = "No grey line at this location right now";
+            GreyLineDetail = null;
+        }
+
+        var windows = GreyLineTiming.Windows(location, nowUtc);
+        SunriseWindowLabel = WindowLabel(windows, GreyLineEventKind.Sunrise, nowUtc);
+        SunsetWindowLabel = WindowLabel(windows, GreyLineEventKind.Sunset, nowUtc);
+    }
+
+    private static string EventName(GreyLineEventKind kind) =>
+        kind == GreyLineEventKind.Sunrise ? "Sunrise" : "Sunset";
+
+    // The soonest window of this kind that hasn't ended yet, formatted local + UTC.
+    private static string? WindowLabel(IReadOnlyList<GreyLinePeriod> windows, GreyLineEventKind kind, DateTime nowUtc)
+    {
+        GreyLinePeriod? w = windows.FirstOrDefault(p => p.Kind == kind && p.EndUtc >= nowUtc);
+        if (w is null)
+            return null;
+        return $"{w.StartUtc.ToLocalTime():HH:mm}–{w.EndUtc.ToLocalTime():HH:mm} local  " +
+               $"({w.StartUtc:HH:mm}–{w.EndUtc:HH:mm} UTC)";
+    }
+
+    private static string Approx(TimeSpan span)
+    {
+        if (span.TotalMinutes < 1)
+            return "less than a minute";
+        int hours = (int)span.TotalHours;
+        int minutes = span.Minutes;
+        return hours > 0 ? $"{hours}h {minutes}m" : $"{minutes} min";
     }
 }

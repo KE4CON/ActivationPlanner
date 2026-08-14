@@ -5,6 +5,33 @@ namespace ActivationPlanner.PropagationModel.Tests.Geo;
 public sealed class SolarCalculatorTests
 {
     [Fact]
+    public void EventTimesUtc_matches_ForDate_hours_and_returns_utc_instants()
+    {
+        var loc = new GeoLocation(39.74, -104.99);
+        var events = SolarCalculator.ForDate(loc, 2026, 6, 21);
+        var (sunrise, sunset) = SolarCalculator.EventTimesUtc(loc, 2026, 6, 21);
+
+        Assert.NotNull(sunrise);
+        Assert.NotNull(sunset);
+        Assert.Equal(DateTimeKind.Utc, sunrise!.Value.Kind);
+
+        // The absolute instant's hour-of-day matches the hour-of-day form.
+        Assert.Equal(events.SunriseUtcHour!.Value, sunrise.Value.TimeOfDay.TotalHours, 3);
+
+        // At 40N/105W in summer, sunset falls after UTC midnight — i.e. the day AFTER the query date.
+        Assert.Equal(new DateTime(2026, 6, 22, 0, 0, 0, DateTimeKind.Utc).Date, sunset!.Value.Date);
+    }
+
+    [Fact]
+    public void EventTimesUtc_is_null_during_polar_day()
+    {
+        // Far north in midsummer: the sun never sets — no events.
+        var (sunrise, sunset) = SolarCalculator.EventTimesUtc(new GeoLocation(80, 0), 2026, 6, 21);
+        Assert.Null(sunrise);
+        Assert.Null(sunset);
+    }
+
+    [Fact]
     public void Computes_plausible_sunrise_sunset_for_colorado_summer()
     {
         // Denver-ish (40N, 105W) on the June solstice: sunrise ~11:33 UTC, sunset ~02:32 UTC.

@@ -8,66 +8,130 @@
              mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="720"
              x:Class="ActivationPlanner.UI.Views.GreyLineView"
              x:DataType="vm:GreyLineViewModel">
-    <DockPanel Margin="20">
-        <!-- Header + plain-language explanation -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
-            <StackPanel Grid.Column="0" Spacing="3">
-                <TextBlock Text="Grey line" FontSize="20" FontWeight="SemiBold" />
-                <TextBlock Opacity="0.8" TextWrapping="Wrap" MaxWidth="720"
-                           Text="The grey line is the moving twilight band between day and night. Along it the ionosphere's absorbing D-layer fades while the reflecting layers linger, so signals — especially on the low bands (80/40m) — can travel unusually far for a short window. The map shows tonight's terminator in real time; your station is the cyan ring, the sun's overhead point is the yellow dot." />
-                <TextBlock Text="{Binding LocationLabel}" FontSize="12" Opacity="0.7"
-                           IsVisible="{Binding LocationLabel, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                <TextBlock Text="{Binding DateLabel}" FontSize="12" Opacity="0.7" />
-            </StackPanel>
-            <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}" VerticalAlignment="Top" />
-        </Grid>
+    <UserControl.Styles>
+        <!-- Status banner turns green when the grey line is active right now. -->
+        <Style Selector="Border.glactive">
+            <Setter Property="Background" Value="#223AA050" />
+            <Setter Property="BorderBrush" Value="#3AA050" />
+        </Style>
+        <Style Selector="TextBlock.gldot">
+            <Setter Property="Foreground" Value="#8A8A8A" />
+        </Style>
+        <Style Selector="TextBlock.gldot.on">
+            <Setter Property="Foreground" Value="#3AA050" />
+        </Style>
+    </UserControl.Styles>
 
-        <!-- World map with the live terminator (2:1 equirectangular, scaled uniformly) -->
-        <Viewbox DockPanel.Dock="Top" Stretch="Uniform" StretchDirection="Both"
-                 HorizontalAlignment="Stretch" MaxHeight="430" Margin="0,0,0,4">
-            <Border Width="760" Height="380" CornerRadius="6" ClipToBounds="True"
-                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
-                <controls:GreyLineMapControl QthLatitude="{Binding QthLatitude}"
-                                             QthLongitude="{Binding QthLongitude}" />
-            </Border>
-        </Viewbox>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16" Margin="2,0,0,10">
-            <StackPanel Orientation="Horizontal" Spacing="5">
-                <Ellipse Width="10" Height="10" Fill="#FFD24D" VerticalAlignment="Center" />
-                <TextBlock Text="Sun overhead" FontSize="11" Opacity="0.7" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="5">
-                <Ellipse Width="10" Height="10" Stroke="#33D6FF" StrokeThickness="2" VerticalAlignment="Center" />
-                <TextBlock Text="Your station" FontSize="11" Opacity="0.7" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="5">
-                <Rectangle Width="12" Height="10" Fill="#66040818" VerticalAlignment="Center" />
-                <TextBlock Text="Night" FontSize="11" Opacity="0.7" />
-            </StackPanel>
-        </StackPanel>
-
-        <!-- Sunrise / sunset times -->
-        <Border DockPanel.Dock="Top" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
-            <Grid ColumnDefinitions="*,*">
-                <StackPanel Grid.Column="0" Spacing="1">
-                    <TextBlock Text="Sunrise here" FontSize="12" Opacity="0.6" />
-                    <TextBlock Text="{Binding SunriseLabel}" FontWeight="SemiBold" />
+    <!-- Whole tab scrolls as one, so expanding the guidance never pushes content out of reach. -->
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <!-- Header + plain-language explanation -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                <StackPanel Grid.Column="0" Spacing="3">
+                    <TextBlock Text="Grey line" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Opacity="0.8" TextWrapping="Wrap" MaxWidth="720"
+                               Text="The grey line is the moving twilight band between day and night. Along it the ionosphere's absorbing D-layer fades while the reflecting layers linger, so signals — especially on the low bands (80/40m) — can travel unusually far for a short window. The map shows tonight's terminator in real time; your station is the cyan ring, the sun's overhead point is the yellow dot." />
+                    <TextBlock Text="{Binding LocationLabel}" FontSize="12" Opacity="0.7"
+                               IsVisible="{Binding LocationLabel, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <TextBlock Text="{Binding DateLabel}" FontSize="12" Opacity="0.7" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Spacing="1">
-                    <TextBlock Text="Sunset here" FontSize="12" Opacity="0.6" />
-                    <TextBlock Text="{Binding SunsetLabel}" FontWeight="SemiBold" />
-                </StackPanel>
+                <Button Grid.Column="1" Content="Refresh" Command="{Binding RefreshCommand}" VerticalAlignment="Top" />
             </Grid>
-        </Border>
 
-        <TextBlock DockPanel.Dock="Top" Text="Computing…" IsVisible="{Binding IsBusy}" Opacity="0.7" Margin="0,0,0,8" />
-        <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" TextWrapping="Wrap" Opacity="0.8" Margin="0,0,0,8"
-                   IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <!-- Live "grey line active now / next" cue -->
+            <Border Classes.glactive="{Binding GreyLineActiveNow}"
+                    CornerRadius="6" Padding="12,10" Margin="0,0,0,10" BorderThickness="1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+                <StackPanel Spacing="3">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="●" FontSize="15" VerticalAlignment="Center"
+                                   Classes="gldot" Classes.on="{Binding GreyLineActiveNow}" />
+                        <TextBlock Text="{Binding GreyLineHeadline}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding GreyLineDetail}" TextWrapping="Wrap" FontSize="12" Opacity="0.85"
+                               IsVisible="{Binding GreyLineDetail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                </StackPanel>
+            </Border>
 
-        <!-- Bands worth working at the grey-line hours (supporting panel) -->
-        <ScrollViewer IsVisible="{Binding HasResults}">
-            <StackPanel>
+            <!-- World map with the live terminator (2:1 equirectangular, scaled uniformly) -->
+            <Viewbox Stretch="Uniform" StretchDirection="Both"
+                     HorizontalAlignment="Stretch" MaxHeight="430" Margin="0,0,0,4">
+                <Border Width="760" Height="380" CornerRadius="6" ClipToBounds="True"
+                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1">
+                    <controls:GreyLineMapControl QthLatitude="{Binding QthLatitude}"
+                                                 QthLongitude="{Binding QthLongitude}" />
+                </Border>
+            </Viewbox>
+            <StackPanel Orientation="Horizontal" Spacing="16" Margin="2,0,0,10">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Ellipse Width="10" Height="10" Fill="#FFD24D" VerticalAlignment="Center" />
+                    <TextBlock Text="Sun overhead" FontSize="11" Opacity="0.7" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Ellipse Width="10" Height="10" Stroke="#33D6FF" StrokeThickness="2" VerticalAlignment="Center" />
+                    <TextBlock Text="Your station" FontSize="11" Opacity="0.7" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Rectangle Width="12" Height="10" Fill="#66040818" VerticalAlignment="Center" />
+                    <TextBlock Text="Night" FontSize="11" Opacity="0.7" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Sunrise / sunset times + grey-line windows -->
+            <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="1">
+                        <TextBlock Text="Sunrise here" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{Binding SunriseLabel}" FontWeight="SemiBold" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="1">
+                        <TextBlock Text="Sunset here" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{Binding SunsetLabel}" FontWeight="SemiBold" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="1" Margin="0,8,0,0"
+                                IsVisible="{Binding SunriseWindowLabel, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <TextBlock Text="Sunrise grey-line window (±1 h)" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{Binding SunriseWindowLabel}" FontSize="12" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="1" Margin="0,8,0,0"
+                                IsVisible="{Binding SunsetWindowLabel, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <TextBlock Text="Sunset grey-line window (±1 h)" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{Binding SunsetWindowLabel}" FontSize="12" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock Text="Computing…" IsVisible="{Binding IsBusy}" Opacity="0.7" Margin="0,0,0,8" />
+            <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Opacity="0.8" Margin="0,0,0,8"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+            <!-- Plain-language "what do I do with this" guidance -->
+            <Expander Header="What to do during the grey line" Margin="0,0,0,12">
+                <StackPanel Spacing="8" Margin="4,4,0,2" MaxWidth="760">
+                    <TextBlock TextWrapping="Wrap" FontSize="12">
+                        <Run Text="•  Favor the low bands." FontWeight="SemiBold" />
+                        <Run Text="80 m and 40 m (and 160/30 m) tend to open up along the grey line — the D-layer that absorbs them by day fades right at your sunrise and sunset." />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="12">
+                        <Run Text="•  Aim along the terminator." FontWeight="SemiBold" />
+                        <Run Text="Signals travel unusually far in the twilight band. Point toward stations that are also in their own grey line — often their sunrise when it's your sunset, and vice-versa." />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="12">
+                        <Run Text="•  Be on the band before the window." FontWeight="SemiBold" />
+                        <Run Text="The enhancement is short — roughly the hour or so around sunrise/sunset shown above. Get set up early so you're calling when it peaks, not after." />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="12">
+                        <Run Text="•  Try long path." FontWeight="SemiBold" />
+                        <Run Text="Grey-line openings often favor the long way around the globe — if the short path is quiet, beam the opposite direction." />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Opacity="0.6"
+                               Text="This is general guidance. The band list below reflects what VOACAP actually predicts for your grey-line hours." />
+                </StackPanel>
+            </Expander>
+
+            <!-- Bands worth working at the grey-line hours (supporting panel) -->
+            <StackPanel IsVisible="{Binding HasResults}">
                 <TextBlock Text="Bands at your grey-line hours" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
                 <ItemsControl ItemsSource="{Binding Windows}">
                     <ItemsControl.ItemTemplate>
@@ -108,6 +172,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-        </ScrollViewer>
-    </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
