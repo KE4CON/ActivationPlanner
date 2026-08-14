@@ -1,0 +1,79 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+      House visual direction (CLAUDE.md): flat surfaces with intentional depth — soft drop shadows,
+      panel elevation, a strong accent, and real hover/press micro-animations. No skeuomorphic bevels.
+    -->
+
+    <!-- Card: an elevated flat surface. Use Classes="card" on a Border instead of a 1px outline. -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{DynamicResource CardBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BoxShadow" Value="{DynamicResource CardShadow}" />
+    </Style>
+
+    <!-- A lighter, inset surface for sub-panels sitting inside a card. -->
+    <Style Selector="Border.inset">
+        <Setter Property="Background" Value="{DynamicResource InsetBackground}" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <!-- Buttons: subtle rounded flat button with a smooth hover/press micro-animation. -->
+    <Style Selector="Button">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.09" Easing="CubicEaseOut" />
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.015)" />
+    </Style>
+    <Style Selector="Button:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.97)" />
+    </Style>
+
+    <!-- Top-nav tabs: ghost by default (no gray fill), solid accent when active. -->
+    <Style Selector="Button.nav">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12,6" />
+    </Style>
+    <Style Selector="Button.nav /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+    <Style Selector="Button.nav:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentSoft}" />
+    </Style>
+    <Style Selector="Button.nav:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentSoft}" />
+    </Style>
+    <Style Selector="Button.nav.active">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.nav.active /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentText}" />
+    </Style>
+    <Style Selector="Button.nav.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentText}" />
+    </Style>
+
+    <!-- Inputs: smooth focus, so the accent border animates in rather than snapping. -->
+    <Style Selector="TextBox">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="ComboBox">
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+</Styles>

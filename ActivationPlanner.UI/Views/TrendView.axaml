@@ -27,7 +27,8 @@
         <TextBlock DockPanel.Dock="Top" IsVisible="{Binding !HasSamples}" Opacity="0.6" TextWrapping="Wrap"
                    Text="Collecting the first sample… the trend fills in as time passes (oldest on the left, now on the right)." />
 
-        <ScrollViewer IsVisible="{Binding HasSamples}">
+        <Border Classes="card" Padding="16" IsVisible="{Binding HasSamples}">
+            <ScrollViewer>
             <ItemsControl ItemsSource="{Binding Bands}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="trend:TrendBandViewModel">
@@ -53,6 +54,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
+            </ScrollViewer>
+        </Border>
     </DockPanel>
 </UserControl>

@@ -23,9 +23,7 @@
             <TabItem Header="Gear">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20" Margin="0,12,0,0">
                     <!-- Form -->
-                    <Border Grid.Column="0" Width="300" Padding="16" VerticalAlignment="Stretch"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Column="0" Classes="card" Width="300" Padding="16" VerticalAlignment="Stretch">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="10">
                             <TextBlock Text="Add / edit gear" FontWeight="SemiBold" />
@@ -76,19 +74,17 @@
                     </Border>
 
                     <!-- List -->
-                    <Border Grid.Column="1"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Column="1" Classes="card">
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Gear}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="gear:GearItem">
                                         <Border Padding="12,8"
-                                                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                                BorderBrush="{DynamicResource RowSeparator}"
                                                 BorderThickness="0,0,0,1">
                                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
                                                 <StackPanel Grid.Column="0" Spacing="2">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
                                                                Text="{Binding Category, Converter={StaticResource CategoryLabel}}" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
@@ -115,9 +111,7 @@
             <TabItem Header="Antennas">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20" Margin="0,12,0,0">
                     <!-- Form (scrollable so the Add/Clear buttons stay reachable on short windows) -->
-                    <Border Grid.Column="0" Width="320" Padding="16"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Column="0" Classes="card" Width="320" Padding="16">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="10">
                             <TextBlock Text="Add / edit antenna" FontWeight="SemiBold" />
@@ -200,19 +194,17 @@
                     </Border>
 
                     <!-- List -->
-                    <Border Grid.Column="1"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Column="1" Classes="card">
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Antennas}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="gear:AntennaProfile">
                                         <Border Padding="12,8"
-                                                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                                BorderBrush="{DynamicResource RowSeparator}"
                                                 BorderThickness="0,0,0,1">
                                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
                                                 <StackPanel Grid.Column="0" Spacing="2">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                                                     <TextBlock Opacity="0.7" FontSize="12"
                                                                Text="{Binding Category, Converter={StaticResource CategoryLabel}}" />
                                                     <TextBlock Opacity="0.7" FontSize="12">

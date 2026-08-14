@@ -14,9 +14,7 @@
     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
 
         <!-- Detail mini-form (scrollable so the Add/Clear buttons stay reachable on short windows) -->
-        <Border Grid.Column="0" Width="320" Padding="16"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="1" CornerRadius="6">
+        <Border Grid.Column="0" Classes="card" Width="320" Padding="16">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Antenna details" FontWeight="SemiBold" />
@@ -108,9 +106,7 @@
         </Border>
 
         <!-- Running list -->
-        <Border Grid.Column="1"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="1" CornerRadius="6">
+        <Border Grid.Column="1" Classes="card">
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding Antennas}">
                     <ItemsControl.ItemTemplate>

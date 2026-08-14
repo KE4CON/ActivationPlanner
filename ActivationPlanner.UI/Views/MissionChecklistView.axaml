@@ -15,14 +15,12 @@
             <Setter Property="Background" Value="#1A2F6FEB" />
         </Style>
         <Style Selector="Border.suggested CheckBox">
-            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontWeight" Value="Bold" />
         </Style>
     </UserControl.Styles>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Mission + framing + progress ============ -->
-        <Border Grid.Column="0" Padding="16" Margin="0,0,16,0"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="1" CornerRadius="6">
+        <Border Grid.Column="0" Classes="card" Padding="16" Margin="0,0,16,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Operation &amp; gear list" FontSize="20" FontWeight="SemiBold" />
@@ -93,8 +91,7 @@
                            Text="Built from your inventory for this operation. Check items off as you pack, remove what you're not bringing, or add anything missing." />
 
                 <!-- Add controls -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="1" CornerRadius="6" Padding="12">
+                <Border Classes="inset" Padding="12">
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
@@ -116,7 +113,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="checklists:GearListItemViewModel">
                             <Border Classes.suggested="{Binding Recommended}"
-                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderBrush="{DynamicResource RowSeparator}"
                                     BorderThickness="0,0,0,1" CornerRadius="4" Padding="0,6,2,6" Margin="0,1">
                                 <Grid ColumnDefinitions="4,*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
                                     <!-- Left accent stripe: blue for suggested, green for essential.
@@ -126,7 +123,8 @@
                                     <Border Grid.Column="0" Width="4" CornerRadius="2" Background="#3AA050"
                                             IsVisible="{Binding Essential}" />
                                     <CheckBox Grid.Column="1" IsChecked="{Binding IsPacked}" Content="{Binding Name}"
-                                              Padding="8,0,0,0" ToolTip.Tip="Check off as you physically pack this item" />
+                                              FontWeight="SemiBold" Padding="8,0,0,0"
+                                              ToolTip.Tip="Check off as you physically pack this item" />
                                     <Border Grid.Column="2" CornerRadius="8" Padding="8,2" VerticalAlignment="Center"
                                             Background="#2F6FEB" IsVisible="{Binding Recommended}"
                                             ToolTip.Tip="Well suited to the selected operation type">

@@ -37,9 +37,7 @@
         </Grid>
 
         <!-- Running list -->
-        <Border Grid.Row="2" Margin="0,12,0,0"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="1" CornerRadius="6">
+        <Border Grid.Row="2" Classes="card" Margin="0,12,0,0">
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding Items}">
                     <ItemsControl.ItemTemplate>

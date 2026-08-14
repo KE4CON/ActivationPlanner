@@ -13,40 +13,45 @@
     <Window.Resources>
         <conv:NavActiveConverter x:Key="NavActive" />
     </Window.Resources>
-    <DockPanel>
+    <DockPanel Background="{DynamicResource AppCanvas}">
         <!-- Top navigation (hidden during the first-run wizard) -->
         <Border DockPanel.Dock="Top" IsVisible="{Binding ShowNavigation}"
-                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Background="{DynamicResource CardBackground}"
+                BorderBrush="{DynamicResource AccentText}" BorderThickness="0,0,0,2"
                 Padding="16,8">
             <Grid ColumnDefinitions="*,Auto">
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="Quick plan" Command="{Binding ShowQuickPlanCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=QuickPlan}" />
-                    <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Planning}" />
-                    <Button Content="Trend" Command="{Binding ShowTrendCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Trend}" />
-                    <Button Content="Grey line" Command="{Binding ShowGreyLineCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=GreyLine}" />
-                    <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Mission}" />
-                    <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Pota}" />
-                    <Button Content="Antenna" Command="{Binding ShowAntennaPatternCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Antenna}" />
-                    <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" Margin="0,2,6,2"
-                            Classes.accent="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Inventory}" />
+                    <Button Content="Quick plan" Command="{Binding ShowQuickPlanCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=QuickPlan}" />
+                    <Button Content="Plan session" Command="{Binding ShowPlanningCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Planning}" />
+                    <Button Content="Trend" Command="{Binding ShowTrendCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Trend}" />
+                    <Button Content="Grey line" Command="{Binding ShowGreyLineCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=GreyLine}" />
+                    <Button Content="Mission &amp; checklist" Command="{Binding ShowMissionChecklistCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Mission}" />
+                    <Button Content="POTA spots" Command="{Binding ShowPotaSpotsCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Pota}" />
+                    <Button Content="Antenna" Command="{Binding ShowAntennaPatternCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Antenna}" />
+                    <Button Content="Inventory" Command="{Binding ShowInventoryCommand}" Classes="nav" Margin="0,2,4,2"
+                            Classes.active="{Binding ActivePage, Converter={StaticResource NavActive}, ConverterParameter=Inventory}" />
                 </WrapPanel>
 
-                <!-- Persistent clock: local above UTC -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
-                    <TextBlock FontSize="12" TextAlignment="Right">
-                        <Run Text="Local " Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" /><Run Text="{Binding LocalTimeText}" />
-                    </TextBlock>
-                    <TextBlock FontSize="12" TextAlignment="Right" Opacity="0.75">
-                        <Run Text="UTC   " Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" /><Run Text="{Binding UtcTimeText}" />
-                    </TextBlock>
-                </StackPanel>
+                <!-- Persistent clock: local above UTC, in an elevated pill so it stands out -->
+                <Border Grid.Column="1" Classes="card" Padding="12,6" Margin="12,0,0,0" VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="1">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="LOCAL" FontSize="10" FontWeight="Bold"
+                                   Foreground="{DynamicResource AccentText}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LocalTimeText}"
+                                   FontSize="16" FontWeight="SemiBold" TextAlignment="Right" MinWidth="72" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="UTC" FontSize="10" FontWeight="Bold"
+                                   Foreground="{DynamicResource AccentText}" VerticalAlignment="Center" Opacity="0.85" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UtcTimeText}"
+                                   FontSize="16" FontWeight="SemiBold" TextAlignment="Right" MinWidth="72" Opacity="0.85" />
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
 

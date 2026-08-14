@@ -13,9 +13,7 @@
     </UserControl.Resources>
     <Grid ColumnDefinitions="320,*" Margin="20">
         <!-- ============ Inputs ============ -->
-        <Border Grid.Column="0" Padding="16" Margin="0,0,16,0"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="1" CornerRadius="6">
+        <Border Grid.Column="0" Classes="card" Padding="16" Margin="0,0,16,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="10">
                 <TextBlock Text="Plan a session" FontSize="20" FontWeight="SemiBold" />
@@ -150,8 +148,7 @@
                 <ItemsControl ItemsSource="{Binding Bands}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="planning:BandRecommendationViewModel">
-                            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                    BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                            <Border Classes="card" Padding="12" Margin="0,2,2,10">
                                 <StackPanel Spacing="8">
                                     <!-- Header -->
                                     <Grid ColumnDefinitions="Auto,Auto,*,Auto">

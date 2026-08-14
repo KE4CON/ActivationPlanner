@@ -26,8 +26,7 @@
 
         <!-- Self-spot panel — hidden and inert unless the app flag enables self-spotting (pending POTA OK) -->
         <Border DockPanel.Dock="Top" IsVisible="{Binding IsSelfSpotEnabled}"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1"
-                CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                Classes="card" Padding="12" Margin="0,0,0,12">
             <StackPanel Spacing="8">
                 <TextBlock Text="Self-spot your activation" FontWeight="SemiBold" />
                 <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" ColumnSpacing="8">
