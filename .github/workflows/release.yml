@@ -1,0 +1,131 @@
+name: Release
+
+# Builds the portable bundles for every platform, signs the Windows build with Azure Trusted
+# Signing (only when configured), and publishes a draft GitHub Release. Mirrors the proven
+# KE4CON/APRS-Command pattern: ALL signing config comes from account/repo SECRETS + VARIABLES,
+# never from this file, so nothing sensitive is exposed regardless of repo visibility.
+#
+# One-time global setup (Settings -> Secrets and variables -> Actions, at the ACCOUNT level so all
+# repos inherit it):
+#   Secrets:   AZURE_TENANT_ID   AZURE_CLIENT_ID   AZURE_CLIENT_SECRET
+#   Variables: AZURE_SIGNING_ENDPOINT   AZURE_SIGNING_ACCOUNT   AZURE_SIGNING_CERT_PROFILE
+# The sign step self-gates on AZURE_SIGNING_ACCOUNT: until it's set, builds ship UNSIGNED exactly
+# as before. (macOS/Linux ship unsigned; Apple notarization is a future add.)
+#
+# NOTE: CI builds do not compile the VOACAP/NEC2++ engines, so these bundles run in SAMPLE mode
+# until the engines are added per platform (see the Installation Guide's maintainer appendix).
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version, e.g. 1.0.0'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, rid: win-x64,     family: windows }
+          - { os: windows-latest, rid: win-arm64,   family: windows }
+          - { os: ubuntu-latest,  rid: linux-x64,   family: unix }
+          - { os: ubuntu-latest,  rid: linux-arm64, family: unix }
+          - { os: macos-latest,   rid: osx-arm64,   family: unix }
+          - { os: macos-latest,   rid: osx-x64,     family: unix }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Compute version
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+          else
+            echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          fi
+
+      # --- Windows: publish + assemble (no zip yet, so we can sign first) ---
+      - name: Build (Windows)
+        if: matrix.family == 'windows'
+        shell: pwsh
+        run: ./build/package.ps1 -Rid ${{ matrix.rid }} -Version $env:VERSION -NoZip
+
+      - name: Sign (Azure Trusted Signing)
+        if: matrix.family == 'windows' && vars.AZURE_SIGNING_ACCOUNT != ''
+        uses: azure/trusted-signing-action@v0
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          trusted-signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.AZURE_SIGNING_CERT_PROFILE }}
+          files-folder: ${{ github.workspace }}\dist\ActivationPlanner-${{ matrix.rid }}
+          files-folder-filter: exe,dll
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Zip (Windows, after signing)
+        if: matrix.family == 'windows'
+        shell: pwsh
+        run: Compress-Archive -Path "dist/ActivationPlanner-${{ matrix.rid }}/*" -DestinationPath "dist/ActivationPlanner-$env:VERSION-${{ matrix.rid }}.zip"
+
+      # --- macOS / Linux: build the tarball (unsigned) ---
+      - name: Build (macOS / Linux)
+        if: matrix.family == 'unix'
+        shell: bash
+        run: bash build/package.sh ${{ matrix.rid }} "$VERSION"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ActivationPlanner-${{ matrix.rid }}
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Create draft GitHub Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Activation Planner ${{ github.ref_name }}
+          draft: true
+          prerelease: ${{ contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-rc') }}
+          body: |
+            ## Activation Planner ${{ github.ref_name }}
+
+            Portable builds for Windows, macOS, and Linux (x64 and ARM, including Raspberry Pi).
+            Install with the one-command setup script inside each archive (install.ps1 / install.sh)
+            - see the Installation Guide.
+
+            **Windows:** if unsigned, click "More info" -> "Run anyway".
+            **macOS:** right-click the app -> Open -> Open (one time).
+
+            Note: these bundles run in sample mode until the VOACAP/NEC2++ engines are added for your
+            platform (see the Installation Guide's maintainer appendix).
+          files: |
+            artifacts/**/*.zip
+            artifacts/**/*.tar.gz

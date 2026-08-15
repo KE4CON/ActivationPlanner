@@ -53,6 +53,10 @@ fi
 if [ -d "$REPO_ROOT/licenses" ]; then cp -R "$REPO_ROOT/licenses" "$STAGE/licenses"; fi
 cp "$REPO_ROOT/docs/THIRD_PARTY_LICENSES.md" "$STAGE/licenses/" 2>/dev/null || true
 
+# Ship the one-command setup script inside the bundle so users can run it from the extracted folder.
+cp "$REPO_ROOT/install.sh" "$STAGE/" 2>/dev/null || true
+chmod +x "$STAGE/install.sh" 2>/dev/null || true
+
 # --- 3b. Sign the macOS app (optional, credential-gated) -----------------------------------------
 # Only macOS builds get Developer ID signing/notarization. Skips cleanly (unsigned) if signing is
 # not configured. Runs before tarring so the shipped app is signed.

@@ -69,6 +69,9 @@ $licDst = Join-Path $AppDir "licenses"
 if (Test-Path $licSrc) { Copy-Item $licSrc $licDst -Recurse -Force }
 Copy-Item (Join-Path $RepoRoot "docs\THIRD_PARTY_LICENSES.md") $licDst -Force -ErrorAction SilentlyContinue
 
+# Ship the one-command setup script inside the bundle so users can run it from the extracted folder.
+Copy-Item (Join-Path $RepoRoot "install.ps1") $AppDir -Force -ErrorAction SilentlyContinue
+
 # --- 3b. Sign the Windows app (optional, credential-gated) ---------------------------------------
 # Only Windows builds get Authenticode signing. Signs the .exe BEFORE zipping so the app the user
 # extracts and runs is signed. Skips cleanly (unsigned) if signing is not configured. A .zip itself
