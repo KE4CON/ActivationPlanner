@@ -18,7 +18,8 @@
 param(
     [string]$Rid = "win-x64",
     [string]$Version = "1.0.0",
-    [switch]$SkipPublish
+    [switch]$SkipPublish,
+    [switch]$NoZip          # publish + assemble only; skip zipping (CI signs the folder, then zips)
 )
 $ErrorActionPreference = "Stop"
 
@@ -78,14 +79,19 @@ if ($Rid -like "win*") {
 }
 
 # --- 4. Zip the distributable --------------------------------------------------------------------
+# CI passes -NoZip so it can sign the staged files first, then zip in a later step.
 $zip = Join-Path $Dist "ActivationPlanner-$Version-$Rid.zip"
-if (Test-Path $zip) { Remove-Item $zip -Force }
-Write-Host "-> Compressing to $zip ..." -ForegroundColor Yellow
-Compress-Archive -Path (Join-Path $StageRoot "*") -DestinationPath $zip
+if (-not $NoZip) {
+    if (Test-Path $zip) { Remove-Item $zip -Force }
+    Write-Host "-> Compressing to $zip ..." -ForegroundColor Yellow
+    Compress-Archive -Path (Join-Path $StageRoot "*") -DestinationPath $zip
+} else {
+    Write-Host "-> Skipping zip (-NoZip): staged folder left at $StageRoot" -ForegroundColor DarkYellow
+}
 
 Write-Host "== Done ==" -ForegroundColor Green
 Write-Host "   Folder : $StageRoot"
-Write-Host "   Zip    : $zip"
+if (-not $NoZip) { Write-Host "   Zip    : $zip" }
 if (-not ($haveVoacap -and $haveNec)) {
     Write-Host "   NOTE   : engines missing - this build runs in sample mode until they are bundled." -ForegroundColor DarkYellow
 }

@@ -1,94 +1,44 @@
 <#
 .SYNOPSIS
-  Optional, credential-gated Authenticode signing for the Windows build.
+  Delegates Windows code signing to the ONE shared, cross-repo signer.
 
 .DESCRIPTION
-  Called by package.ps1 with the path to ActivationPlanner.UI.exe. Signing is OFF by default: if the
-  ACTIVATIONPLANNER_SIGN environment variable is not set, this prints a note and returns without
-  signing, so the same pipeline produces an UNSIGNED build. When configured, it signs (and RFC3161
-  timestamps) the executable so the app avoids the SmartScreen "unknown publisher" warning.
+  Called by package.ps1 with the file(s) to sign. Rather than each repo carrying its own signing
+  config, this delegates to a single central signer set up once for ALL your apps - by default
+  "C:\Dev\Signing and Distribution\azure\sign.ps1" (which uses the Azure Artifact/Trusted Signing
+  'sign' tool with az-cli credentials and its own metadata.json).
 
-  This script NEVER embeds certificates, keys, or passwords. All secrets come from environment
-  variables that YOU set before running package.ps1, and YOU run the signed build.
+  Signing stays OPTIONAL and CREDENTIAL-GATED: the central script itself skips cleanly (produces an
+  UNSIGNED build) when you're not logged in to Azure (az login). If the central signer can't be
+  found at all, this shim also skips cleanly, so the build always succeeds.
 
-  Modes (set ACTIVATIONPLANNER_SIGN):
-    trustedsigning  - Azure Trusted Signing (recommended). Uses the 'TrustedSigning' PowerShell
-                      module (Invoke-TrustedSigning). Also needs:
-                        TRUSTED_SIGNING_ENDPOINT   e.g. https://eus.codesigning.azure.net
-                        TRUSTED_SIGNING_ACCOUNT    your Trusted Signing account name
-                        TRUSTED_SIGNING_PROFILE    your certificate profile name
-                      plus Azure auth (az login, or AZURE_TENANT_ID / AZURE_CLIENT_ID /
-                      AZURE_CLIENT_SECRET for a service principal).
-    keyvault        - A code-signing cert in Azure Key Vault, signed with AzureSignTool. Also needs:
-                        AZURE_KEYVAULT_URL         https://<vault>.vault.azure.net
-                        AZURE_KEYVAULT_CERT        certificate name
-                      plus Azure auth (AZURE_TENANT_ID / AZURE_CLIENT_ID / AZURE_CLIENT_SECRET).
+  Resolution order for the central signer:
+    1. $env:SIGN_SCRIPT      - full path to your shared sign.ps1 (set once, works in every repo)
+    2. $env:SIGNING_DIR      - a folder containing sign.ps1
+    3. Default: "C:\Dev\Signing and Distribution\azure\sign.ps1"
 
 .EXAMPLE
-  $env:ACTIVATIONPLANNER_SIGN = "trustedsigning"   # (set the mode-specific vars too)
-  ./build/package.ps1                               # package.ps1 calls this signer automatically
+  # one-time, so every repo signs with no per-repo setup:
+  setx SIGN_SCRIPT "C:\Dev\Signing and Distribution\azure\sign.ps1"
 #>
 [CmdletBinding()]
-param([Parameter(Mandatory = $true)][string]$ExePath)
+param([Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)][string[]]$Files)
 $ErrorActionPreference = "Stop"
 
-$mode = $env:ACTIVATIONPLANNER_SIGN
-if ([string]::IsNullOrWhiteSpace($mode)) {
-    Write-Host "   (code signing not configured - producing an UNSIGNED build.)" -ForegroundColor DarkYellow
-    Write-Host "    Set `$env:ACTIVATIONPLANNER_SIGN to 'trustedsigning' or 'keyvault' to enable." -ForegroundColor DarkGray
+$signScript = $env:SIGN_SCRIPT
+if (-not $signScript -and $env:SIGNING_DIR) {
+    $signScript = Join-Path $env:SIGNING_DIR "sign.ps1"
+}
+if (-not $signScript) {
+    $signScript = "C:\Dev\Signing and Distribution\azure\sign.ps1"
+}
+
+if (-not (Test-Path $signScript)) {
+    Write-Host "   (shared signer not found - producing an UNSIGNED build.)" -ForegroundColor DarkYellow
+    Write-Host "    Looked for: $signScript" -ForegroundColor DarkGray
+    Write-Host "    Set `$env:SIGN_SCRIPT to your central sign.ps1 to enable signing in every repo." -ForegroundColor DarkGray
     return
 }
-if (-not (Test-Path $ExePath)) { throw "sign-windows: file to sign not found: $ExePath" }
 
-$timestampUrl = "http://timestamp.acs.microsoft.com"
-
-switch ($mode.ToLowerInvariant()) {
-    "trustedsigning" {
-        foreach ($v in "TRUSTED_SIGNING_ENDPOINT","TRUSTED_SIGNING_ACCOUNT","TRUSTED_SIGNING_PROFILE") {
-            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($v))) {
-                throw "sign-windows: ACTIVATIONPLANNER_SIGN=trustedsigning but $v is not set."
-            }
-        }
-        if (-not (Get-Module -ListAvailable -Name TrustedSigning)) {
-            throw "sign-windows: the 'TrustedSigning' PowerShell module is not installed. Run: Install-Module -Name TrustedSigning -Scope CurrentUser"
-        }
-        Import-Module TrustedSigning
-        Write-Host "-> Signing (Azure Trusted Signing): $ExePath" -ForegroundColor Yellow
-        Invoke-TrustedSigning `
-            -Endpoint            $env:TRUSTED_SIGNING_ENDPOINT `
-            -CodeSigningAccountName $env:TRUSTED_SIGNING_ACCOUNT `
-            -CertificateProfileName $env:TRUSTED_SIGNING_PROFILE `
-            -Files               $ExePath `
-            -FileDigest          SHA256 `
-            -TimestampRfc3161    $timestampUrl `
-            -TimestampDigest     SHA256
-    }
-    "keyvault" {
-        foreach ($v in "AZURE_KEYVAULT_URL","AZURE_KEYVAULT_CERT") {
-            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($v))) {
-                throw "sign-windows: ACTIVATIONPLANNER_SIGN=keyvault but $v is not set."
-            }
-        }
-        $azureSignTool = (Get-Command AzureSignTool -ErrorAction SilentlyContinue)?.Source
-        if (-not $azureSignTool) {
-            throw "sign-windows: AzureSignTool not found. Install it with: dotnet tool install --global AzureSignTool"
-        }
-        Write-Host "-> Signing (Azure Key Vault): $ExePath" -ForegroundColor Yellow
-        # AzureSignTool reads AZURE_TENANT_ID/CLIENT_ID/CLIENT_SECRET from the environment for auth.
-        & AzureSignTool sign `
-            --azure-key-vault-url         $env:AZURE_KEYVAULT_URL `
-            --azure-key-vault-certificate $env:AZURE_KEYVAULT_CERT `
-            --azure-key-vault-tenant-id   $env:AZURE_TENANT_ID `
-            --azure-key-vault-client-id   $env:AZURE_CLIENT_ID `
-            --azure-key-vault-client-secret $env:AZURE_CLIENT_SECRET `
-            --file-digest sha256 `
-            --timestamp-rfc3161 $timestampUrl `
-            --timestamp-digest sha256 `
-            $ExePath
-        if ($LASTEXITCODE -ne 0) { throw "AzureSignTool failed ($LASTEXITCODE)." }
-    }
-    default {
-        throw "sign-windows: unknown ACTIVATIONPLANNER_SIGN mode '$mode' (use 'trustedsigning' or 'keyvault')."
-    }
-}
-Write-Host "   signed + timestamped." -ForegroundColor Green
+Write-Host "-> Signing via shared signer: $signScript" -ForegroundColor Yellow
+& $signScript @Files
