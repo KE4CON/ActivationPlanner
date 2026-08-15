@@ -1,0 +1,57 @@
+{
+  "order": 8,
+  "title": "Uninstalling",
+  "subtitle": "How to remove Activation Planner cleanly - and how to decide whether to keep or delete your saved gear.",
+  "in_this_chapter": [
+    "The two parts of an install",
+    "Removing the app on Windows",
+    "Removing the app on macOS",
+    "Removing the app on Linux",
+    "Keeping or deleting your gear inventory"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Activation Planner doesn't spread files across your system. To uninstall, just delete the folder you installed it to (and the Start Menu shortcut or menu entry, if you made one). Your saved gear lives in a separate small folder - delete that too only if you want to erase your inventory."}},
+
+    {"h1": "The Two Parts of an Install"},
+    {"p": "There are only two things to remove, and they're separate on purpose:"},
+    {"bullets": [
+      "**The app folder** - where you installed Activation Planner (it contains the app, the engines, and the license notices).",
+      "**Your gear data** - the small  ActivationPlanner  folder in your user profile holding  gear-inventory.json  (see the previous chapter for its exact location)."
+    ]},
+    {"p": "Removing the app folder uninstalls the program. Your gear data is left behind unless you also delete it - which is handy if you plan to reinstall later."},
+
+    {"h1": "Removing the App on Windows"},
+    {"steps": [
+      "Open the folder you installed to (default: press Windows key, type  %LOCALAPPDATA%\\Programs  , open it, and find **Activation Planner**).",
+      "Delete the **Activation Planner** folder.",
+      "Remove the Start Menu shortcut if you created one: press Windows key, type  shell:programs  , open it, and delete the **Activation Planner** shortcut."
+    ]},
+
+    {"h1": "Removing the App on macOS"},
+    {"steps": [
+      "Open your install folder (default:  /Users/<you>/ActivationPlanner  ).",
+      "Drag the **ActivationPlanner** folder to the Trash (or right-click -> Move to Trash).",
+      "Empty the Trash when you're ready."
+    ]},
+
+    {"h1": "Removing the App on Linux"},
+    {"steps": [
+      "Delete your install folder:  rm -rf ~/ActivationPlanner   (or delete it in your file manager).",
+      "Remove the menu entry if you created one:  rm -f ~/.local/share/applications/activation-planner.desktop  ."
+    ]},
+
+    {"h1": "Keeping or Deleting Your Gear Inventory"},
+    {"p": "Your inventory is **not** removed when you delete the app folder - it stays in your user profile so a future reinstall picks it back up. Decide based on what you want:"},
+    {"table": {
+      "headers": ["You want to...", "Do this"],
+      "rows": [
+        ["Reinstall later and keep your gear", "Leave the inventory folder alone. Don't delete it."],
+        ["Erase everything, including your gear", "Also delete the  ActivationPlanner  folder in your user profile (Windows:  %APPDATA%\\ActivationPlanner ; macOS/Linux:  ~/.config/ActivationPlanner )."],
+        ["Keep a backup just in case", "Copy  gear-inventory.json  somewhere safe before deleting anything (see the previous chapter)."]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "NOTHING ELSE TO CLEAN UP",
+      "text": "Activation Planner doesn't install system services, drivers, or registry-wide changes. Removing the app folder and (optionally) the gear folder leaves your system clean."}}
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "order": 10,
+  "title": "Appendix - Build It Yourself / For Maintainers",
+  "subtitle": "How the release packages are made: building the engines, packaging per platform, and (optionally) code-signing. More technical than the rest of this guide.",
+  "in_this_chapter": [
+    "Who this appendix is for",
+    "The pieces and where they live",
+    "Step 1 - Build the engines (VOACAP + NEC2++)",
+    "Step 2 - Package the app for a platform",
+    "Step 3 - Code signing (optional, per operating system)",
+    "ARM and Raspberry Pi builds",
+    "GPLv2 source obligation for NEC2++",
+    "The one rule: sign each OS on its own machine"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "From a clone of the public repo: run  build-engines  to compile VOACAP + NEC2++ into  third_party/<rid>/ , then run  package  to publish the self-contained app, bundle those engines and the license notices, and produce a ready-to-ship archive in  dist/ . Signing is optional and off by default. Do each OS's build on that OS."}},
+
+    {"h1": "Who This Appendix Is For"},
+    {"p": "Everyone else can ignore this - the normal way to install is to download a ready-made release and run the setup. This appendix is for a maintainer (or a technical user on a platform without a prebuilt release, such as Raspberry Pi) who wants to **produce** a distributable, or add the helper engines to a sample-mode install. The project is open source, so anyone can do this from the public source at **https://github.com/KE4CON/ActivationPlanner**."},
+
+    {"h1": "The Pieces and Where They Live"},
+    {"table": {
+      "headers": ["Item", "What it does"],
+      "rows": [
+        ["build/build-engines.sh", "Clones and builds voacapl + necpp into third_party/<rid>/ (macOS/Linux, and Windows via MSYS2)."],
+        ["build/build-engines.ps1", "Windows helper that runs build-engines.sh under an MSYS2 bash."],
+        ["build/package.ps1", "Windows: publishes self-contained, bundles engines + licenses, signs (optional), zips to dist/."],
+        ["build/package.sh", "macOS/Linux: publishes self-contained, bundles engines + licenses, signs (optional), tars to dist/."],
+        ["build/sign-windows.ps1", "Optional Authenticode signing (Azure Trusted Signing or Key Vault). Off unless configured."],
+        ["build/sign-macos.sh", "Optional Developer ID signing + notarization. Off unless configured."],
+        ["third_party/README.md", "The exact per-RID layout the engines must be staged into."],
+        ["licenses/", "The notices bundled into every build (VOACAP disclaimer, NEC2++ GPLv2 + source offer)."]
+      ]
+    }},
+    {"p": "\"RID\" is a .NET Runtime Identifier - the platform tag, such as  win-x64 ,  osx-arm64 ,  linux-x64 ,  linux-arm64 ."},
+
+    {"h1": "Step 1 - Build the Engines (VOACAP + NEC2++)"},
+    {"p": "The engines are compiled from their public sources into the staging area. Run this on the target operating system (they're native programs):"},
+    {"bullets": [
+      "**macOS / Linux / Raspberry Pi:**  build/build-engines.sh   (auto-detects the RID; pass one to override, e.g.  build/build-engines.sh linux-arm64 ). Run  build/build-engines.sh --check  first to verify you have git, make, gcc/g++, gfortran, and autotools.",
+      "**Windows:**  build/build-engines.ps1   (needs MSYS2 with the gcc/gfortran toolchain; the script prints the exact  pacman  packages if they're missing)."
+    ]},
+    {"p": "This stages  third_party/<rid>/voacap/{voacapl, itshfbc/}  and  third_party/<rid>/nec/nec2++ , and copies NEC2++'s GPLv2  COPYING  and a source snapshot into  licenses/nec2++/ ."},
+    {"callout": {"kind": "important", "label": "WINDOWS RUNTIME DLLs",
+      "text": "Engines built under MSYS2/Cygwin need their runtime DLLs (gcc/gfortran runtime, or cygwin1.dll) beside the .exe to run on a machine without MSYS2. Copy those DLLs into third_party/win-x64/voacap and .../nec after building, or build a static/native variant."}},
+
+    {"h1": "Step 2 - Package the App for a Platform"},
+    {"p": "Packaging publishes the app self-contained (no separate .NET needed by the user), bundles whatever engines are staged, copies the license notices, and produces an archive in  dist/ :"},
+    {"bullets": [
+      "**Windows:**  build/package.ps1 -Version 1.0.0   (add  -Rid win-arm64  for ARM). Produces  dist/ActivationPlanner-1.0.0-win-x64.zip .",
+      "**macOS / Linux:**  build/package.sh <rid> 1.0.0  , e.g.  build/package.sh osx-arm64 1.0.0  or  build/package.sh linux-x64 1.0.0 . Produces a  .tar.gz  in  dist/ ."
+    ]},
+    {"p": "If the engines aren't staged, packaging still succeeds and warns - the resulting build runs in sample mode. That's the same archive an end user downloads and installs with  install.ps1 / install.sh ."},
+
+    {"h1": "Step 3 - Code Signing (Optional, Per Operating System)"},
+    {"p": "Signing is **off by default** and credential-gated, so the same pipeline makes signed or unsigned builds. Nothing in the scripts stores your certificates or passwords - they read values you set in environment variables, and you run the signed build."},
+    {"bullets": [
+      "**Windows** (from  package.ps1 , which calls  sign-windows.ps1 ): set  ACTIVATIONPLANNER_SIGN=trustedsigning  (Azure Trusted Signing) or  =keyvault  (Azure Key Vault cert), plus the mode's variables. A signed Windows build avoids the SmartScreen \"unknown publisher\" warning.",
+      "**macOS** (from  package.sh , which calls  sign-macos.sh ): set  ACTIVATIONPLANNER_SIGN=developerid  and  APPLE_SIGN_IDENTITY , plus notarization credentials (a stored  notarytool  profile, or APPLE_ID / APPLE_TEAM_ID / APPLE_APP_PASSWORD). A signed + notarized macOS build avoids the Gatekeeper \"unidentified developer\" block."
+    ]},
+    {"callout": {"kind": "note", "label": "SIGNING STATUS",
+      "text": "Code signing is intended but may not be operational yet. Until it is, releases ship unsigned and users follow the get-past-the-warning steps in the Windows/macOS chapters. The scripts already support signing so builds become signed the moment credentials are configured."}},
+
+    {"h1": "ARM and Raspberry Pi Builds"},
+    {"p": "The whole matrix is supported: Windows / macOS / Linux, each on x64 or ARM. The app cross-publishes to any RID, but the **engines must be compiled on the target architecture** - so for a Raspberry Pi, build on the Pi:"},
+    {"steps": [
+      "On a Raspberry Pi (64-bit Pi OS, Pi 4 or Pi 5 recommended):  build/build-engines.sh linux-arm64  .",
+      "Then  build/package.sh linux-arm64 1.0.0  to produce the Pi distributable.",
+      "Install it with  install.sh  as in the Linux chapter."
+    ]},
+    {"p": "Apple Silicon uses  osx-arm64  (built on an Apple Silicon Mac); ARM Windows uses  win-arm64 ."},
+
+    {"h1": "GPLv2 Source Obligation for NEC2++"},
+    {"p": "NEC2++ is GPLv2. The build stages its  COPYING  and a source snapshot into  licenses/nec2++/ , and the packaging step bundles the whole  licenses/  folder into every build - so each distributable carries the GPLv2 text and the corresponding source (or the written offer in  NEC2++-Source-Offer.txt ). Keep this intact; it's how the redistribution stays compliant. Full detail is in  docs/THIRD_PARTY_LICENSES.md ."},
+
+    {"h1": "The One Rule: Sign Each OS on Its Own Machine"},
+    {"callout": {"kind": "important", "label": "WHERE EACH BUILD HAPPENS",
+      "text": "You can cross-BUILD the app for any platform from one machine, but you must SIGN each platform's build on that platform: Windows signing (Azure) runs on Windows; macOS signing + notarization (codesign/notarytool) runs only on a Mac. And because the engines are native, compile them on the target OS/architecture too. In practice: build + sign the Windows release on Windows, and the macOS release on a Mac."}}
+  ]
+}

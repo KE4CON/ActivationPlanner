@@ -1,0 +1,93 @@
+{
+  "order": 2,
+  "title": "Install on Windows",
+  "subtitle": "Download one file, run one setup command, answer a few Enter-key prompts, and you're done.",
+  "in_this_chapter": [
+    "The Windows install in a nutshell",
+    "Step 1 - Download the right file",
+    "Step 2 - Unzip it",
+    "Step 3 - Run the setup",
+    "Getting past the blue \"Windows protected your PC\" screen (unsigned builds)",
+    "Answering the setup prompts",
+    "What you'll see when it's done",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Download the Windows **.zip** from the project's Releases page, right-click it and choose **Extract All**, then in the extracted folder right-click **install.ps1** and choose **Run with PowerShell**. Press **Enter** at each question to accept the default. Activation Planner installs and opens. If a blue \"Windows protected your PC\" box appears, click **More info** then **Run anyway** - that's normal for a new app."}},
+
+    {"h1": "Step 1 - Download the Right File"},
+    {"p": "Open the project's **Releases** page in your web browser: **https://github.com/KE4CON/ActivationPlanner/releases**. Under the newest release, find the file for Windows and click it to download. Pick by your processor type:"},
+    {"table": {
+      "headers": ["Your PC", "File to download"],
+      "rows": [
+        ["A normal Intel or AMD PC (almost everyone)", "ActivationPlanner-<version>-win-x64.zip"],
+        ["A Windows-on-ARM PC (e.g. some Surface / Snapdragon laptops)", "ActivationPlanner-<version>-win-arm64.zip"]
+      ]
+    }},
+    {"p": "Here \"<version>\" is the release number, for example **ActivationPlanner-1.0.0-win-x64.zip**. Not sure which processor you have? Press the **Windows key**, type **About your PC**, open it, and read the **System type** line - it says 64-bit and whether it's ARM. When in doubt, choose the **x64** file."},
+    {"callout": {"kind": "note", "label": "WHERE DID IT GO?",
+      "text": "By default the file lands in your **Downloads** folder. You'll go there in the next step."}},
+
+    {"h1": "Step 2 - Unzip It"},
+    {"steps": [
+      "Open your **Downloads** folder (press the **Windows key**, type **Downloads**, press Enter).",
+      "Find the file you just downloaded (for example **ActivationPlanner-1.0.0-win-x64.zip**).",
+      "**Right-click** it and choose **Extract All...**",
+      "A small window appears. Click **Extract** (the default location is fine).",
+      "A new folder opens showing the files, including one named **ActivationPlanner.UI.exe** and one named **install.ps1**."
+    ]},
+    {"callout": {"kind": "important", "label": "YOU MUST EXTRACT FIRST",
+      "text": "Don't try to run anything from inside the .zip while it's still zipped - Windows only shows a preview there. Use **Extract All** first, then work in the real folder it creates."}},
+
+    {"h1": "Step 3 - Run the Setup"},
+    {"p": "In the extracted folder, you'll run the one-step setup script, **install.ps1**. The easiest way:"},
+    {"steps": [
+      "**Right-click** the file named **install.ps1**.",
+      "Choose **Run with PowerShell** from the menu.",
+      "A blue text window opens and the setup starts asking you a few simple questions (covered below)."
+    ]},
+    {"callout": {"kind": "note", "label": "IF \"RUN WITH POWERSHELL\" IS MISSING OR BLOCKED",
+      "text": "Some PCs restrict running scripts. If you don't see the option, or you get a red \"running scripts is disabled\" message, do this instead: press the **Windows key**, type **PowerShell**, open it, then type this line and press Enter (replace the path with your extracted folder):  powershell -ExecutionPolicy Bypass -File \"C:\\Users\\YourName\\Downloads\\ActivationPlanner-1.0.0-win-x64\\install.ps1\"  . A quick way to get the exact path: in the folder, hold **Shift**, right-click **install.ps1**, choose **Copy as path**, and paste it after -File."}},
+
+    {"h1": "Getting Past \"Windows Protected Your PC\""},
+    {"p": "Because Activation Planner is a new independent app, Windows SmartScreen may show a **blue box titled \"Windows protected your PC.\"** This does not mean anything is wrong - it just means the app isn't widely known yet. To continue:"},
+    {"steps": [
+      "Click the small **More info** link in the blue box.",
+      "A **Run anyway** button appears. Click it.",
+      "Setup continues normally."
+    ]},
+    {"callout": {"kind": "note", "label": "SIGNED BUILDS SKIP THIS",
+      "text": "Once Activation Planner is distributed as a **code-signed** build, this blue screen won't appear at all - Windows will recognize the publisher. Until then (or if you have an unsigned build), the **More info -> Run anyway** steps above are the normal, safe way through."}},
+
+    {"h1": "Answering the Setup Prompts"},
+    {"p": "The setup asks a handful of questions. **Press Enter to accept the default** shown in brackets for any you're unsure about. Here's each one:"},
+    {"table": {
+      "headers": ["Prompt", "What it means / what to do"],
+      "rows": [
+        ["License notices, \"Press Enter to accept\"", "It shows that VOACAP and NEC2++ are included under their own licenses. Press **Enter** to acknowledge and continue."],
+        ["Install location [C:\\Users\\...\\Activation Planner]", "Where to install. Press **Enter** for the default, or type a different folder."],
+        ["That folder exists. Overwrite it? (y/n) [y]", "Only appears if you're reinstalling. Press **Enter** (yes) to replace the old copy."],
+        ["Create a Start Menu shortcut? (y/n) [y]", "Press **Enter** for yes so you can find it in the Start menu later."],
+        ["Launch Activation Planner now? (y/n) [y]", "Press **Enter** to open it right away."]
+      ]
+    }},
+    {"p": "After the prompts, you'll see a line for each engine: whether **VOACAP** and **NEC2++** were bundled (real predictions) or not (sample mode). Both being \"NOT bundled\" is fine to start - the app still runs; see the **Helper Engines** chapter."},
+
+    {"h1": "What You'll See When It's Done"},
+    {"p": "The window prints **\"Setup complete\"** and the folder it installed to. If you said yes to launching, Activation Planner opens to its first screen. From now on, start it any time from the **Start menu** (type **Activation Planner**) or the shortcut you created. You do not need the downloaded .zip anymore - you can delete it."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["\"Running scripts is disabled on this system\"", "Use the PowerShell command shown above with **-ExecutionPolicy Bypass**. It runs this one script without changing your PC's settings."],
+        ["Blue \"Windows protected your PC\" box", "Click **More info**, then **Run anyway**. Normal for a new app; a signed build removes it."],
+        ["\"Cannot find ActivationPlanner.UI.exe\"", "You ran install.ps1 from the wrong place, or didn't extract the .zip. Extract with **Extract All** first, then run install.ps1 from inside the extracted folder."],
+        ["It says engines are NOT bundled / sample mode", "The predictions are placeholders until VOACAP/NEC2++ are included. See the **Helper Engines** chapter. The app still works for learning your way around."],
+        ["Nothing happens when I double-click install.ps1", "Double-clicking opens it in an editor. **Right-click** it and choose **Run with PowerShell** instead."],
+        ["Windows Defender / antivirus flags it", "Unsigned apps are sometimes flagged by heuristics. A signed build avoids this. If you trust your download from the official Releases page, allow it; otherwise re-download from the official page."]
+      ]
+    }}
+  ]
+}

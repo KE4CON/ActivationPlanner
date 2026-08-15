@@ -1,0 +1,88 @@
+{
+  "order": 9,
+  "title": "Troubleshooting",
+  "subtitle": "The install problems people hit most, with plain fixes - grouped so you can jump to yours.",
+  "in_this_chapter": [
+    "Download and unzip problems",
+    "Windows-specific",
+    "macOS-specific",
+    "Linux / Raspberry Pi-specific",
+    "\"Sample data\" and the engines",
+    "Location and internet",
+    "Still stuck?"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "START HERE",
+      "text": "Most install issues are one of three things: you didn't unzip before running the setup; your system showed a normal \"new app\" caution you need to click through; or the helper engines weren't bundled (sample mode). All three are covered below."}},
+
+    {"h1": "Download and Unzip Problems"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["\"Cannot find ActivationPlanner.UI\" when running setup", "You didn't extract the download first. Unzip (Windows: **Extract All**) or expand (macOS/Linux: double-click or  tar -xzf ) it, then run the setup from inside the extracted folder."],
+        ["I downloaded the wrong file for my computer", "Match your processor: Windows x64 vs ARM; macOS Apple Silicon (osx-arm64) vs Intel (osx-x64); Linux  uname -m  x86_64 -> x64, aarch64 -> arm64. Re-download the right one."],
+        ["The download seems corrupted / setup errors oddly", "Re-download from the official Releases page; a partial download can fail to extract."]
+      ]
+    }},
+
+    {"h1": "Windows-Specific"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["Blue \"Windows protected your PC\"", "Click **More info** -> **Run anyway**. Normal for a new/unsigned app; a signed build removes it."],
+        ["\"Running scripts is disabled on this system\"", "Run the setup with:  powershell -ExecutionPolicy Bypass -File \"<path>\\install.ps1\"  (Shift+right-click install.ps1 -> **Copy as path** to get the path)."],
+        ["Double-clicking install.ps1 opens an editor", "Right-click it -> **Run with PowerShell** instead."],
+        ["Antivirus flags the app", "Unsigned apps can trip heuristics. Use a signed build, or allow it if you trust your official download."]
+      ]
+    }},
+
+    {"h1": "macOS-Specific"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["\"Unidentified developer\" / can't be opened", "Right-click the app -> **Open** -> **Open**; or System Settings -> Privacy & Security -> **Open Anyway**. One-time; a notarized build removes it."],
+        ["App bounces in the Dock then quits", "Clear the internet-quarantine flag:  xattr -dr com.apple.quarantine ~/ActivationPlanner  , then open again."],
+        ["\"Permission denied\"", "chmod +x ~/ActivationPlanner/ActivationPlanner.UI  ."],
+        ["cd can't find the folder", "Use **Tab** to auto-complete after  cd ~/Downloads/  , and make sure you expanded the .tar.gz first."]
+      ]
+    }},
+
+    {"h1": "Linux / Raspberry Pi-Specific"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["App exits immediately / library errors", "Install desktop libraries: Debian/Ubuntu/Pi OS:  sudo apt install -y libice6 libsm6 libfontconfig1 libx11-6  ; Fedora:  sudo dnf install -y libICE libSM fontconfig libX11  ."],
+        ["\"Permission denied\" launching", "chmod +x ~/ActivationPlanner/ActivationPlanner.UI  ."],
+        ["Wrong architecture downloaded", "uname -m : x86_64 -> linux-x64, aarch64 -> linux-arm64. On old 32-bit Pi OS (armv7l) prefer switching to 64-bit Pi OS."],
+        ["No menu entry", "Log out/in to refresh the menu, or run  ~/ActivationPlanner/ActivationPlanner.UI  directly."]
+      ]
+    }},
+
+    {"h1": "\"Sample Data\" and the Engines"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["Orange \"sample data\" banner on the plan", "VOACAP isn't active. Your build shipped without it; see the **Helper Engines** chapter and the maintainer appendix to build/add it. The app still works."],
+        ["\"Representative pattern\" note on antenna patterns", "NEC2++ isn't active - same story as above; patterns are approximate until it's added."],
+        ["I added the engines but still see sample data", "Make sure they're in the app's  tools/voacap  and  tools/nec  folders (with VOACAP's  itshfbc  data folder), then fully restart the app. On Windows, Cygwin/MSYS builds also need their runtime DLLs beside the .exe."]
+      ]
+    }},
+
+    {"h1": "Location and Internet"},
+    {"table": {
+      "headers": ["Symptom", "Fix"],
+      "rows": [
+        ["Location is wrong, especially on a phone hotspot", "Auto-location is a rough guess over a hotspot. Type your latitude/longitude, or your grid square, on the planning screen (see the User Manual)."],
+        ["No live solar / weather / POTA data", "Those need an internet connection (a hotspot is fine). Core planning still works offline once the engines are installed."]
+      ]
+    }},
+
+    {"h1": "Still Stuck?"},
+    {"bullets": [
+      "Re-read the chapter for your operating system - each step says what you should see.",
+      "Confirm you downloaded the file that matches your processor.",
+      "For engine/sample-mode questions, see the **Helper Engines** chapter and the **Build It Yourself** appendix.",
+      "For how to actually use a feature once installed, see the **User Manual**."
+    ]}
+  ]
+}

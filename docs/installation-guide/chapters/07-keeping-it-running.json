@@ -1,0 +1,66 @@
+{
+  "order": 7,
+  "title": "Keeping It Running - Updates and Backups",
+  "subtitle": "How to update to a new version, reinstall safely, and - most importantly - back up your gear inventory so you never lose it.",
+  "in_this_chapter": [
+    "Updating to a new version",
+    "Where your gear inventory is stored",
+    "Backing up your inventory",
+    "Moving to a new computer",
+    "Reinstalling safely"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "To update, download the new release and run the setup again - it replaces the app but leaves your saved gear alone, because your inventory is stored separately in your user profile. To be safe, copy that one file (gear-inventory.json) somewhere before big changes or when moving computers."}},
+
+    {"h1": "Updating to a New Version"},
+    {"p": "Updating is the same as installing - the setup replaces the old copy:"},
+    {"steps": [
+      "Download the newest release for your system from **https://github.com/KE4CON/ActivationPlanner/releases**.",
+      "Run the setup the same way you did the first time (install.ps1 on Windows, bash install.sh on macOS/Linux).",
+      "When it asks **\"That folder exists. Overwrite it?\"**, press **Enter** (yes) to replace the old version.",
+      "Your **gear inventory is not touched** - it lives in a separate place (below), so your radios, antennas, and settings carry over automatically."
+    ]},
+
+    {"h1": "Where Your Gear Inventory Is Stored"},
+    {"p": "Your inventory (everything you entered - radios, antennas, and their measurements) is saved in **one file**, kept in your user profile, separate from the app itself. That's why reinstalling or updating never loses it. The file is:"},
+    {"table": {
+      "headers": ["System", "Location of gear-inventory.json"],
+      "rows": [
+        ["Windows", "C:\\Users\\<you>\\AppData\\Roaming\\ActivationPlanner\\gear-inventory.json"],
+        ["macOS", "/Users/<you>/.config/ActivationPlanner/gear-inventory.json"],
+        ["Linux", "/home/<you>/.config/ActivationPlanner/gear-inventory.json"]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "FINDING THE HIDDEN FOLDER",
+      "text": "On Windows, paste  %APPDATA%\\ActivationPlanner  into the File Explorer address bar to jump straight there. On macOS/Linux the  .config  folder is hidden; in a file manager press **Ctrl+H** (Linux) or **Command+Shift+.** (macOS Finder) to show hidden folders, or use a terminal."}},
+
+    {"h1": "Backing Up Your Inventory"},
+    {"p": "Because it's a single file, backing up is easy - and worth doing if you've spent time entering antenna measurements:"},
+    {"steps": [
+      "Go to the folder shown above for your system.",
+      "**Copy** the file **gear-inventory.json** to somewhere safe - a USB stick, a cloud folder, or another drive.",
+      "That copy is your complete backup. To restore, copy it back into the same folder."
+    ]},
+    {"callout": {"kind": "important", "label": "BACK UP BEFORE BIG CHANGES",
+      "text": "Make a copy before experimenting with a lot of gear edits, before updating across a major version, or before moving computers. Restoring is just copying the file back."}},
+
+    {"h1": "Moving to a New Computer"},
+    {"steps": [
+      "Install Activation Planner on the new computer (this guide's steps for that system).",
+      "Copy your **gear-inventory.json** from the old computer's folder (above) to the **same folder** on the new one, replacing the empty one created at first run.",
+      "Start Activation Planner - all your gear is there."
+    ]},
+    {"p": "The inventory file is plain text and works across Windows, macOS, and Linux, so you can move it between different kinds of computers freely."},
+
+    {"h1": "Reinstalling Safely"},
+    {"p": "If something goes wrong with the app itself, you can reinstall without losing your gear:"},
+    {"steps": [
+      "(Optional but wise) Copy your **gear-inventory.json** somewhere safe first.",
+      "Run the setup again and choose to overwrite the existing folder.",
+      "Your inventory - stored separately - is still there when the app reopens."
+    ]},
+    {"callout": {"kind": "note", "label": "A TRULY FRESH START",
+      "text": "If you ever want to wipe everything and start over, close the app and delete the  ActivationPlanner  folder shown in the table above (that removes your saved inventory). The next launch begins with the empty setup wizard again."}}
+  ]
+}

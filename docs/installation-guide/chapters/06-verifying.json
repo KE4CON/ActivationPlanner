@@ -1,0 +1,63 @@
+{
+  "order": 6,
+  "title": "Verifying Your Install",
+  "subtitle": "A two-minute check that everything installed correctly - and how to tell real predictions from sample data.",
+  "in_this_chapter": [
+    "Opening the app",
+    "The quick health check",
+    "Confirming the engines are active (or not)",
+    "A first real plan",
+    "If something's not right"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Open Activation Planner. If it starts and you can reach the planning screen, the install worked. Look for an orange **\"sample data\"** banner: if it's absent, the propagation engine is active and predictions are real; if it's present, you're in sample mode (still fine to use). That's the whole check."}},
+
+    {"h1": "Step 1 - Open the App"},
+    {"bullets": [
+      "**Windows:** Start menu -> type **Activation Planner** -> open it (or use the shortcut you made).",
+      "**macOS:** open the **ActivationPlanner.UI** app in your install folder (right-click -> Open the first time).",
+      "**Linux:** find **Activation Planner** in your apps menu, or run  ~/ActivationPlanner/ActivationPlanner.UI  ."
+    ]},
+    {"p": "The very first time, you'll see the **setup wizard** for entering your gear. That's expected - it only appears once. You can go through it or press **Skip** for now; either way, reaching that screen means the app installed and runs."},
+
+    {"h1": "Step 2 - The Quick Health Check"},
+    {"table": {
+      "headers": ["Check", "Good sign"],
+      "rows": [
+        ["The app window opens", "Install succeeded and the app runs on your system."],
+        ["You can move between the navigation tabs", "The interface is working normally."],
+        ["The clock at the top shows your local time over UTC", "The app is live and running."]
+      ]
+    }},
+
+    {"h1": "Step 3 - Are the Engines Active?"},
+    {"p": "Go to the **Plan session** tab and generate a plan (or open **Quick plan**). Then check:"},
+    {"bullets": [
+      "**No orange \"sample data\" banner** -> the **VOACAP** propagation engine is active; the band numbers are real predictions.",
+      "**An orange \"sample data\" banner** -> you're in **sample mode**; the numbers are placeholders. The app is fully usable; see the **Helper Engines** chapter to switch to real predictions.",
+      "On the **Antenna Patterns** tab, a **\"representative pattern\"** note means the **NEC2++** engine isn't active yet; no note means real modeled patterns."
+    ]},
+
+    {"h1": "Step 4 - A First Real Plan"},
+    {"p": "To confirm end-to-end operation, try a real plan:"},
+    {"steps": [
+      "On **Plan session**, press **Use my location** (or type your latitude/longitude, or enter your grid square).",
+      "Set a target you'd like to reach.",
+      "Press **Generate plan**.",
+      "You should see bands listed with reliability scores, best hours, and (if you've added antennas) matched antennas."
+    ]},
+    {"p": "If that works, you're fully installed and ready. The User Manual explains every screen and number in depth."},
+
+    {"h1": "If Something's Not Right"},
+    {"table": {
+      "headers": ["Symptom", "Where to look"],
+      "rows": [
+        ["The app won't open at all", "See the Troubleshooting chapter for your operating system's fixes (Windows SmartScreen, macOS Gatekeeper, Linux libraries)."],
+        ["Everything says sample data", "Expected if the engines weren't bundled. See the **Helper Engines** chapter and the maintainer appendix to add them."],
+        ["Location is wrong (on a hotspot)", "Type your latitude/longitude or grid square instead of auto-location. The User Manual's Location chapter explains why."],
+        ["No antennas are suggested", "Your inventory is empty - add antennas on the Inventory screen (see the User Manual)."]
+      ]
+    }}
+  ]
+}

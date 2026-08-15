@@ -1,0 +1,81 @@
+{
+  "order": 4,
+  "title": "Install on Linux (including Raspberry Pi)",
+  "subtitle": "Download one file, run one setup command, and (optionally) get a menu entry. Works on regular PCs and on ARM boards like the Raspberry Pi.",
+  "in_this_chapter": [
+    "The Linux install in a nutshell",
+    "Which file to download (x64 vs ARM)",
+    "A word on Raspberry Pi",
+    "Step 1 - Download and expand",
+    "Step 2 - Run the setup",
+    "Answering the setup prompts",
+    "If the app won't start - missing system libraries",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Download the Linux **.tar.gz** for your processor from the Releases page, expand it (double-click, or  tar -xzf <file> ), open a terminal in that folder, and run  bash install.sh  . Press **Enter** at each prompt. There's no \"unknown publisher\" warning on Linux - it just installs. On a Raspberry Pi, use the **arm64** file."}},
+
+    {"h1": "Which File to Download"},
+    {"p": "Pick by your processor. Not sure? Open a terminal and run  uname -m  : if it prints **x86_64** you want x64; if it prints **aarch64** you want arm64."},
+    {"table": {
+      "headers": ["Your computer", "uname -m", "File to download"],
+      "rows": [
+        ["A regular Intel/AMD PC or laptop", "x86_64", "ActivationPlanner-<version>-linux-x64.tar.gz"],
+        ["An ARM board (Raspberry Pi 4/5, other 64-bit ARM)", "aarch64", "ActivationPlanner-<version>-linux-arm64.tar.gz"]
+      ]
+    }},
+    {"callout": {"kind": "note", "label": "OLD 32-BIT ARM",
+      "text": "If you're on an old 32-bit Raspberry Pi OS (uname -m shows **armv7l**, e.g. a Pi Zero or Pi 2), that's the separate **linux-arm** build. It can work, but we strongly recommend the 64-bit Raspberry Pi OS on a Pi 4 or Pi 5 and the **arm64** file - the app runs much better there."}},
+
+    {"h1": "A Word on Raspberry Pi"},
+    {"p": "Activation Planner runs on a Raspberry Pi running the 64-bit Raspberry Pi OS desktop - a genuinely handy field option in a Pi laptop/netbook build. Use the **linux-arm64** download. One extra note: to get **real** predictions (not sample data), the two helper engines must be built on the Pi itself (they're ARM programs). The **Helper Engines** chapter and the maintainer appendix cover that; the app installs and runs either way."},
+
+    {"h1": "Step 1 - Download and Expand"},
+    {"steps": [
+      "Open **https://github.com/KE4CON/ActivationPlanner/releases** in your browser and download the correct **.tar.gz**.",
+      "Expand it. In your file manager you can usually right-click -> **Extract Here**. Or in a terminal:  cd ~/Downloads  then  tar -xzf ActivationPlanner-1.0.0-linux-x64.tar.gz  (use your actual file name).",
+      "This creates a folder such as **ActivationPlanner-linux-x64** containing the app and **install.sh**."
+    ]},
+
+    {"h1": "Step 2 - Run the Setup"},
+    {"steps": [
+      "Open a terminal in that folder (in many file managers: right-click -> **Open Terminal Here**), or  cd  into it.",
+      "Run:  bash install.sh   and press **Enter**.",
+      "Answer the few prompts (below). That's it."
+    ]},
+
+    {"h1": "Answering the Setup Prompts"},
+    {"p": "Press **Enter** to accept the default in brackets for anything you're unsure about."},
+    {"table": {
+      "headers": ["Prompt", "What it means / what to do"],
+      "rows": [
+        ["License notices, \"Press Enter to accept\"", "Shows that VOACAP and NEC2++ are included under their own licenses. Press **Enter**."],
+        ["Install location [/home/you/ActivationPlanner]", "Where to install. Press **Enter** for the default."],
+        ["That folder exists. Overwrite it? (y/n) [y]", "Only when reinstalling. Press **Enter** to replace it."],
+        ["Create an application menu entry? (y/n) [y]", "Linux only. Press **Enter** so Activation Planner appears in your apps menu."],
+        ["Launch Activation Planner now? (y/n) [y]", "Press **Enter** to open it."]
+      ]
+    }},
+
+    {"h1": "If the App Won't Start - Missing System Libraries"},
+    {"p": "On a very minimal Linux install, the graphical toolkit may need a few common libraries that aren't present yet. If the app fails to open, install the usual desktop libraries:"},
+    {"bullets": [
+      "**Debian / Ubuntu / Raspberry Pi OS:**  sudo apt update && sudo apt install -y libice6 libsm6 libfontconfig1 libx11-6  ",
+      "**Fedora:**  sudo dnf install -y libICE libSM fontconfig libX11  "
+    ]},
+    {"p": "Most desktop systems already have these, so you likely won't need this step."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["I downloaded the wrong architecture", "Run  uname -m . x86_64 -> the x64 file; aarch64 -> the arm64 file. Re-download the matching one."],
+        ["\"Permission denied\" launching the app", "Run:  chmod +x ~/ActivationPlanner/ActivationPlanner.UI  , then start it again."],
+        ["App exits immediately / library errors", "Install the desktop libraries listed above for your distribution."],
+        ["It says engines are NOT bundled / sample mode", "Predictions are placeholders until VOACAP/NEC2++ are built for your machine. See the **Helper Engines** chapter and the maintainer appendix."],
+        ["No menu entry appeared", "You answered 'n', or your desktop caches the menu. Log out and back in, or start it directly:  ~/ActivationPlanner/ActivationPlanner.UI  ."]
+      ]
+    }}
+  ]
+}

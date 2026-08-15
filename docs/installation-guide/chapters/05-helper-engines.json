@@ -1,0 +1,59 @@
+{
+  "order": 5,
+  "title": "The Two Helper Engines (VOACAP & NEC2++)",
+  "subtitle": "What the two bundled engines do, how to tell if they're active, and the license notices you'll see - explained plainly.",
+  "in_this_chapter": [
+    "What the engines are and why they're separate programs",
+    "\"Sample mode\" vs real predictions - how to tell",
+    "How the engines get onto your computer",
+    "The license notices you agree to at install",
+    "Getting real predictions if your build shipped in sample mode"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Activation Planner uses two helper programs behind the scenes: **VOACAP** (which bands will work, and when) and **NEC2++** (how your antennas radiate). If they came bundled with your download, you get **real** predictions. If not, the app runs in **sample mode** - fully usable to learn the app, but the numbers are placeholders until the engines are added. You never open these programs yourself."}},
+
+    {"h1": "What They Are"},
+    {"p": "Activation Planner does the planning; the two engines do the heavy science:"},
+    {"bullets": [
+      "**VOACAP** - the **propagation-prediction engine** (originally from the Voice of America). It works out which bands will actually carry your signal to your target, hour by hour. It powers the band recommendations.",
+      "**NEC2++** - the **antenna-modeling engine** (Numerical Electromagnetics Code). It calculates your antenna's radiation pattern - where your signal goes and at what angle - from the measurements you enter."
+    ]},
+    {"callout": {"kind": "note", "label": "WHY SEPARATE PROGRAMS?",
+      "text": "Activation Planner runs VOACAP and NEC2++ as their own programs rather than copying their code inside itself. That keeps their trusted results exact and unmodified, and it honors their software licenses cleanly (especially NEC2++, which is shared under terms that are respected precisely by keeping it a standalone program the planner simply calls). You never launch them - the app drives them for you and turns their output into plain-English advice."}},
+
+    {"h1": "Sample Mode vs Real Predictions"},
+    {"p": "You can always tell which mode you're in:"},
+    {"table": {
+      "headers": ["What you see", "What it means"],
+      "rows": [
+        ["An orange \"sample data\" banner on the planning screen", "VOACAP isn't active - band numbers are illustrative placeholders."],
+        ["A \"representative pattern\" note on the antenna pattern screen", "NEC2++ isn't active - antenna patterns are approximate stand-ins."],
+        ["No such banners/notes", "Both engines are active - you're seeing real predictions and real modeled patterns."]
+      ]
+    }},
+    {"p": "The setup script also tells you at install time: it prints whether **VOACAP** and **NEC2++** were bundled. Sample mode is a perfectly good way to learn the app; for real planning you'll want the engines active."},
+
+    {"h1": "How the Engines Get Onto Your Computer"},
+    {"p": "The engines live in a **tools** folder next to the app (the app looks there automatically). There are two ways they get there:"},
+    {"bullets": [
+      "**Bundled in your download (the easy way).** If the release you downloaded was built with the engines included, they're already in place and predictions are real from the first launch - nothing to do.",
+      "**Added afterward (for your platform).** If your download shipped without them (sample mode), they can be built for your computer and dropped into the tools folder. This is a one-time, more technical step covered in the **Build It Yourself / For Maintainers** appendix."
+    ]},
+    {"callout": {"kind": "note", "label": "WHY A DOWNLOAD MIGHT NOT INCLUDE THEM",
+      "text": "The engines are compiled programs that differ per operating system and processor. A given release may include them for some platforms and not others. Raspberry Pi and other ARM builds, in particular, are usually built on the device itself."}},
+
+    {"h1": "The License Notices at Install"},
+    {"p": "During setup you're shown - and asked to accept - short notices about the two engines. This is required by their licenses and is nothing to worry about. In plain terms:"},
+    {"bullets": [
+      "**VOACAP** is a U.S. Government work (from NTIA/ITS), not subject to U.S. copyright, with the porting changes placed in the public domain. A standard government disclaimer is included.",
+      "**NEC2++** is shared under the **GNU General Public License, version 2 (GPLv2)**. Because Activation Planner runs it as a separate program, including it is fully permitted. Its license text and an offer of its source code are included with the install."
+    ]},
+    {"p": "The full notices are placed in a **licenses** folder inside your installation, and are summarized in this guide's Licenses section and in the project's THIRD_PARTY_LICENSES document."},
+
+    {"h1": "Getting Real Predictions If You're in Sample Mode"},
+    {"p": "If your install shows sample mode and you want real predictions, you (or someone helping you) can build the engines for your machine and place them in the app's **tools** folder. The steps are in the **Build It Yourself / For Maintainers** appendix - it's a one-time process using the included build scripts. Once the engines are in place, restart Activation Planner and the sample banners disappear."},
+    {"callout": {"kind": "note", "label": "THE APP ALWAYS RUNS EITHER WAY",
+      "text": "Missing engines never stop the app from opening. You can set up your gear, explore every screen, and learn the workflow in sample mode, then switch to real predictions whenever the engines are added."}}
+  ]
+}

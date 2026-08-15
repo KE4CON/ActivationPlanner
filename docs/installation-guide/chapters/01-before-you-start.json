@@ -1,0 +1,68 @@
+{
+  "order": 1,
+  "title": "Before You Start",
+  "subtitle": "What you're installing, what you need, and the whole install in a nutshell — so even a quick skim gets you there.",
+  "in_this_chapter": [
+    "The install in a nutshell",
+    "What Activation Planner is (and the two helper engines that come with it)",
+    "What you need — by operating system",
+    "What it will not run on",
+    "What needs the internet, and what doesn't",
+    "A word about the download being safe"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "1) Go to the project's **Releases** page and download the one file for your system. 2) Unzip it. 3) Run the **one setup command** for your system (Windows, macOS, or Linux). 4) Press **Enter** at each prompt to accept the sensible default. That's it — Activation Planner opens and you can start planning. The rest of this guide just spells out those four steps for each system, with pictures of what you'll see."}},
+
+    {"h1": "What This Guide Covers"},
+    {"p": "This guide gets **Activation Planner** installed and running on your computer, step by step, in plain language. It covers **Windows, macOS, and Linux** — including **Raspberry Pi** — and both regular (Intel/AMD) and **ARM** processors. You don't need to be technical: the main path is a single setup command that asks you a few simple questions and does the rest."},
+
+    {"h1": "What You're Installing"},
+    {"p": "You're installing **three things**, but the setup handles them together so it feels like one:"},
+    {"bullets": [
+      "**Activation Planner** — the app itself: the planning screens, your gear inventory, checklists, and so on.",
+      "**VOACAP** — the **propagation-prediction engine** (the proven tool, originally from the Voice of America, that works out which bands will carry your signal and when). Activation Planner runs it behind the scenes.",
+      "**NEC2++** — the **antenna-modeling engine** (Numerical Electromagnetics Code) that calculates how your antennas radiate."
+    ]},
+    {"callout": {"kind": "note", "label": "WHY TWO EXTRA ENGINES?",
+      "text": "Activation Planner runs VOACAP and NEC2++ as **separate helper programs** rather than building their code into itself — that keeps their trusted results exact and honors their software licenses. You never open them yourself; the app drives them for you. The User Manual explains this in more depth; this guide just installs them. If they aren't installed, the app still runs — it simply shows **sample** predictions until they are (more on that later)."}},
+    {"callout": {"kind": "note", "label": "NO SEPARATE \".NET\" INSTALL NEEDED",
+      "text": "Activation Planner is built on Microsoft's .NET, but the download is **self-contained** — everything it needs is included. You do **not** have to install .NET, Java, or anything else first. Just download and run the setup."}},
+
+    {"h1": "What You Need — By Operating System"},
+    {"p": "Activation Planner is light on requirements. Here's what each system needs. \"GB\" means **gigabyte** (a measure of storage/memory)."},
+    {"table": {
+      "headers": ["System", "Version", "Processor", "Space needed"],
+      "rows": [
+        ["Windows", "Windows 10 or Windows 11", "64-bit Intel/AMD (x64) or ARM (ARM64)", "About 300 MB free disk"],
+        ["macOS", "macOS 12 (Monterey) or newer", "Intel or Apple Silicon (M1/M2/M3/M4)", "About 300 MB free disk"],
+        ["Linux", "A current 64-bit distribution (e.g. Ubuntu 22.04+, Debian 12+, Fedora)", "64-bit Intel/AMD (x64) or ARM (ARM64)", "About 300 MB free disk"],
+        ["Raspberry Pi", "Raspberry Pi OS (64-bit), Pi 4 or Pi 5 recommended", "ARM64 (aarch64)", "About 300 MB free disk"]
+      ]
+    }},
+    {"p": "A couple of gigabytes of memory (RAM) is plenty. There is **no graphics-card requirement** for normal use."},
+
+    {"h1": "What It Will Not Run On"},
+    {"p": "So you don't waste time trying, here's what is **not** supported:"},
+    {"bullets": [
+      "**Phones and tablets** — iPhone, iPad, and Android are not supported. Activation Planner is a desktop/laptop app. (A phone/tablet version is a future project — see the roadmap.)",
+      "**Very old 32-bit-only computers** — the standard downloads are 64-bit. Almost every computer from the last decade is 64-bit.",
+      "**Windows 7 / 8 and very old macOS/Linux** — these are past their supported versions."
+    ]},
+    {"callout": {"kind": "note", "label": "IS THIS A LAPTOP OR A DESKTOP APP? BOTH.",
+      "text": "It runs the same on a desktop or a laptop — and a laptop is what you'll usually take to the field. A Windows tablet (like a Surface) counts as Windows and works too. It's a genuine planning tool you can also carry with you."}},
+
+    {"h1": "What Needs the Internet"},
+    {"p": "Once installed, Activation Planner does its core job — band and antenna planning — **offline**. A few live features need an internet connection (a phone hotspot in the field is fine):"},
+    {"bullets": [
+      "**Live solar data** (to auto-fill current conditions), **weather forecast and alerts**, and **POTA spots** all need the internet.",
+      "**Core planning, antenna patterns, checklists, and PDF export** work with no connection once the app and engines are installed."
+    ]},
+
+    {"h1": "A Word About the Download Being Safe"},
+    {"p": "Because Activation Planner is a free, independent app (not sold through the Microsoft Store or the Mac App Store), your computer may show a caution the first time you run it — this is normal for smaller apps and does **not** mean anything is wrong. Each operating system's chapter below tells you the exact, safe way to get past that message. You can also see the full source code, since the project is open source, at the project's page on GitHub (github.com/KE4CON/ActivationPlanner)."},
+
+    {"h1": "Ready?"},
+    {"p": "Pick your system and go to its chapter: **Windows**, **macOS**, or **Linux / Raspberry Pi**. Each one spells out every step and shows you what you'll see. Then the **Verifying Your Install** chapter confirms everything is working."}
+  ]
+}

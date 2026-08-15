@@ -1,0 +1,83 @@
+{
+  "order": 3,
+  "title": "Install on macOS",
+  "subtitle": "Download one file, run one setup command in Terminal, and get past the one-time \"unidentified developer\" message.",
+  "in_this_chapter": [
+    "The macOS install in a nutshell",
+    "Which file to download (Apple Silicon vs Intel)",
+    "Step 1 - Download and expand",
+    "Step 2 - Run the setup in Terminal",
+    "Getting past the \"unidentified developer\" message (unsigned builds)",
+    "Answering the setup prompts",
+    "Troubleshooting"
+  ],
+  "blocks": [
+    {"callout": {"kind": "tip", "label": "IN A NUTSHELL",
+      "text": "Download the macOS **.tar.gz** for your Mac (Apple Silicon or Intel) from the Releases page. Double-click it to expand it into a folder. Open **Terminal**, type  cd  and the folder's path, then run  bash install.sh  and press **Enter** at each prompt. If macOS says the app is from an \"unidentified developer,\" right-click the app and choose **Open**, then **Open** again - a one-time step for new apps."}},
+
+    {"h1": "Which File to Download"},
+    {"p": "First find out which Mac you have: click the **Apple menu** (top-left) then **About This Mac**. Look at the **Chip** or **Processor** line."},
+    {"table": {
+      "headers": ["Your Mac", "File to download"],
+      "rows": [
+        ["Apple Silicon (M1, M2, M3, M4 - most Macs since 2020)", "ActivationPlanner-<version>-osx-arm64.tar.gz"],
+        ["Intel (older Macs, \"Intel Core\" processor)", "ActivationPlanner-<version>-osx-x64.tar.gz"]
+      ]
+    }},
+    {"p": "\"<version>\" is the release number, for example **ActivationPlanner-1.0.0-osx-arm64.tar.gz**."},
+
+    {"h1": "Step 1 - Download and Expand"},
+    {"steps": [
+      "Open **https://github.com/KE4CON/ActivationPlanner/releases** in Safari.",
+      "Under the newest release, click the correct **.tar.gz** file for your Mac. It downloads to your **Downloads** folder.",
+      "Open **Downloads** (in Finder), and **double-click** the .tar.gz file. macOS expands it into a folder next to it (for example **ActivationPlanner-osx-arm64**)."
+    ]},
+
+    {"h1": "Step 2 - Run the Setup in Terminal"},
+    {"p": "macOS installs this kind of app with a short command. Open **Terminal** first: press **Command + Space**, type **Terminal**, and press **Enter**."},
+    {"steps": [
+      "In Terminal, type  cd  followed by a space (don't press Enter yet).",
+      "Now type the path to the expanded folder. For most people that's:  cd ~/Downloads/ActivationPlanner-osx-arm64   (change to osx-x64 if that's what you downloaded), then press **Enter**.",
+      "Run the setup by typing:  bash install.sh   and pressing **Enter**.",
+      "The setup starts asking a few simple questions (covered below)."
+    ]},
+    {"callout": {"kind": "note", "label": "TIP - GET THE FOLDER PATH EXACTLY",
+      "text": "If the folder name is slightly different, type  cd ~/Downloads/  then press the **Tab** key to let Terminal complete the folder name for you. Tab-completion avoids typos."}},
+
+    {"h1": "Getting Past \"Unidentified Developer\""},
+    {"p": "The first time you open a new independent app, macOS Gatekeeper may say it **\"cannot be opened because it is from an unidentified developer\"** (or is from the internet). This is expected for a new app and does not mean anything is wrong. The safe way through:"},
+    {"steps": [
+      "In Finder, open your installed folder and find **ActivationPlanner.UI** (the app).",
+      "**Right-click** (or Control-click) it and choose **Open**.",
+      "A dialog appears with an **Open** button - click it. macOS remembers your choice, so you only do this once.",
+      "If you don't see an Open button, go to the **Apple menu -> System Settings -> Privacy & Security**, scroll down, and click **Open Anyway** next to the Activation Planner message."
+    ]},
+    {"callout": {"kind": "note", "label": "SIGNED + NOTARIZED BUILDS SKIP THIS",
+      "text": "Once Activation Planner is distributed as a **signed and notarized** build, this message won't appear - macOS will trust it automatically. Until then (or for an unsigned build), the right-click -> Open steps above are the normal, safe way through. As a last resort you can clear the \"downloaded from the internet\" flag in Terminal:  xattr -dr com.apple.quarantine ~/ActivationPlanner  ."}},
+
+    {"h1": "Answering the Setup Prompts"},
+    {"p": "Press **Enter** to accept the default in brackets for anything you're unsure about."},
+    {"table": {
+      "headers": ["Prompt", "What it means / what to do"],
+      "rows": [
+        ["License notices, \"Press Enter to accept\"", "Shows that VOACAP and NEC2++ are included under their own licenses. Press **Enter** to continue."],
+        ["Install location [/Users/you/ActivationPlanner]", "Where to install. Press **Enter** for the default, or type another folder."],
+        ["That folder exists. Overwrite it? (y/n) [y]", "Only when reinstalling. Press **Enter** to replace the old copy."],
+        ["Launch Activation Planner now? (y/n) [y]", "Press **Enter** to open it."]
+      ]
+    }},
+    {"p": "You'll also see whether **VOACAP** and **NEC2++** were bundled. If not, the app runs in sample mode until they are - see the **Helper Engines** chapter."},
+
+    {"h1": "Troubleshooting"},
+    {"table": {
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["\"cannot be opened because it is from an unidentified developer\"", "Right-click the app -> **Open** -> **Open**; or System Settings -> Privacy & Security -> **Open Anyway**. One-time step; a notarized build removes it."],
+        ["\"command not found: bash\" or the cd path is wrong", "Make sure you expanded the .tar.gz (double-click it) and used the real folder name. Use **Tab** to auto-complete the folder name after  cd ~/Downloads/ ."],
+        ["\"Permission denied\" running the app", "The setup marks it runnable, but if needed run:  chmod +x ~/ActivationPlanner/ActivationPlanner.UI  ."],
+        ["It says engines are NOT bundled / sample mode", "Predictions are placeholders until VOACAP/NEC2++ are included. See the **Helper Engines** chapter. The app still runs."],
+        ["The app bounces in the Dock and quits", "This is usually the quarantine flag. Clear it with  xattr -dr com.apple.quarantine ~/ActivationPlanner  then open it again."]
+      ]
+    }}
+  ]
+}
