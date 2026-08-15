@@ -1,2 +1,16 @@
-# Auto detect text files and perform LF normalization
+# Normalize line endings so cross-platform scripts work everywhere.
 * text=auto
+
+# Shell scripts MUST be LF or they fail on Linux/macOS ("bad interpreter").
+*.sh   text eol=lf
+
+# PowerShell scripts are Windows-side; keep CRLF.
+*.ps1  text eol=crlf
+
+# Windows batch, if any.
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+
+# Treat generated Word docs as binary (no line-ending munging, no diff noise).
+*.docx binary
+*.pdf  binary

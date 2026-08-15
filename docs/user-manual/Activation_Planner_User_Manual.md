@@ -1536,7 +1536,7 @@ You'll notice the program uses **floating cards** — panels that sit slightly r
 | Dipole | A basic antenna: a wire fed in the center. Its height sets its take-off angle. (Chapter 3) |
 | Vertical | An antenna that stands upright, often with radials; radiates low and all around — good for distance. (Chapter 3) |
 | EFHW / end-fed | An end-fed wire antenna (End-Fed Half-Wave and similar), fed at one end rather than the middle. (Chapter 3) |
-| Radials | Wires laid at the base of a vertical that act as its electrical "ground." How many and how long affects performance. (Chapter 3) |
+| Radials | Wires spread under a vertical that act as its electrical "ground." How many, how long, and how high (on the ground vs elevated a few feet) all affect performance. (Chapter 3) |
 | Feed point | Where the coax cable connects to the antenna (center, end, off-center, or base). A required detail for modeling. (Chapter 3) |
 | Measured vs Approximate | A flag on each antenna's pattern: Measured = trust it; Approximate = a good guide for loaded/broadband antennas a simple model can't capture exactly. (Chapter 7) |
 | Wavelength (λ) | The physical length of one radio wave; antenna dimensions are often described as fractions of it (e.g. quarter-wave). |
