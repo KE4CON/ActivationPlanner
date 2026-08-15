@@ -3,11 +3,26 @@
 Thumbs.db
 desktop.ini
 
+# Word/Office lock files (created when a .docx is open)
+~$*
+
 # .NET build output
 bin/
 obj/
 *.user
 *.suo
+
+# Installer / packaging outputs (build/package.*, build/build-engines.*)
+dist/
+build/.engine-build/
+
+# Bundled engine binaries — built by build/build-engines.*, never committed.
+# Keep the staging-area README; ignore the per-RID binary folders.
+third_party/*/
+!third_party/README.md
+
+# NEC2++ GPLv2 COPYING + source snapshot are copied in during the engine build.
+licenses/nec2++/
 
 # Visual Studio
 .vs/

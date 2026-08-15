@@ -1,0 +1,21 @@
+VOACAP — NTIA/ITS Disclaimer
+============================
+
+Activation Planner bundles VOACAP (the voacapl port, https://github.com/jawatson/voacapl) for
+propagation prediction. The core VOACAP software was developed by an agency of the U.S. Government
+(NTIA/ITS) and is not subject to U.S. copyright protection; the port modifications are dedicated to
+the public domain under CC0. The required NTIA/ITS disclaimer is reproduced verbatim below.
+
+------------------------------------------------------------------------------------------------
+Disclaimer:
+
+The software contained within was developed by an agency of the
+U.S. Government. NTIA/ITS has no objection to the use of this
+software for any purpose since it is not subject to copyright
+protection in the U.S.
+
+No warranty, expressed or implied, is made by NTIA/ITS or the
+U.S. Government as to the accuracy, suitability and functioning
+of the program and related material, nor shall the fact of
+distribution constitute any endorsement by the U.S. Government.
+------------------------------------------------------------------------------------------------

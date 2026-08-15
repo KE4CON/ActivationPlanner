@@ -1,0 +1,19 @@
+NEC2++ (necpp) — GNU GPL v2 Notice and Corresponding-Source Offer
+================================================================
+
+Activation Planner bundles NEC2++ (the necpp implementation, https://github.com/tmolteno/necpp) for
+antenna modeling. NEC2++ is licensed under the GNU General Public License, version 2 (GPLv2). It is
+redistributed here as a SEPARATE, shelled-out program — Activation Planner never links or embeds its
+code in-process. The full GPLv2 license text is included alongside this file as "nec2++/COPYING".
+
+Corresponding-source offer
+--------------------------
+This product includes NEC2++ (necpp), licensed under the GNU General Public License, version 2. The
+complete corresponding source code for the bundled NEC2++ binary is available at
+https://github.com/tmolteno/necpp . A copy is also included in the "licenses/nec2++" folder of this
+installation. You may also obtain the source from the project contact for a period of three years
+from the date of distribution.
+
+With thanks to the necpp authors.
+
+This notice is provided in good faith for transparency and is NOT legal advice.
