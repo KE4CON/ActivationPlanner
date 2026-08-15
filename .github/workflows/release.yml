@@ -99,9 +99,86 @@ jobs:
             dist/*.tar.gz
           if-no-files-found: error
 
+  # macOS .app + .dmg, signed + notarized ONLY when the Apple secrets are set (dormant until then).
+  # Runs on GitHub's cloud macOS runner - no physical Mac needed at signing time; trigger from any OS
+  # by pushing a tag. Mirrors the KE4CON/APRS-Command signing flow. Required account/repo secrets:
+  #   APPLE_SIGNING_IDENTITY   (e.g. "Developer ID Application: James Rospopo (TEAMID)") - the on-switch
+  #   APPLE_CERT_P12_BASE64 / APPLE_CERT_PASSWORD               (exported Developer ID cert + key)
+  #   APPLE_API_KEY_P8_BASE64 / APPLE_API_KEY_ID / APPLE_API_ISSUER_ID   (App Store Connect API key)
+  installer-macos:
+    name: macOS DMG (${{ matrix.rid }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [osx-arm64, osx-x64]
+    env:
+      APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Install create-dmg
+        run: brew install create-dmg
+      - name: Build DMG (unsigned)
+        run: bash build/make-macos-app.sh ${{ matrix.rid }}
+
+      - name: Sign + notarize + staple (Apple Developer ID)
+        if: env.APPLE_SIGNING_IDENTITY != ''
+        env:
+          APPLE_CERT_P12_BASE64: ${{ secrets.APPLE_CERT_P12_BASE64 }}
+          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+          APPLE_API_KEY_P8_BASE64: ${{ secrets.APPLE_API_KEY_P8_BASE64 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          APP="artifacts/installers/Activation Planner.app"
+          DMG="artifacts/installers/ActivationPlanner-${{ matrix.rid }}.dmg"
+
+          # 1) Import the Developer ID cert + key into a throwaway keychain.
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          KPW="$(openssl rand -base64 24)"
+          security create-keychain -p "$KPW" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KPW" "$KEYCHAIN"
+          echo "$APPLE_CERT_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$APPLE_CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KPW" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+
+          # 2) Sign inner dylibs, then the main executable, then the bundle last. Never --deep.
+          find "$APP/Contents/MacOS" -name "*.dylib" -exec \
+            codesign --force --options runtime --timestamp \
+              --entitlements build/entitlements.mac.plist --sign "$APPLE_SIGNING_IDENTITY" {} \;
+          codesign --force --options runtime --timestamp \
+            --entitlements build/entitlements.mac.plist --sign "$APPLE_SIGNING_IDENTITY" \
+            "$APP/Contents/MacOS/ActivationPlanner.UI"
+          codesign --force --options runtime --timestamp \
+            --entitlements build/entitlements.mac.plist --sign "$APPLE_SIGNING_IDENTITY" "$APP"
+          codesign --verify --strict --verbose=2 "$APP"
+
+          # 3) Notarize the .app, then staple the ticket.
+          echo "$APPLE_API_KEY_P8_BASE64" | base64 --decode > "$RUNNER_TEMP/api.p8"
+          ditto -c -k --keepParent "$APP" "$RUNNER_TEMP/notarize.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/notarize.zip" \
+            --key "$RUNNER_TEMP/api.p8" --key-id "$APPLE_API_KEY_ID" --issuer "$APPLE_API_ISSUER_ID" --wait
+          xcrun stapler staple "$APP"
+
+          # 4) Repackage the stapled .app into the .dmg (no rebuild), then sign the .dmg.
+          bash build/make-macos-app.sh ${{ matrix.rid }} --dmg-only
+          codesign --force --timestamp --sign "$APPLE_SIGNING_IDENTITY" "$DMG"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ActivationPlanner-${{ matrix.rid }}-dmg
+          path: artifacts/installers/ActivationPlanner-${{ matrix.rid }}.dmg
+          if-no-files-found: error
+
   release:
     name: Create draft GitHub Release
-    needs: [build]
+    needs: [build, installer-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -129,3 +206,4 @@ jobs:
           files: |
             artifacts/**/*.zip
             artifacts/**/*.tar.gz
+            artifacts/**/*.dmg
