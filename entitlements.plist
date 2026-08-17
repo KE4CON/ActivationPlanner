@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      REQUIRED for any .NET application under the hardened runtime.
+      Omitting these produces an app that signs and notarizes successfully
+      but crashes instantly on launch on other people's machines.
+    -->
+
+    <!-- The .NET runtime JIT-compiles IL to native code and must mark memory executable -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- Covers JIT-generated code pages that carry no signature of their own -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- Allows loading the bundled native .dylib dependencies (SkiaSharp, etc.)
+         that are not signed by your Team ID -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+
+
+    <!--
+      ============================================================
+      OPTIONAL - uncomment only what your app actually uses.
+      Adding entitlements you don't need is a notarization risk and
+      widens your attack surface for no benefit.
+      ============================================================
+    -->
+
+    <!-- Audio input: APRS/AFSK decode, soundcard modes.
+         ALSO requires NSMicrophoneUsageDescription in Info.plist,
+         or macOS terminates the process with no dialog. -->
+    <!--
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    -->
+
+    <!-- USB / serial devices: CI-V rig control, Digirig, TNC, SignaLink -->
+    <!--
+    <key>com.apple.security.device.usb</key>
+    <true/>
+    -->
+
+    <!-- Outbound network connections (APRS-IS, POTA API, CI-V network protocol).
+         Only strictly required if you also enable the App Sandbox. -->
+    <!--
+    <key>com.apple.security.network.client</key>
+    <true/>
+    -->
+
+    <!-- Listening sockets / headless server mode.
+         Only strictly required if you also enable the App Sandbox. -->
+    <!--
+    <key>com.apple.security.network.server</key>
+    <true/>
+    -->
+
+    <!-- Location services: GPS park auto-detection.
+         ALSO requires NSLocationWhenInUseUsageDescription in Info.plist. -->
+    <!--
+    <key>com.apple.security.personal-information.location</key>
+    <true/>
+    -->
+
+</dict>
+</plist>
