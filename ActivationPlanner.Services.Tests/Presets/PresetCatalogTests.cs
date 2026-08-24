@@ -56,7 +56,11 @@ public sealed class PresetCatalogTests
         Assert.All(PresetCatalog.Default.Antennas, a =>
         {
             Assert.False(string.IsNullOrWhiteSpace(a.Manufacturer));
-            Assert.False(string.IsNullOrWhiteSpace(a.Source));
+            // Branded models must cite a product source; generic/homebrew entries have no product
+            // page (a plain wire dipole isn't a "model"), so a null source is valid for those.
+            bool generic = a.Manufacturer.Contains("Homebrew") || a.Manufacturer.Contains("Generic");
+            if (!generic)
+                Assert.False(string.IsNullOrWhiteSpace(a.Source), $"{a.Id} is a branded preset but cites no source");
         });
     }
 
@@ -69,10 +73,12 @@ public sealed class PresetCatalogTests
         var ids = antennas.Select(a => a.Id).ToList();
         Assert.Equal(ids.Count, ids.Distinct().Count());
 
-        // Every preset has a positive radiator length and a non-empty display name.
+        // Length must not be negative and the display name must be non-empty. Length 0 is a valid,
+        // intentional sentinel meaning "model a resonant length for each band" (the app's leave-0
+        // rule) — used by loaded/broadband and generic-homebrew presets whose exact length varies.
         Assert.All(antennas, a =>
         {
-            Assert.True(a.LengthFeet > 0, $"{a.Id} has non-positive length");
+            Assert.True(a.LengthFeet >= 0, $"{a.Id} has a negative length");
             Assert.False(string.IsNullOrWhiteSpace(a.DisplayName));
         });
     }

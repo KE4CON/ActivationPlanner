@@ -1,6 +1,33 @@
 {
   "antennas": [
     {
+      "id": "generic-dipole-halfwave",
+      "manufacturer": "Generic / Homebrew", "model": "Half-Wave Dipole (wire)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 0, "heightFeet": 30, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "A plain center-fed half-wave wire dipole - the classic field antenna. Length left 0 so it's modeled resonant for each band; set the real tip-to-tip length and height if you know them.",
+      "source": null
+    },
+    {
+      "id": "generic-inverted-v",
+      "manufacturer": "Generic / Homebrew", "model": "Inverted-V Dipole (wire)",
+      "category": "Dipole", "feedPoint": "CenterFed",
+      "lengthFeet": 0, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "A dipole hung as an inverted V from a single center support - very common portable deployment. Modeled as a dipole at the apex height; adjust height/length to your setup.",
+      "source": null
+    },
+    {
+      "id": "generic-efhw-wire",
+      "manufacturer": "Generic / Homebrew", "model": "End-Fed Half-Wave (wire)",
+      "category": "EndFedHalfWave", "feedPoint": "EndFedHalfWave",
+      "lengthFeet": 0, "heightFeet": 25, "radialCount": null, "radialLengthFeet": null,
+      "modelingConfidence": "Measured",
+      "note": "A generic end-fed half-wave wire on a 49:1 transformer - a very popular portable wire. Length left 0 so it's modeled resonant per band; set the real wire length and height if known.",
+      "source": null
+    },
+    {
       "id": "chameleon-nvis-4wire",
       "manufacturer": "Chameleon", "model": "NVIS (4-wire)",
       "category": "NvisCrossedDipole", "feedPoint": "CenterFed",

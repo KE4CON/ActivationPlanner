@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ActivationPlanner.UI.Views.FarField3DView">
+    <!-- 3D far-field surface. The SharpEngineSceneView is created and driven in code-behind; the
+         status text shows fallback messages (no Vulkan GPU, or no 3D data for this antenna). -->
+    <Grid x:Name="HostGrid">
+        <TextBlock x:Name="StatusText"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   TextWrapping="Wrap" TextAlignment="Center" Opacity="0.75" MaxWidth="360"
+                   Text="Starting 3D view…" />
+    </Grid>
+</UserControl>

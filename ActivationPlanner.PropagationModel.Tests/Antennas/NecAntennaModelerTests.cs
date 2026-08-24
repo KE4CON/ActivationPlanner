@@ -111,6 +111,41 @@ public sealed class NecAntennaModelerTests
     }
 
     [Fact]
+    public void Multi_azimuth_result_builds_a_grid_and_cuts_elevation_at_the_peak_azimuth()
+    {
+        // A full-hemisphere sweep (more than one azimuth) should populate the 3D grid, and the 2D
+        // elevation cut should be taken at the azimuth of peak gain.
+        var raw = new NecRawResult
+        {
+            Pattern =
+            [
+                new NecRadiationSample(90, 0, -20, -20, -20),  // az 0, horizon
+                new NecRadiationSample(60, 0, -10, -10, -3),   // az 0, elevation 30
+                new NecRadiationSample(90, 90, -18, -18, -18), // az 90, horizon
+                new NecRadiationSample(60, 90, 2, 2, 8),       // az 90, elevation 30  <- peak
+            ],
+        };
+
+        var pattern = NecAntennaModeler.Map(raw, 14.1);
+
+        Assert.NotNull(pattern.Grid);
+        Assert.Equal(4, pattern.Grid!.Count);
+        Assert.Contains(pattern.Grid, g => g.AzimuthDeg == 90 && g.ElevationAngleDeg == 30 && g.GainDbi == 8);
+
+        // Peak is at az 90 (elevation 30) — the elevation cut is taken there, so only az-90 samples.
+        Assert.Equal(30, pattern.TakeoffAngleDeg);
+        Assert.Equal(2, pattern.Elevation.Count);
+    }
+
+    [Fact]
+    public void Single_azimuth_result_leaves_the_grid_null_for_backward_compatibility()
+    {
+        var pattern = NecAntennaModeler.Map(Raw(), 14.1); // Raw() sweeps a single azimuth (phi 0)
+        Assert.Null(pattern.Grid);
+        Assert.Equal(4, pattern.Elevation.Count); // all samples form the cut, as before
+    }
+
+    [Fact]
     public async Task Substitutes_a_resonant_quarter_wave_when_a_verticals_length_is_missing()
     {
         // A loaded/modular vertical (e.g. Chameleon MPAS) often has no single electrical length the

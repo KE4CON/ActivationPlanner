@@ -97,12 +97,26 @@ public sealed class NecAntennaModeler : IAntennaPatternSource
     {
         ArgumentNullException.ThrowIfNull(raw);
 
+        NecRadiationSample? peak = raw.PeakGain;
+
+        // Full azimuth × elevation grid for the 3D surface — present only when the deck swept more
+        // than one azimuth (a legacy single-cut result leaves Grid null and the 3D view falls back).
+        int distinctPhi = raw.Pattern.Select(s => Math.Round(s.PhiDeg)).Distinct().Count();
+        IReadOnlyList<AntennaPatternGridSample>? grid = distinctPhi > 1
+            ? raw.Pattern
+                .Select(s => new AntennaPatternGridSample(
+                    AzimuthDeg: s.PhiDeg, ElevationAngleDeg: 90 - s.ThetaDeg, GainDbi: s.TotalGainDb))
+                .ToList()
+            : null;
+
+        // The 2D elevation cut is taken at the peak-gain azimuth (the most meaningful slice); with a
+        // single azimuth this is just the whole cut, matching the old behavior.
+        double peakPhi = peak?.PhiDeg ?? 0;
         var elevation = raw.Pattern
+            .Where(s => grid is null || Math.Abs(s.PhiDeg - peakPhi) < 0.5)
             .Select(s => new AntennaPatternSample(ElevationAngleDeg: 90 - s.ThetaDeg, GainDbi: s.TotalGainDb))
             .OrderBy(s => s.ElevationAngleDeg)
             .ToList();
-
-        NecRadiationSample? peak = raw.PeakGain;
 
         return new AntennaPattern
         {
@@ -112,6 +126,7 @@ public sealed class NecAntennaModeler : IAntennaPatternSource
             FeedpointResistanceOhms = raw.Impedance?.ResistanceOhms,
             FeedpointReactanceOhms = raw.Impedance?.ReactanceOhms,
             Elevation = elevation,
+            Grid = grid,
             EstimateNote = estimateNote,
         };
     }

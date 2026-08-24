@@ -6,6 +6,15 @@ namespace ActivationPlanner.PropagationModel.Antennas;
 public sealed record AntennaPatternSample(double ElevationAngleDeg, double GainDbi);
 
 /// <summary>
+/// Modeled gain at one point on the far-field hemisphere — a single (azimuth, elevation) direction.
+/// Feeds the 3D far-field surface view. Azimuth is compass-style: 0 = +X, increasing toward +Y.
+/// </summary>
+/// <param name="AzimuthDeg">Azimuth around the horizon in degrees (0–360).</param>
+/// <param name="ElevationAngleDeg">Elevation above the horizon in degrees (0 = horizon, 90 = zenith).</param>
+/// <param name="GainDbi">Total gain in dBi in that direction.</param>
+public sealed record AntennaPatternGridSample(double AzimuthDeg, double ElevationAngleDeg, double GainDbi);
+
+/// <summary>
 /// A modeled antenna pattern for one band, produced by the NEC2 custom modeling path (Option B).
 /// Summarizes what the planner needs: peak gain, the take-off (elevation) angle at which it
 /// occurs, the feed-point impedance, and the full elevation cut.
@@ -31,8 +40,15 @@ public sealed record AntennaPattern
     /// <summary>Feed-point reactance, ohms, if the model reported it.</summary>
     public double? FeedpointReactanceOhms { get; init; }
 
-    /// <summary>Gain vs elevation angle (ascending elevation).</summary>
+    /// <summary>Gain vs elevation angle (ascending elevation) at the representative azimuth — the 2D cut.</summary>
     public required IReadOnlyList<AntennaPatternSample> Elevation { get; init; }
+
+    /// <summary>
+    /// Optional full azimuth × elevation gain grid for the 3D far-field surface. Null when only the
+    /// 2D elevation cut is available (the 3D view then falls back to the 2D plot). When present, the
+    /// samples cover the upper hemisphere (elevation 0–90) across azimuth 0–360.
+    /// </summary>
+    public IReadOnlyList<AntennaPatternGridSample>? Grid { get; init; }
 
     /// <summary>
     /// Set when the model rested on a substituted assumption the operator did not supply — e.g. a

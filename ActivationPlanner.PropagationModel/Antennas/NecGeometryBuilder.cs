@@ -33,6 +33,15 @@ public sealed class NecGeometryBuilder
     private const int SegmentsPerWavelength = 20;
     private const int MinSegments = 11;
 
+    /// <summary>
+    /// Upper-hemisphere far-field request shared by every auto-generated antenna: 19 elevation steps
+    /// (theta 0-90 from zenith, 5 deg) x 37 azimuth steps (phi 0-360, 10 deg). Gives a full az x el
+    /// gain grid for the 3D surface; the 2D elevation cut is derived from it at the peak-gain azimuth.
+    /// The phi=0..360 span closes the surface seam.
+    /// </summary>
+    private static readonly NecRadiationPattern FullHemispherePattern = new(
+        ThetaCount: 19, PhiCount: 37, ThetaStartDeg: 0, PhiStartDeg: 0, ThetaStepDeg: 5, PhiStepDeg: 10);
+
     /// <summary>Average ground (relative permittivity 13, conductivity 0.005 S/m) — a sane default.</summary>
     public static NecGround AverageGround { get; } = new(Type: 2, DielectricConstant: 13.0, ConductivitySm: 0.005);
 
@@ -97,8 +106,9 @@ public sealed class NecGeometryBuilder
             FrequencyMhz = freqMhz,
             Ground = ground,
             Excitation = new NecExcitation(1, feedSegment),
-            // Broadside elevation cut (phi=90) captures the main lobe of an X-oriented wire.
-            RadiationPattern = new NecRadiationPattern(ThetaCount: 19, PhiCount: 1, ThetaStartDeg: 0, PhiStartDeg: 90, ThetaStepDeg: 5, PhiStepDeg: 0),
+            // Full upper-hemisphere sweep (theta 0-90 from zenith x phi 0-360) for the 3D far-field
+            // surface; the 2D elevation cut is extracted from this grid at the peak-gain azimuth.
+            RadiationPattern = FullHemispherePattern,
         };
     }
 
@@ -140,7 +150,7 @@ public sealed class NecGeometryBuilder
             Ground = ground,
             Excitation = new NecExcitation(1, 1),
             // Vertical is azimuthally symmetric; any phi cut represents the pattern.
-            RadiationPattern = new NecRadiationPattern(ThetaCount: 19, PhiCount: 1, ThetaStartDeg: 0, PhiStartDeg: 0, ThetaStepDeg: 5, PhiStepDeg: 0),
+            RadiationPattern = FullHemispherePattern,
         };
     }
 
@@ -182,7 +192,7 @@ public sealed class NecGeometryBuilder
             Excitation = new NecExcitation(1, 1),
             // Elevation cut; the crossed pair is near-symmetric in azimuth, so one phi captures the
             // NVIS high-angle lobe.
-            RadiationPattern = new NecRadiationPattern(ThetaCount: 19, PhiCount: 1, ThetaStartDeg: 0, PhiStartDeg: 0, ThetaStepDeg: 5, PhiStepDeg: 0),
+            RadiationPattern = FullHemispherePattern,
         };
     }
 

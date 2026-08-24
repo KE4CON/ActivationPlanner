@@ -29,6 +29,15 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // SharpEngine 3D license (free open-source license, valid for the public ActivationPlanner
+        // repo + the 'ActivationPlanner.UI' assembly; covers SharpEngine versions published before
+        // 2027-08-17). Set before any 3D control initializes. This open-source key is intended to live
+        // in the source, so it is committed here.
+        Ab4d.SharpEngine.Licensing.SetLicense(
+            licenseOwner: "James Rospopo",
+            licenseType: "OpenSourceLicense",
+            license: "7597-7D9F-307C-6B98-16E7-2C9D-5703-6C82-ACBC-04DA-29C4-8146-8157-4C46-F64D-C62F-9CC1-FCF1-B641-1F25-DFA9-7558-0F3D-C9D2-A735-0C94-4304-77");
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Composition root — wires the app by hand (no DI container package).

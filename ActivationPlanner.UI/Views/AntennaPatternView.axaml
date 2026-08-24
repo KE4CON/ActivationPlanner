@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ActivationPlanner.UI.ViewModels"
              xmlns:controls="clr-namespace:ActivationPlanner.UI.Controls"
+             xmlns:views="clr-namespace:ActivationPlanner.UI.Views"
              xmlns:conv="clr-namespace:ActivationPlanner.UI.Converters"
              xmlns:gear="clr-namespace:ActivationPlanner.PropagationModel.Gear;assembly=ActivationPlanner.PropagationModel"
              mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
@@ -83,9 +84,66 @@
             </ScrollViewer>
         </Border>
 
-        <!-- Polar plot -->
+        <!-- Pattern view: 2D polar plot or 3D far-field surface, switched by the toggle. -->
         <Border Grid.Column="1" Classes="card" Padding="8">
-            <controls:PolarPlotControl Pattern="{Binding Pattern}" />
+            <Grid RowDefinitions="Auto,*">
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right"
+                            Spacing="6" Margin="0,0,4,4">
+                    <TextBlock Text="2D" VerticalAlignment="Center" FontSize="12" Opacity="0.7" />
+                    <ToggleSwitch IsChecked="{Binding Show3D}" OnContent="" OffContent="" />
+                    <TextBlock Text="3D" VerticalAlignment="Center" FontSize="12" Opacity="0.7" />
+                </StackPanel>
+                <controls:PolarPlotControl Grid.Row="1" Pattern="{Binding Pattern}"
+                                           IsVisible="{Binding Show2D}" />
+
+                <!-- 3D far-field surface with an info + color-scale overlay -->
+                <Grid Grid.Row="1" IsVisible="{Binding Show3D}">
+                    <views:FarField3DView x:Name="FarField3D" Pattern="{Binding Pattern}" />
+
+                    <!-- Info card (top-left). Not hit-testable so mouse-orbit passes through. -->
+                    <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8"
+                            Background="#B0202A36" CornerRadius="6" Padding="10,8" IsHitTestVisible="False">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{Binding SelectedAntenna.Name}" FontWeight="SemiBold"
+                                       Foreground="White" FontSize="13" />
+                            <TextBlock Text="3D far-field surface" Foreground="#BFD6EA" FontSize="11" />
+                            <TextBlock Text="{Binding PeakGainLabel, StringFormat='Peak gain: {0}'}"
+                                       Foreground="#E8EEF4" FontSize="11" Margin="0,3,0,0" />
+                            <TextBlock Text="{Binding TakeoffLabel, StringFormat='Take-off: {0}'}"
+                                       Foreground="#E8EEF4" FontSize="11" />
+                            <TextBlock Text="Distance from center = relative gain in that direction."
+                                       Foreground="#9FB6CC" FontSize="10" TextWrapping="Wrap"
+                                       MaxWidth="200" Margin="0,4,0,0" />
+                            <TextBlock Text="Drag to rotate · scroll to zoom"
+                                       Foreground="#9FB6CC" FontSize="10" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Color scale (bottom-right). -->
+                    <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8"
+                            Background="#B0202A36" CornerRadius="6" Padding="8,6" IsHitTestVisible="False">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Rectangle Width="12" Height="96" RadiusX="2" RadiusY="2">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                        <GradientStop Offset="0.0" Color="#E62619" />
+                                        <GradientStop Offset="0.25" Color="#F2D91A" />
+                                        <GradientStop Offset="0.5" Color="#26CC33" />
+                                        <GradientStop Offset="0.75" Color="#00BFE6" />
+                                        <GradientStop Offset="1.0" Color="#1A33D9" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Grid RowDefinitions="Auto,*,Auto" Height="96">
+                                <TextBlock Grid.Row="0" Text="Strong" Foreground="#E8EEF4" FontSize="10" />
+                                <TextBlock Grid.Row="1" Text="gain" Foreground="#9FB6CC" FontSize="9"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="2" Text="Weak (−30 dB)" Foreground="#E8EEF4" FontSize="10" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

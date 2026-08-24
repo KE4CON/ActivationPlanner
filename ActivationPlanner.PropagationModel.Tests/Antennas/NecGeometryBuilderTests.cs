@@ -39,7 +39,8 @@ public sealed class NecGeometryBuilderTests
         Assert.Equal((wire.Segments + 1) / 2, deck.Excitation.Segment);
         // Wire is centered on the origin along X at the antenna height.
         Assert.Equal(-wire.X2, wire.X1, precision: 6);
-        Assert.True(deck.RadiationPattern.PhiStartDeg == 90); // broadside cut
+        // Full upper-hemisphere sweep (multiple azimuths) so the 3D far-field surface has an az x el grid.
+        Assert.True(deck.RadiationPattern.PhiCount > 1, "expected a multi-azimuth far-field sweep");
     }
 
     [Fact]

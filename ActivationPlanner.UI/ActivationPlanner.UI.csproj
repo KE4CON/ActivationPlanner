@@ -18,6 +18,10 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <!-- SPIKE (spike/sharpengine-avalonia12): 3D far-field view. Commercial lib, free for
+         non-commercial OSS. Validate Avalonia-12 compat + Vulkan render before keeping. -->
+    <PackageReference Include="Ab4d.SharpEngine" Version="4.1.9689" />
+    <PackageReference Include="Ab4d.SharpEngine.AvaloniaUI" Version="4.1.9689" />
   </ItemGroup>
 
   <ItemGroup>

@@ -59,7 +59,7 @@ Separate `.csproj` per layer, compiler-enforced boundaries via `ProjectReference
 - **QuestPDF** 2026.x (Services — PDF plan export). Community license (free for small orgs/individuals), set once at startup via `QuestPDF.Settings.License = LicenseType.Community`.
 - **System.IO.Ports** 10.x (Services — external NMEA GPS receiver over USB/serial, Item #18; cross-platform incl. Linux/Raspberry Pi).
 - Persistence uses framework `System.Text.Json`; network I/O (POTA, geo-IP) uses framework `System.Net.Http.HttpClient` — no packages needed.
-- **Future (not now):** `Ab4d.SharpEngine.AvaloniaUI` for the 3D far-field view — Avalonia-11-only today; revisit when an Avalonia-12 build exists.
+- **Ab4d.SharpEngine** 4.1.x + **Ab4d.SharpEngine.AvaloniaUI** 4.1.x (UI — the 3D far-field surface view, Item #17). Vulkan-based; the app falls back to the 2D polar plot when no Vulkan GPU is present. **Free open-source license** (tied to the public repo + the `ActivationPlanner.UI` assembly), set once at startup via `Ab4d.SharpEngine.Licensing.SetLicense(...)` in `App.axaml.cs`. (ab4d added Avalonia-12 support 2026; the old "Avalonia-11-only" blocker is resolved.)
 
 ## Feature Priorities (build in this order)
 Phase 1: Gear inventory — guided/required first-use setup wizard (step-by-step, Back/Next, progress indicator, skippable categories, Finish summary). Antenna entry uses a sub-list-and-detail pattern (add one antenna at a time to a running list, not a flat form). Data persists and is fully editable afterward via a separate non-wizard screen.
@@ -107,7 +107,7 @@ The installer bundles VOACAP and NEC2++. Obligations below were verified against
 ## Version Scope
 **v1.0** covers everything in this document. **Future / not in scope now:**
 - **Multi-park/route planning (v2.0)** — sequencing band/antenna plans across multiple stops in one day, with inter-stop timing. Deliberately deferred until v1.0's single-session planning model is built and proven; it requires a different planning unit (a route, not a single session) rather than an extension of the current data model.
-- **3D far-field antenna surface view** — deferred because the intended engine (`Ab4d.SharpEngine.AvaloniaUI`) is Avalonia-11-only and we are staying on Avalonia 12. The v1.0 2D polar plots (Item #17) render the same data; revisit 3D when an Avalonia-12-compatible engine is available. (2D is in scope for v1.0.)
+- _(3D far-field antenna surface view — no longer deferred. ab4d shipped Avalonia-12 support for `Ab4d.SharpEngine.AvaloniaUI`, so 3D was validated and built into v1.0 alongside the 2D plots; see "Added Mid-Build".)_
 
 ## Additional v1.0 Features (beyond core planning)
 - **Export plan as PDF** — operator-selectable content (bands/antenna/checklist, any combination), triggered via a dedicated Export button
@@ -118,7 +118,7 @@ The installer bundles VOACAP and NEC2++. Obligations below were verified against
 
 ## Additional v1 Features — Added Mid-Build
 - **Local + UTC time/date display** — persistent header/status bar, local above UTC, both live
-- **Antenna far-field pattern plots (2D — v1.0)** — 2D polar cuts (azimuth/elevation) via Avalonia's native Skia rendering, no extra dependency; data sourced from existing NEC2++/type-13 antenna data (no new data collection). Own dedicated tab. **3D surface view is deferred to the future-add category** — the intended engine (`Ab4d.SharpEngine.AvaloniaUI`) is Avalonia-11-only, and we are staying on Avalonia 12; revisit when it ships an Avalonia-12 build.
+- **Antenna far-field pattern plots (2D AND 3D — v1.0)** — one **Antenna Patterns** tab with a **2D/3D toggle**. The **2D** view is an EZNEC-style elevation polar plot (Skia): labeled dB rings (0/−10/−20/−30), elevation angle labels both sides, a red lobe, and a distinct green **take-off angle** line. The **3D** view is a rotatable far-field surface via **Ab4d.SharpEngine** (Vulkan): gain = distance-from-center + blue→red color, surface wireframe, a ground plane (range rings + N/E/S/W compass), zenith/horizon labels, and the take-off line; auto-fits the camera; falls back to 2D if no Vulkan GPU. Both driven by a full azimuth×elevation gain grid from NEC2++ (or a representative model in sample mode). The chapter opens with a plain-language antenna-theory primer. **3D was previously deferred (engine was Avalonia-11-only); ab4d added Avalonia-12 support, so it's now shipped.**
 - **GPS priority:** external hardware GPS receiver (USB/serial NMEA) takes priority when connected, on either desktop or laptop machines; falls back to geo-IP otherwise. Not OS-level Wi-Fi-based location services.
 - **Installer bundles VOACAP and NEC2++ directly** — both are redistributable per their respective terms (see Item #3 in Decisions Log for VOACAP; NEC2++ is GPLv2). Include a license notices screen/folder satisfying both.
 - **Grey-line indicator is its own dedicated tab**, not a subtle chart overlay — same underlying correlation-highlight logic from Item #13, given clearer visual presentation.

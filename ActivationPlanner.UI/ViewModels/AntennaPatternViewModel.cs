@@ -6,6 +6,7 @@ using ActivationPlanner.PropagationModel.Antennas;
 using ActivationPlanner.PropagationModel.Bands;
 using ActivationPlanner.PropagationModel.Gear;
 using ActivationPlanner.Services.GearInventory;
+using ActivationPlanner.Services.Presets;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ActivationPlanner.UI.ViewModels;
@@ -27,10 +28,30 @@ public sealed partial class AntennaPatternViewModel : ViewModelBase
         _source = source;
         IsSampleData = isSampleData;
 
-        Antennas = inventory.Current.Antennas.ToList();
+        // Owned antennas first, then a few generic reference wires as "(example)" so a plain dipole
+        // (and inverted-V / end-fed) is always viewable here without adding it to the inventory.
+        var owned = inventory.Current.Antennas.ToList();
+        var examples = PresetCatalog.Default.Antennas
+            .Where(p => p.Manufacturer.Contains("Homebrew") || p.Manufacturer.Contains("Generic"))
+            .Select(ToExampleProfile)
+            .ToList();
+        Antennas = owned.Concat(examples).ToList();
         _selectedAntenna = Antennas.FirstOrDefault();
         _ = LoadAsync();
     }
+
+    /// <summary>Map a catalog preset to a viewable profile, tagged "(example)" so it's clearly not owned gear.</summary>
+    private static AntennaProfile ToExampleProfile(AntennaPreset p) => new()
+    {
+        Name = $"{p.Model} (example)",
+        Category = p.Category,
+        FeedPoint = p.FeedPoint,
+        LengthFeet = p.LengthFeet,
+        HeightFeet = p.HeightFeet,
+        RadialCount = p.RadialCount,
+        RadialLengthFeet = p.RadialLengthFeet,
+        RadialHeightFeet = p.RadialHeightFeet,
+    };
 
     public bool IsSampleData { get; }
     public IReadOnlyList<AntennaProfile> Antennas { get; }
@@ -39,6 +60,15 @@ public sealed partial class AntennaPatternViewModel : ViewModelBase
 
     [ObservableProperty] private AntennaProfile? _selectedAntenna;
     [ObservableProperty] private HamBand _selectedBand = HamBand.M20;
+
+    /// <summary>2D polar plot (false) vs 3D far-field surface (true). Toggled on the tab; the 3D view
+    /// forces this back to false if the machine has no Vulkan GPU.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Show2D))]
+    private bool _show3D;
+
+    /// <summary>Convenience inverse of <see cref="Show3D"/> for the 2D control's visibility.</summary>
+    public bool Show2D => !Show3D;
 
     [ObservableProperty] private AntennaPattern? _pattern;
     [ObservableProperty] private string? _peakGainLabel;
